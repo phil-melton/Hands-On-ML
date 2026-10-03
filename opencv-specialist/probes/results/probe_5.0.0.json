@@ -1,0 +1,1810 @@
+{
+ "env": {
+  "cv2": "5.0.0",
+  "numpy": "2.4.6",
+  "python": "3.11.15",
+  "platform": "linux-x86_64"
+ },
+ "probes": {
+  "has cv2.CascadeClassifier": {
+   "category": "existence",
+   "idiom": "Haar face detection: cv2.CascadeClassifier(cv2.data.haarcascades + ...)",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.HOGDescriptor": {
+   "category": "existence",
+   "idiom": "HOG people detector: cv2.HOGDescriptor_getDefaultPeopleDetector()",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.ml": {
+   "category": "existence",
+   "idiom": "cv2.ml.KNearest_create / SVM_create / RTrees_create",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.gapi": {
+   "category": "existence",
+   "idiom": "G-API graphs",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.dnn.readNetFromCaffe": {
+   "category": "existence",
+   "idiom": "Caffe .prototxt/.caffemodel loading",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.dnn.readNetFromDarknet": {
+   "category": "existence",
+   "idiom": "YOLO .cfg/.weights loading",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.dnn.readNetFromTensorflow": {
+   "category": "existence",
+   "idiom": "TensorFlow .pb loading",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.dnn.readNetFromONNX": {
+   "category": "existence",
+   "idiom": "ONNX loading (the 5.0 path)",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.dnn.readNet": {
+   "category": "existence",
+   "idiom": "generic dnn loader",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FaceDetectorYN": {
+   "category": "existence",
+   "idiom": "YuNet face detector (the 5.0 replacement for Haar)",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FaceDetectorYN.create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FaceDetectorYN_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FaceRecognizerSF": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FontFace": {
+   "category": "existence",
+   "idiom": "new text API in 5.0",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.SIFT_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.SIFT.create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.ORB_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.AKAZE_create": {
+   "category": "existence",
+   "idiom": "AKAZE keypoints + binary descriptors",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.KAZE_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.BRISK_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.AgastFeatureDetector_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.FastFeatureDetector_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.GFTTDetector_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.MSER_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.SimpleBlobDetector_create": {
+   "category": "existence",
+   "idiom": "blob counting with SimpleBlobDetector_Params",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.FlannBasedMatcher": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.BFMatcher_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.drawKeypoints": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.drawMatchesKnn": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.BOWKMeansTrainer": {
+   "category": "existence",
+   "idiom": "bag-of-visual-words",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.xfeatures2d": {
+   "category": "existence",
+   "idiom": "contrib-only (SURF etc.)",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.SURF_create": {
+   "category": "existence",
+   "idiom": "SURF (patented, contrib-only since 3.x)",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.cv": {
+   "category": "existence",
+   "idiom": "OpenCV 2 API: cv2.cv.CV_*",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.CV_AA": {
+   "category": "existence",
+   "idiom": "OpenCV 2 constant (now cv2.LINE_AA)",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.LINE_AA": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.VideoWriter_fourcc": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.samples.findFile": {
+   "category": "existence",
+   "idiom": "tutorial data helper",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.aruco": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.QRCodeDetector": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.aruco.ArucoDetector": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.aruco.generateImageMarker": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.QRCodeEncoder": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.dnn.NMSBoxes": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.dnn.DetectionModel": {
+   "category": "existence",
+   "idiom": "high-level dnn model API",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.TrackerMIL_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.TrackerGOTURN_create": {
+   "category": "existence",
+   "idiom": "GOTURN tracker",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.TrackerNano_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.TrackerVit_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.TrackerDaSiamRPN_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.TrackerKCF_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.TrackerCSRT_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.legacy": {
+   "category": "existence",
+   "idiom": "contrib legacy trackers",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.createBackgroundSubtractorMOG2": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.createBackgroundSubtractorKNN": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.createBackgroundSubtractorMOG": {
+   "category": "existence",
+   "idiom": "contrib bgsegm",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.findEssentialMat": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.recoverPose": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.stereoRectify": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.triangulatePoints": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.initUndistortRectifyMap": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.fisheye": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.estimateRigidTransform": {
+   "category": "existence",
+   "idiom": "removed in 4.0 (use estimateAffinePartial2D)",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.createCLAHE": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.Stitcher_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.StereoBM_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.StereoSGBM_create": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.solvePnP": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.calibrateCamera": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.findChessboardCorners": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.findChessboardCornersSB": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.undistort": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.inpaint": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.fastNlMeansDenoising": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.seamlessClone": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.createLineSegmentDetector": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.ximgproc": {
+   "category": "existence",
+   "idiom": "contrib-only",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.INTER_NEAREST_EXACT": {
+   "category": "existence",
+   "idiom": "Pillow-style nearest (4.x name)",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.CV_16BF": {
+   "category": "existence",
+   "idiom": "new dtype",
+   "ok": true,
+   "obs": false
+  },
+  "has cv2.CV_Bool": {
+   "category": "existence",
+   "idiom": "new dtype",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.CV_32U": {
+   "category": "existence",
+   "idiom": "new dtype",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.CV_64U": {
+   "category": "existence",
+   "idiom": "new dtype",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.CV_64S": {
+   "category": "existence",
+   "idiom": "new dtype",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.CV_16F": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.Mat": {
+   "category": "existence",
+   "idiom": "",
+   "ok": true,
+   "obs": true
+  },
+  "has cv2.data.haarcascades": {
+   "category": "existence",
+   "idiom": "path to bundled Haar XML files",
+   "ok": true,
+   "obs": true
+  },
+  "haarcascade_xml_shipped": {
+   "category": "existence",
+   "idiom": "cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'",
+   "ok": true,
+   "obs": {
+    "xml_present": false
+   }
+  },
+  "findContours_tree": {
+   "category": "shapes",
+   "idiom": "contours, hierarchy = cv2.findContours(...)  (3-value unpack is OpenCV 3)",
+   "ok": true,
+   "obs": {
+    "n_returns": 2,
+    "container": "tuple",
+    "n": 4,
+    "contour0": "int32[3, 1, 2]",
+    "hierarchy": "int32[1, 4, 4]"
+   }
+  },
+  "findContours_approx_none": {
+   "category": "shapes",
+   "idiom": "cnt[:, 0, :] to get (N, 2) points",
+   "ok": true,
+   "obs": {
+    "n": 3,
+    "contour0": "int32[140, 1, 2]"
+   }
+  },
+  "approxPolyDP": {
+   "category": "shapes",
+   "idiom": "len(approx) == 4 to detect quads",
+   "ok": true,
+   "obs": "int32[4, 1, 2]"
+  },
+  "convexHull_points": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "int32[4, 1, 2]"
+  },
+  "convexHull_indices": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "int32[4, 1]"
+  },
+  "convexityDefects": {
+   "category": "shapes",
+   "idiom": "for s, e, f, d in defects[:, 0]: ...",
+   "ok": true,
+   "obs": "int32[1, 4]"
+  },
+  "HoughLinesP": {
+   "category": "shapes",
+   "idiom": "for line in lines: x1, y1, x2, y2 = line[0]",
+   "ok": true,
+   "obs": "int32[7, 4]"
+  },
+  "HoughLines": {
+   "category": "shapes",
+   "idiom": "for line in lines: rho, theta = line[0]",
+   "ok": true,
+   "obs": "float32[6, 1, 2]"
+  },
+  "HoughCircles": {
+   "category": "shapes",
+   "idiom": "for x, y, r in circles[0]: ...",
+   "ok": true,
+   "obs": "float32[1, 2, 3]"
+  },
+  "goodFeaturesToTrack": {
+   "category": "shapes",
+   "idiom": "for c in corners: x, y = c.ravel()  /  c[0]",
+   "ok": true,
+   "obs": "float32[20, 1, 2]"
+  },
+  "cornerSubPix": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[20, 1, 2]"
+  },
+  "findNonZero": {
+   "category": "shapes",
+   "idiom": "pts = cv2.findNonZero(mask); xs = pts[:, 0, 0]",
+   "ok": true,
+   "obs": "int32[5118, 2]"
+  },
+  "fitLine": {
+   "category": "shapes",
+   "idiom": "vx, vy, x0, y0 = line  (vs line.ravel())",
+   "ok": true,
+   "obs": "float32[4, 1]"
+  },
+  "minAreaRect": {
+   "category": "shapes",
+   "idiom": "(cx, cy), (w, h), angle = cv2.minAreaRect(cnt)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     {
+      "tuple": [
+       35.0,
+       40.0
+      ],
+      "len": 2
+     },
+     {
+      "tuple": [
+       60.0,
+       50.0
+      ],
+      "len": 2
+     },
+     -90.0
+    ],
+    "len": 3
+   }
+  },
+  "boxPoints": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[4, 2]"
+  },
+  "minEnclosingCircle": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     {
+      "tuple": [
+       35.0,
+       40.0
+      ],
+      "len": 2
+     },
+     39.051
+    ],
+    "len": 2
+   }
+  },
+  "fitEllipse": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": false,
+   "error": "error: (-201:Incorrect size of input array) There should be at least 5 points to fit the ellipse"
+  },
+  "boundingRect": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     10,
+     10,
+     51,
+     61
+    ],
+    "len": 4
+   }
+  },
+  "connectedComponentsWithStats": {
+   "category": "shapes",
+   "idiom": "n, labels, stats, centroids = cv2.connectedComponentsWithStats(mask)",
+   "ok": true,
+   "obs": {
+    "n": 4,
+    "labels": "int32[120, 160]",
+    "stats": "int32[4, 5]",
+    "centroids": "float64[4, 2]"
+   }
+  },
+  "connectedComponents": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "n": 4,
+    "labels": "int32[120, 160]"
+   }
+  },
+  "moments": {
+   "category": "shapes",
+   "idiom": "m['m10'] / m['m00']",
+   "ok": true,
+   "obs": {
+    "type": "dict",
+    "n_keys": 24,
+    "m00": 3000.0
+   }
+  },
+  "HuMoments": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float64[7, 1]"
+  },
+  "calcHist": {
+   "category": "shapes",
+   "idiom": "plt.plot(hist) / hist.ravel()",
+   "ok": true,
+   "obs": "float32[256]"
+  },
+  "kmeans": {
+   "category": "shapes",
+   "idiom": "labels.ravel() == k  (vs labels[:, 0])",
+   "ok": true,
+   "obs": {
+    "compactness": "float",
+    "labels": "int32[40, 1]",
+    "centers": "float32[2, 2]"
+   }
+  },
+  "calcOpticalFlowPyrLK": {
+   "category": "shapes",
+   "idiom": "good_new = p1[st == 1]",
+   "ok": true,
+   "obs": {
+    "p0": "float32[20, 1, 2]",
+    "p1": "float32[20, 1, 2]",
+    "status": "uint8[20, 1]",
+    "err": "float32[20, 1]"
+   }
+  },
+  "calcOpticalFlowFarneback": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[160, 200, 2]"
+  },
+  "findHomography": {
+   "category": "shapes",
+   "idiom": "matchesMask = mask.ravel().tolist()",
+   "ok": true,
+   "obs": {
+    "H": "float64[3, 3]",
+    "mask": "uint8[6, 1]",
+    "perspectiveTransform(Nx1x2)": "float32[6, 1, 2]"
+   }
+  },
+  "estimateAffine2D": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "M": "float64[2, 3]",
+    "inliers": "uint8[5, 1]"
+   }
+  },
+  "getPerspectiveTransform_float32": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float64[3, 3]"
+  },
+  "getRotationMatrix2D": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float64[2, 3]"
+  },
+  "getAffineTransform": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float64[2, 3]"
+  },
+  "findChessboardCorners": {
+   "category": "shapes",
+   "idiom": "ret, corners = cv2.findChessboardCorners(gray, (nx, ny))",
+   "ok": true,
+   "obs": {
+    "found": true,
+    "corners": "float32[24, 2]"
+   }
+  },
+  "undistortPoints": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[3, 1, 2]"
+  },
+  "projectPoints": {
+   "category": "shapes",
+   "idiom": "imgpts, _ = cv2.projectPoints(...); tuple(imgpts[i].ravel())",
+   "ok": true,
+   "obs": {
+    "points": "float32[3, 1, 2]",
+    "jacobian": "float64[6, 15]"
+   }
+  },
+  "Rodrigues": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "R": "float64[3, 3]",
+    "J": "float64[3, 9]",
+    "rvec_back": "float64[3, 1]"
+   }
+  },
+  "solvePnP": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "ok": true,
+    "rvec": "float64[3, 1]",
+    "tvec": "float64[3, 1]"
+   }
+  },
+  "ORB_detectAndCompute": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "keypoints": "tuple[56]",
+    "descriptors": "uint8[56, 32]"
+   }
+  },
+  "SIFT_detectAndCompute": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "keypoints": "tuple[62]",
+    "descriptors": "float32[62, 128]"
+   }
+  },
+  "BFMatcher_knnMatch": {
+   "category": "shapes",
+   "idiom": "for m, n in matches: if m.distance < 0.75 * n.distance",
+   "ok": true,
+   "obs": {
+    "outer": "tuple",
+    "inner": "tuple",
+    "inner_len": 2,
+    "item": "DMatch"
+   }
+  },
+  "minMaxLoc": {
+   "category": "shapes",
+   "idiom": "min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     30.0,
+     249.0,
+     {
+      "tuple": [
+       0,
+       0
+      ],
+      "len": 2
+     },
+     {
+      "tuple": [
+       113,
+       119
+      ],
+      "len": 2
+     }
+    ],
+    "len": 4
+   }
+  },
+  "mean": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     58.736,
+     0.0,
+     0.0,
+     0.0
+    ],
+    "len": 4
+   }
+  },
+  "split": {
+   "category": "shapes",
+   "idiom": "b, g, r = cv2.split(img)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     {
+      "array": "uint8[4, 4]",
+      "values": [
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ]
+      ]
+     },
+     {
+      "array": "uint8[4, 4]",
+      "values": [
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ]
+      ]
+     },
+     {
+      "array": "uint8[4, 4]",
+      "values": [
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ],
+       [
+        0,
+        0,
+        0,
+        0
+       ]
+      ]
+     }
+    ],
+    "len": 3
+   }
+  },
+  "imencode": {
+   "category": "shapes",
+   "idiom": "ok, buf = cv2.imencode('.png', img); buf.tobytes()",
+   "ok": true,
+   "obs": {
+    "ok": true,
+    "buf": "uint8[2074]"
+   }
+  },
+  "matchTemplate": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[131, 161]"
+  },
+  "distanceTransform": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[120, 160]"
+  },
+  "dnn_blobFromImage": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[1, 3, 32, 32]"
+  },
+  "QRCodeDetector_detect": {
+   "category": "shapes",
+   "idiom": "retval, points = cv2.QRCodeDetector().detect(img)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     false,
+     null
+    ],
+    "len": 2
+   }
+  },
+  "getTextSize": {
+   "category": "shapes",
+   "idiom": "(w, h), baseline = cv2.getTextSize(...)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     {
+      "tuple": [
+       136,
+       27
+      ],
+      "len": 2
+     },
+     6
+    ],
+    "len": 2
+   }
+  },
+  "findCirclesGrid": {
+   "category": "shapes",
+   "idiom": "ret, centers = cv2.findCirclesGrid(...)",
+   "ok": true,
+   "obs": {
+    "found": false,
+    "centers": null
+   }
+  },
+  "findChessboardCornersSB": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "found": true,
+    "corners": "float32[24, 2]"
+   }
+  },
+  "aruco_detectMarkers": {
+   "category": "shapes",
+   "idiom": "corners, ids, _ = detector.detectMarkers(img); ids.flatten()",
+   "ok": true,
+   "obs": {
+    "corners": {
+     "tuple": [
+      {
+       "array": "float32[1, 4, 2]",
+       "values": [
+        [
+         [
+          50.0,
+          50.0
+         ],
+         [
+          149.0,
+          50.0
+         ],
+         [
+          149.0,
+          149.0
+         ],
+         [
+          50.0,
+          149.0
+         ]
+        ]
+       ]
+      }
+     ],
+     "len": 1
+    },
+    "ids": "int32[1]"
+   }
+  },
+  "QRCode_detectAndDecode": {
+   "category": "shapes",
+   "idiom": "data, points, _ = cv2.QRCodeDetector().detectAndDecode(img)",
+   "ok": true,
+   "obs": {
+    "data": "opencv5",
+    "points": "float32[1, 4, 2]"
+   }
+  },
+  "dnn_NMSBoxes": {
+   "category": "shapes",
+   "idiom": "for i in indices: box = boxes[i]  (old: i = i[0])",
+   "ok": true,
+   "obs": "int32[2]"
+  },
+  "KeyPoint_convert": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[30, 2]"
+  },
+  "MSER_detectRegions": {
+   "category": "shapes",
+   "idiom": "regions, bboxes = mser.detectRegions(gray)",
+   "ok": true,
+   "obs": {
+    "regions": "tuple[0]",
+    "region0": null,
+    "bboxes": "float64[0]"
+   }
+  },
+  "MSER_text_default_params": {
+   "category": "pixels",
+   "idiom": "MSER text/blob detection with default parameters",
+   "ok": true,
+   "obs": {
+    "regions": 0
+   }
+  },
+  "MSER_text_min_diversity_0": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "regions": 170
+   }
+  },
+  "meanStdDev": {
+   "category": "shapes",
+   "idiom": "mean, std = cv2.meanStdDev(img); mean[0][0]",
+   "ok": true,
+   "obs": {
+    "mean": "float64[1, 1]",
+    "std": "float64[1, 1]"
+   }
+  },
+  "reduce_rows": {
+   "category": "shapes",
+   "idiom": "col_sums = cv2.reduce(img, 0, cv2.REDUCE_SUM, dtype=cv2.CV_32S)[0]",
+   "ok": true,
+   "obs": "int32[1, 200]"
+  },
+  "SVDecomp": {
+   "category": "shapes",
+   "idiom": "w, u, vt = cv2.SVDecomp(A)",
+   "ok": true,
+   "obs": {
+    "w": "float64[3, 1]",
+    "u": "float64[4, 3]",
+    "vt": "float64[3, 3]"
+   }
+  },
+  "eigen": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "ok": true,
+    "vals": "float64[2, 1]",
+    "vecs": "float64[2, 2]"
+   }
+  },
+  "PCACompute2": {
+   "category": "shapes",
+   "idiom": "mean, eigvecs, eigvals = cv2.PCACompute2(data, None)",
+   "ok": true,
+   "obs": {
+    "mean": "float32[1, 3]",
+    "eigenvectors": "float32[3, 3]",
+    "eigenvalues": "float32[3, 1]"
+   }
+  },
+  "minEnclosingTriangle": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "area": "float",
+    "triangle": "float32[3, 2]"
+   }
+  },
+  "HoughLinesWithAccumulator": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[6, 3]"
+  },
+  "calcHist_2d": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float32[30, 32]"
+  },
+  "findEssentialMat_recoverPose": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "E": "float64[3, 3]",
+    "mask": "uint8[20, 1]",
+    "R": "float64[3, 3]",
+    "t": "float64[3, 1]"
+   }
+  },
+  "triangulatePoints": {
+   "category": "shapes",
+   "idiom": "",
+   "ok": true,
+   "obs": "float64[4, 2]"
+  },
+  "initUndistortRectifyMap": {
+   "category": "shapes",
+   "idiom": "mapx, mapy = cv2.initUndistortRectifyMap(...)",
+   "ok": true,
+   "obs": {
+    "mapx": "float32[120, 160]",
+    "mapy": "float32[120, 160]"
+   }
+  },
+  "getOptimalNewCameraMatrix": {
+   "category": "shapes",
+   "idiom": "newK, roi = cv2.getOptimalNewCameraMatrix(...)",
+   "ok": true,
+   "obs": {
+    "tuple": [
+     {
+      "array": "float64[3, 3]",
+      "values": [
+       [
+        202.837,
+        0.0,
+        79.988
+       ],
+       [
+        0.0,
+        201.666,
+        59.992
+       ],
+       [
+        0.0,
+        0.0,
+        1.0
+       ]
+      ]
+     },
+     {
+      "tuple": [
+       1,
+       1,
+       158,
+       118
+      ],
+      "len": 4
+     }
+    ],
+    "len": 2
+   }
+  },
+  "resize_nearest_up_1x4_to_1x6": {
+   "category": "pixels",
+   "idiom": "pixel-exact tests of nearest-neighbour resize",
+   "ok": true,
+   "obs": [
+    [
+     0,
+     0,
+     10,
+     20,
+     20,
+     30
+    ]
+   ]
+  },
+  "resize_nearest_down_1x6_to_1x4": {
+   "category": "pixels",
+   "idiom": "pixel-exact tests of nearest-neighbour resize",
+   "ok": true,
+   "obs": [
+    [
+     0,
+     10,
+     30,
+     40
+    ]
+   ]
+  },
+  "resize_nearest_3x3_to_5x5": {
+   "category": "pixels",
+   "idiom": "pixel-exact tests of nearest-neighbour resize",
+   "ok": true,
+   "obs": [
+    [
+     0,
+     0,
+     1,
+     1,
+     2
+    ],
+    [
+     0,
+     0,
+     1,
+     1,
+     2
+    ],
+    [
+     3,
+     3,
+     4,
+     4,
+     5
+    ],
+    [
+     3,
+     3,
+     4,
+     4,
+     5
+    ],
+    [
+     6,
+     6,
+     7,
+     7,
+     8
+    ]
+   ]
+  },
+  "resize_linear_1x4_to_1x7": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": [
+    [
+     0.0,
+     3.571000099182129,
+     9.28600025177002,
+     15.0,
+     20.714000701904297,
+     26.429000854492188,
+     30.0
+    ]
+   ]
+  },
+  "resize_cubic_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[77, 123]",
+    "sha1": "c301746304e7",
+    "sum": 556546.0
+   }
+  },
+  "resize_area_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[40, 50]",
+    "sha1": "28a2a58d8e7b",
+    "sum": 117488.0
+   }
+  },
+  "warpAffine_half_pixel_shift": {
+   "category": "pixels",
+   "idiom": "sub-pixel warps compared against stored baselines",
+   "ok": true,
+   "obs": [
+    [
+     0.0,
+     5.0,
+     15.0,
+     25.0,
+     35.0,
+     45.0,
+     55.0,
+     65.0
+    ]
+   ]
+  },
+  "warpAffine_rotate_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[160, 200]",
+    "sha1": "2120d85163f3",
+    "sum": 1769294.0
+   }
+  },
+  "warpPerspective_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[160, 200]",
+    "sha1": "f5649fc49487",
+    "sum": 1876923.0
+   }
+  },
+  "remap_quarter_pixel": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": [
+    [
+     2.5,
+     12.5,
+     22.5,
+     32.5,
+     42.5,
+     52.5,
+     62.5,
+     70.0
+    ]
+   ]
+  },
+  "GaussianBlur_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[160, 200]",
+    "sha1": "4e33babd1697",
+    "sum": 1879577.0
+   }
+  },
+  "Canny_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[160, 200]",
+    "sha1": "4da36d78334c",
+    "sum": 302430.0
+   }
+  },
+  "putText_hershey_pixels": {
+   "category": "pixels",
+   "idiom": "text overlays compared against stored baselines",
+   "ok": true,
+   "obs": {
+    "nonzero": 1621,
+    "array": "uint8[60, 240]",
+    "sha1": "68b371d2a2a5",
+    "sum": 315550.0
+   }
+  },
+  "cvtColor_BGR2GRAY_primaries": {
+   "category": "pixels",
+   "idiom": "gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)",
+   "ok": true,
+   "obs": [
+    29,
+    150,
+    76
+   ]
+  },
+  "cvtColor_BGR2HSV_red": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": [
+    0,
+    255,
+    255
+   ]
+  },
+  "add_saturation_vs_numpy": {
+   "category": "pixels",
+   "idiom": "img + 50 (wraps) vs cv2.add(img, 50) (saturates)",
+   "ok": true,
+   "obs": {
+    "cv2.add": 255,
+    "numpy +": 4
+   }
+  },
+  "threshold_otsu_value": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": 75.0
+  },
+  "contourArea_square_20px": {
+   "category": "pixels",
+   "idiom": "contourArea traces boundary-pixel centres: area = pixels - perimeter/2 + 1",
+   "ok": true,
+   "obs": {
+    "pixels": 400,
+    "contourArea": 361.0,
+    "arcLength": 76.0
+   }
+  },
+  "contourArea_disk_r20": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "pixels": 1257,
+    "contourArea": 1200.0,
+    "pi_r2": 1256.6
+   }
+  },
+  "resize_nearest_convention_sweep": {
+   "category": "pixels",
+   "idiom": "migration wiki: INTER_NEAREST 'now follows the Pillow convention'",
+   "ok": true,
+   "obs": {
+    "legacy": 393,
+    "centre": 0,
+    "both": 56,
+    "neither": 1
+   }
+  },
+  "resize_nearest_exact_convention_sweep": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "legacy": 10,
+    "centre": 317,
+    "both": 56,
+    "neither": 67
+   }
+  },
+  "resize_nearest_2d_fingerprint": {
+   "category": "pixels",
+   "idiom": "",
+   "ok": true,
+   "obs": {
+    "array": "uint8[233, 317]",
+    "sha1": "68209f70ccf8",
+    "sum": 4316301.0
+   }
+  },
+  "draw_on_reversed_channel_view": {
+   "category": "gotchas",
+   "idiom": "cv2.rectangle(img[:, :, ::-1], ...)  (negative-stride view)",
+   "ok": false,
+   "error": "error: (-5:Bad argument) Overload resolution failed: - Layout of the output array img is incompatible with cv::Mat - Layout of the output array img is incompatible with cv::Mat - Expected Ptr<cv::UMat> for argument 'img' - Expe"
+  },
+  "draw_on_roi_view": {
+   "category": "gotchas",
+   "idiom": "drawing into an ROI view writes through to the parent",
+   "ok": true,
+   "obs": {
+    "parent_modified": true
+   }
+  },
+  "draw_on_transposed_view": {
+   "category": "gotchas",
+   "idiom": "cv2.circle(img.T, ...)  (transposed view)",
+   "ok": false,
+   "error": "error: (-5:Bad argument) Overload resolution failed: - Layout of the output array img is incompatible with cv::Mat - Expected Ptr<cv::UMat> for argument 'img'"
+  },
+  "circle_float_center": {
+   "category": "gotchas",
+   "idiom": "cv2.circle(img, (x / 2, y / 2), ...)  (float centre)",
+   "ok": false,
+   "error": "error: (-5:Bad argument) Overload resolution failed: - Can't parse 'center'. Sequence item with index 0 has a wrong type - Can't parse 'center'. Sequence item with index 0 has a wrong type"
+  },
+  "circle_numpy_int_center": {
+   "category": "gotchas",
+   "idiom": "cv2.circle(img, tuple(np.int64 values), ...)",
+   "ok": true,
+   "obs": "drawn"
+  },
+  "imread_missing_file": {
+   "category": "gotchas",
+   "idiom": "img = cv2.imread(path)  # silently None on a bad path",
+   "ok": true,
+   "obs": null
+  },
+  "imshow_headless": {
+   "category": "gotchas",
+   "idiom": "cv2.imshow in a headless sandbox",
+   "ok": false,
+   "error": "error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure sc"
+  },
+  "waitKey_headless": {
+   "category": "gotchas",
+   "idiom": "",
+   "ok": false,
+   "error": "error: (-2:Unspecified error) The function is not implemented. Rebuild the library with Windows, GTK+ 2.x or Cocoa support. If you are on Ubuntu or Debian, install libgtk2.0-dev and pkg-config, then re-run cmake or configure sc"
+  },
+  "cvtColor_gray_input": {
+   "category": "gotchas",
+   "idiom": "cvtColor(gray, COLOR_BGR2GRAY) on an already-gray image",
+   "ok": false,
+   "error": "error: (-15:Bad number of channels) Invalid number of channels in input image: 'VScn::contains(scn)' where 'scn' is 1"
+  },
+  "GaussianBlur_even_kernel": {
+   "category": "gotchas",
+   "idiom": "GaussianBlur(img, (4, 4), 0)  (even kernel)",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) ksize.width > 0 && ksize.width % 2 == 1 && ksize.height > 0 && ksize.height % 2 == 1"
+  },
+  "Canny_float_input": {
+   "category": "gotchas",
+   "idiom": "Canny on a float image",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) _src.depth() == CV_8U"
+  },
+  "findContours_float_input": {
+   "category": "gotchas",
+   "idiom": "findContours on a float mask",
+   "ok": false,
+   "error": "error: (-2:Unspecified error) Modes other than RETR_FLOODFILL and RETR_CCOMP support only CV_8UC1 images (expected: 'img.type() == CV_8UC1'), where 'img.type()' is 5 (CV_32FC1) must be equal to 'CV_8UC1' is 0 (CV_8UC1)"
+  },
+  "findContours_3channel": {
+   "category": "gotchas",
+   "idiom": "findContours on a 3-channel image",
+   "ok": false,
+   "error": "error: (-2:Unspecified error) Modes other than RETR_FLOODFILL and RETR_CCOMP support only CV_8UC1 images (expected: 'img.type() == CV_8UC1'), where 'img.type()' is 64 (CV_8UC3) must be equal to 'CV_8UC1' is 0 (CV_8UC1)"
+  },
+  "getPerspectiveTransform_float64": {
+   "category": "gotchas",
+   "idiom": "getPerspectiveTransform with float64 points",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) src.checkVector(2, CV_32F) == 4 && dst.checkVector(2, CV_32F) == 4"
+  },
+  "getPerspectiveTransform_int32": {
+   "category": "gotchas",
+   "idiom": "getPerspectiveTransform with int32 points",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) src.checkVector(2, CV_32F) == 4 && dst.checkVector(2, CV_32F) == 4"
+  },
+  "perspectiveTransform_Nx2_input": {
+   "category": "gotchas",
+   "idiom": "cv2.perspectiveTransform(pts_Nx2, H)  (forgot the (N, 1, 2) reshape)",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) scn + 1 == m.cols"
+  },
+  "resize_dsize_order": {
+   "category": "gotchas",
+   "idiom": "cv2.resize(img, (w, h)): dsize is (width, height)",
+   "ok": true,
+   "obs": [
+    8,
+    5
+   ]
+  },
+  "VideoCapture_get_unopened": {
+   "category": "gotchas",
+   "idiom": "if cap.get(prop) == 0: unsupported  (5.0 returns -1)",
+   "ok": true,
+   "obs": -1.0
+  },
+  "VideoCapture_open_missing": {
+   "category": "gotchas",
+   "idiom": "",
+   "ok": true,
+   "obs": false
+  },
+  "bool_array_input": {
+   "category": "gotchas",
+   "idiom": "passing a numpy bool mask straight to OpenCV",
+   "ok": true,
+   "obs": 9
+  },
+  "int64_array_input": {
+   "category": "gotchas",
+   "idiom": "int64 arrays (numpy's default int) passed to OpenCV",
+   "ok": true,
+   "obs": "int32[4, 4]"
+  },
+  "int64_overflow_narrowing": {
+   "category": "gotchas",
+   "idiom": "int64 counts/accumulators passed through cv2 arithmetic (silent int32 narrowing)",
+   "ok": true,
+   "obs": {
+    "dtype": "int32",
+    "values": [
+     [
+      0,
+      10
+     ]
+    ],
+    "expected": [
+     [
+      2199023255552,
+      10
+     ]
+    ]
+   }
+  },
+  "uint32_array_input": {
+   "category": "gotchas",
+   "idiom": "uint32 arrays passed to OpenCV",
+   "ok": true,
+   "obs": "uint32[4, 4]"
+  },
+  "float16_array_input": {
+   "category": "gotchas",
+   "idiom": "float16 arrays passed to OpenCV",
+   "ok": true,
+   "obs": "float16[4, 4]"
+  },
+  "threshold_int64_input": {
+   "category": "gotchas",
+   "idiom": "cv2.threshold on int64 input",
+   "ok": false,
+   "error": "error: (-210:Unsupported format or combination of formats)"
+  },
+  "fillPoly_int64_points": {
+   "category": "gotchas",
+   "idiom": "cv2.fillPoly(img, [np.array([[x, y], ...])], 255)  (numpy default int64)",
+   "ok": true,
+   "obs": {
+    "filled_pixels": 232
+   }
+  },
+  "polylines_int64_points": {
+   "category": "gotchas",
+   "idiom": "cv2.polylines(img, [pts_int64], True, 255)",
+   "ok": true,
+   "obs": {
+    "drawn_pixels": 58
+   }
+  },
+  "fillPoly_float32_points": {
+   "category": "gotchas",
+   "idiom": "cv2.fillPoly with float32 points",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) p.checkVector(2, CV_32S) > 0"
+  },
+  "drawContours_Nx2_int32": {
+   "category": "gotchas",
+   "idiom": "cv2.drawContours(img, [cnt_Nx2], -1, 255, -1)  (contour without the middle axis)",
+   "ok": true,
+   "obs": {
+    "filled_pixels": 232
+   }
+  },
+  "contourArea_int64_points": {
+   "category": "gotchas",
+   "idiom": "cv2.contourArea(np.array([[x, y], ...]))  (numpy default int64)",
+   "ok": true,
+   "obs": 202.0
+  },
+  "line_float_endpoint": {
+   "category": "gotchas",
+   "idiom": "cv2.line(img, (x / 2, y), ...)  (float endpoint)",
+   "ok": false,
+   "error": "error: (-5:Bad argument) Overload resolution failed: - Can't parse 'pt1'. Sequence item with index 0 has a wrong type - Can't parse 'pt1'. Sequence item with index 0 has a wrong type"
+  },
+  "bitwise_and_bool_mask": {
+   "category": "gotchas",
+   "idiom": "cv2.bitwise_and(img, img, mask=bool_mask)",
+   "ok": true,
+   "obs": {
+    "kept_pixels": 2400
+   }
+  },
+  "addWeighted_mixed_dtypes": {
+   "category": "gotchas",
+   "idiom": "cv2.addWeighted(uint8_img, 0.5, float32_img, 0.5, 0)",
+   "ok": false,
+   "error": "error: (-5:Bad argument) When the input arrays in add/subtract/multiply/divide functions have different types, the output array type must be explicitly specified"
+  },
+  "remap_float64_maps": {
+   "category": "gotchas",
+   "idiom": "cv2.remap with float64 maps",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) ((map1.type() == CV_32FC2 || map1.type() == CV_16SC2) && map2.empty()) || (map1.type() == CV_32FC1 && map2.type() == CV_32FC1)"
+  },
+  "countNonZero_3channel": {
+   "category": "gotchas",
+   "idiom": "cv2.countNonZero(bgr_img)",
+   "ok": false,
+   "error": "error: (-215:Assertion failed) cn == 1"
+  },
+  "imdecode_garbage": {
+   "category": "gotchas",
+   "idiom": "cv2.imdecode(bad_bytes)  # None, not an exception",
+   "ok": true,
+   "obs": null
+  }
+ }
+}

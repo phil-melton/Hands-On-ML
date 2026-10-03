@@ -1,0 +1,4 @@
+# Reference environment: the latest 4.x, used only as the "before" side of the version diff.
+opencv-python-headless==4.14.0.94
+numpy==2.4.6
+pytest==9.1.1

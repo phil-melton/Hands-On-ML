@@ -1,0 +1,12 @@
+.venv*/
+__pycache__/
+.pytest_cache/
+# model artifacts live on Drive / HF, never in git
+*.gguf
+*.safetensors
+checkpoints/
+lora_adapter/
+merged_16bit/
+gguf/
+runs/
+data/raw/

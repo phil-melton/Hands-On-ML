@@ -1,0 +1,4 @@
+# Target environment: OpenCV 5.0 (the version the specialist is trained for).
+opencv-python-headless==5.0.0.93
+numpy==2.4.6
+pytest==9.1.1
