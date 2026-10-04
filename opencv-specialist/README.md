@@ -5,6 +5,7 @@ This project specializes an open code model as an **OpenCV 5.0 worker** for an o
 
 - **The plan, findings and templates:** [PLAN.md](PLAN.md)
 - **GPU logistics** (Colab via Google AI Pro, CU budget, runbook): [COMPUTE.md](COMPUTE.md)
+- **Hand the remaining phases to a Claude Code agent on your machine:** [AGENT_PROMPT.md](AGENT_PROMPT.md)
 
 ## What's here: the Phase 0 kit (CPU-only, tested)
 
