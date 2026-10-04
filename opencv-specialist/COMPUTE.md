@@ -143,3 +143,26 @@ colab usage                                  # compute units spent
 | run dies mid-way | session limit or disconnect | rerun the same command; it resumes from the last checkpoint |
 | GGUF output is garbage in Ollama | chat-template mismatch | use Unsloth's Modelfile, or the `TEMPLATE` from `ollama show qwen2.5-coder:7b --modelfile` |
 | `cv2.__version__` is 4.x on Colab | preinstalled `opencv-python` shadows the headless 5.0 wheel | `pip uninstall -y opencv-python opencv-contrib-python`, reinstall `requirements-cv5.txt` |
+
+## Path L: local RTX 3060 (chosen 2026-10-04)
+
+The card has 12 GB, so a 7B trains with QLoRA (`QLORA=1`) at batch 1, grad-accum 16, MAX_LEN from the
+measured p99. Predictions use the formula above with 25.6 TFLOP/s dense fp16 and 20 % utilization.
+
+| GPU | Peak (fp16) | Assumed utilization | tok/s (7.6 B) | tok/s (4 B) | h/epoch (7.6 B, 2.1 M tok) |
+|---|---|---|---|---|---|
+| RTX 3060 12 GB | 25.6 TFLOP/s | 20 % (QLoRA) | ~110 | ~210 | ~5.3 |
+
+Runbook (inside WSL2 Ubuntu, GPU visible via `nvidia-smi`):
+
+```bash
+cd /mnt/d/opencv-expert            # large files live on D:
+python3 -m venv .venv-train && . .venv-train/bin/activate
+pip install unsloth bitsandbytes -r /path/to/opencv-specialist/requirements-cv5.txt
+QLORA=1 MAX_STEPS=30 OUT=/mnt/d/opencv-expert/hydrotest nohup python train/train_lora.py > hydrotest.log 2>&1 &
+```
+
+Shop rules that change: no CU to stop, but close other GPU apps first (the desktop already holds ~1.2 GB),
+launch every job detached with a log, and record tokens/s from the Unsloth banner next to the prediction.
+What does not fit: a 30B teacher at 4-bit (~18 GB) and a 7B bf16 eval (15 GB). Measure CPU offload for
+the MoE teacher (only ~3 B active) before paying for Colab.

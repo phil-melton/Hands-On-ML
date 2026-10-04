@@ -15,6 +15,12 @@ Copied verbatim from `AGENT_PROMPT.md` ("Rules"). Resume a session with: read th
 10. Learning: when a result bears on one of PLAN.md §7's questions, point that out and show me the evidence. Leave the answer to me.
 11. Gates: at each ⛔ gate, stop and send me a short report: what ran, predicted vs measured, the decision needed, and your recommendation with its reasoning. Then wait.
 
+## Decisions that override AGENT_PROMPT.md
+
+- 2026-10-04: all GPU stages run locally on the RTX 3060 (12 GB) inside WSL2; QLoRA instead of 16-bit LoRA.
+  Colab is a fallback that needs Phil's explicit OK per stage (CU cap is 0 until then). Predictions per stage
+  are in `LOGBOOK.md` and COMPUTE.md "Path L".
+
 ## Where things are
 
 - Spec, in reading order: `PLAN.md`, `COMPUTE.md`, `cvbench/families/README.md`, `probes/results/diff_4.14_vs_5.0.md`.
