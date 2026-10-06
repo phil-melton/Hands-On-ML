@@ -1,15 +1,45 @@
 # opencv-expert logbook
 
-**Next step:** Phil is adding a page file on D: (2026-10-06). When he confirms: check the commit limit
-(`Get-CimInstance Win32_OperatingSystem` TotalVirtualMemorySize, expect ~60-90 GB), start
-`setup/commit_watchdog.ps1` in the background, then export and grade the saved 7B adapter
-(`BASE=qwen2.5-coder-7b OUT=~/opencv-expert/runs/hydro-qwen2.5-coder-7b python -m train.export_gguf`, then
-`train.ollama_create` and `train.hydro_eval`; predictions in the 2026-10-06 entries). Stage 1 closes when the 7B
-grades: 4B passed, 9B dropped from local training. Then commit, push (needs Phil's GitHub sign-in), and Stage 2.
-Never run Ollama or other GPU work while a job runs.
+**Next step:** Stage 1 is complete (2026-10-06 summary below). Push `opencv-expert-training` (needs Phil's GitHub
+sign-in), then Stage 2 (benchmark, CPU): draft 7-9 task families from `cvbench/families/README.md` with their tolerance
+laws, calibration and gate matrices, the absent-in-5.0 lint rule, the ~40-check gotcha suite and the dev/test splits,
+then stop at Gate 2 for Phil's design review. For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while
+training, and discard the first Ollama request after a model is created before timing decode.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-06 Stage 1 complete: summary
+
+Plumbing (QLoRA -> adapter -> merge -> GGUF Q4_K_M -> Ollama -> generate -> four-gate grade) works locally on the
+RTX 3060. The default base passes, so per AGENT_PROMPT Stage 1 continues to Stage 2 (no gate).
+
+| base | train tok/s (pred orig / revised) | peak VRAM | export | Q4_K_M | decode, warm | hydrotest |
+|---|---|---|---|---|---|---|
+| Qwen2.5-Coder-7B (default) | 357 (107 / 369) | 7.7 GiB | 17.1 min (from adapter, incl. 14.2 GB download) | 4.36 GiB | 64.6-65.3 tok/s (pred 50-60) | PASS: 128-token REFERENCE, 4/4 gates |
+| Qwen3.5-4B | 472 (174 / 600) | 6.46 GiB | 2.3 + 8.0 min (+ llama.cpp build) | 2.59 GiB + 0.63 GiB mmproj | 78.6-84.6 tok/s | PASS non-thinking: 133 tokens, 4/4 gates |
+| Qwen3.5-9B | - | - | - | - | - | dropped from local training (Phil, 2026-10-06): 7.38 GiB resident in 4-bit, ~10-10.5 GiB peak predicted vs 10.9 GiB free, 19.3 GB through WSL. Bake-off rung only |
+
+- 7B grade at 07:31: first request decoded at 17.1 tok/s, a > 3x miss. Diagnosis: cold start of a just-created model.
+  All 29/29 layers were on the GPU (11.25 GiB free at load; Ollama server.log), and two back-to-back runs right after
+  decoded at 64.6 and 65.3 tok/s at full clocks (P0, 1950 MHz). Rule for the bake-off: discard the first request after
+  a model is loaded before timing.
+- Watchdog minimum during the export: 10.9 GB free commit (RAM free fell to 3.2 GB; the D: page file absorbed it).
+- Unsloth's Modelfile for the 7B (kept as `Modelfile.unsloth`) carries the base's full Qwen2.5 Ollama template (tools,
+  FIM, no `<|im_end|>` after the last assistant turn) and Qwen's default SYSTEM. For a single system + user turn it
+  renders the same text as `train.config`'s TEMPLATE (the grade matched byte for byte). For Stage 6, prefer the base's
+  own full template with our SYSTEM (Rule 7), and re-check it against `render_turn` for multi-turn repair dialogs.
+
+Findings to carry forward
+1. Ollama 0.32.9 thinks by default for qwen35 GGUFs; send `think: false` (`hydro_eval` does; PLAN.md §8.4 must).
+2. Output format: §8.1 trains bare code, §8.4 serves JSON `{"code": ...}`. Pick one before Stage 4 (Rule 7).
+3. Speed: QLoRA runs at ~69 % of the measured fp16 peak, not 20 %: a Stage 5 epoch (2.1 M tokens) on the 7B is ~1.6 h.
+   Evidence for PLAN.md §7 question 6, left to Phil.
+4. `save_pretrained_gguf` merges on its own; skip the separate 16-bit merge unless the merged weights are needed.
+5. transformers 5.5 ignores `logging_dir`; `train_lora` sets `TENSORBOARD_LOGGING_DIR`.
+6. Windows commit (~26-27 GB at idle) is the binding local constraint, not VRAM. WSL is capped at 14 GB, the D: page
+   file raises the limit, and every GPU job runs under `setup/commit_watchdog.ps1`.
+7. Never move or rename files a live job writes; never run Ollama while training; chains stop when a step is killed.
 
 ## 2026-10-05 Stage 1 hydrotest: setup and predictions (Phil OK'd Gate 0: mirrored networking, push, Stage 1)
 
@@ -186,6 +216,12 @@ Decisions (Phil, 2026-10-06)
 - Qwen3.5-9B: dropped from local training. It needs ~10-10.5 GiB of the 10.9 GiB free VRAM (7.38 GiB resident in 4-bit)
   and streams 19.3 GB through WSL. It stays an inference-only rung (its Q4 GGUF fits for serving) in the Stage 3
   bake-off; revisit training only if it wins there (then Colab, with Phil's OK).
+
+07:10 7B export relaunched after the page file (log `hydro_run4_20261006_071025.log`)
+- After Phil's restart: page files C: 2 GB (system managed) + D: 16 GB initial / 48 GB max; commit limit 49.7 GB and
+  able to grow with the D: file; 29.7 GB free commit at launch (fewer apps open after the restart). WSL 13 GiB, GPU
+  idle at 908 MiB, Ollama empty. Watchdog running (threshold 3 GB). Predictions unchanged from the 06:24 entry
+  (export ~15-20 min; grade: the 128-token REFERENCE, four gates pass, ~50-60 tok/s decode).
 
 ## 2026-10-05 Stage 0 complete inside WSL2 (Gate 0)
 
