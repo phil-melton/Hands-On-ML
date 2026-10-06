@@ -1,9 +1,12 @@
 # opencv-expert logbook
 
-**Next step:** Stage 1 hydrotest is running in tmux session `train` (`bash opencv-specialist/train/hydrotest.sh`,
-log `~/opencv-expert/logs/hydro_*.log`, per-base results in `~/opencv-expert/runs/hydro-<base>/summary.json` and
-`hydro_eval.json`). When it finishes: fill in the measured column of the 2026-10-05 Stage 1 table, diagnose any
-miss > 3x (Rule 1), commit, and report which candidates passed. Then Stage 2 (benchmark, CPU).
+**Next step:** Phil is adding a page file on D: (2026-10-06). When he confirms: check the commit limit
+(`Get-CimInstance Win32_OperatingSystem` TotalVirtualMemorySize, expect ~60-90 GB), start
+`setup/commit_watchdog.ps1` in the background, then export and grade the saved 7B adapter
+(`BASE=qwen2.5-coder-7b OUT=~/opencv-expert/runs/hydro-qwen2.5-coder-7b python -m train.export_gguf`, then
+`train.ollama_create` and `train.hydro_eval`; predictions in the 2026-10-06 entries). Stage 1 closes when the 7B
+grades: 4B passed, 9B dropped from local training. Then commit, push (needs Phil's GitHub sign-in), and Stage 2.
+Never run Ollama or other GPU work while a job runs.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
@@ -175,6 +178,14 @@ WSL 3.0.1; the VM now shows 13 GiB), then export + grade the 7B, then one 9B att
   Any step that streams a multi-GB download or checkpoint through WSL fills the VM to its cap. The 7B export (14.2 GB
   download + merge) and anything 9B do not fit safely as configured. Decision needed from Phil (page file on D:, a
   smaller VM cap with fewer apps open, or moving the export off this PC); 9B local training not recommended.
+
+Decisions (Phil, 2026-10-06)
+- Headroom: Phil adds a page file on D: (custom size, e.g. 16-48 GB). Mechanism: the commit limit is RAM + page files,
+  so it rises from 45 GB to ~60-90 GB; when RAM fills, Windows pages to D: (slower) instead of failing allocations
+  (the 23:06 crash). The watchdog stays on for every GPU job.
+- Qwen3.5-9B: dropped from local training. It needs ~10-10.5 GiB of the 10.9 GiB free VRAM (7.38 GiB resident in 4-bit)
+  and streams 19.3 GB through WSL. It stays an inference-only rung (its Q4 GGUF fits for serving) in the Stage 3
+  bake-off; revisit training only if it wins there (then Colab, with Phil's OK).
 
 ## 2026-10-05 Stage 0 complete inside WSL2 (Gate 0)
 
