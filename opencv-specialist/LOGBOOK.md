@@ -1,10 +1,51 @@
 # opencv-expert logbook
 
-**Next step:** Stage 0 is blocked on WSL2. Phil installs WSL2 + Ubuntu (see 2026-10-04 entry), then a new
-session reads `CLAUDE.md` and this file, repeats the Stage 0 checks inside WSL (venv, `pytest` = 33 passed,
-`demo_exec_vs_mms` = exec-only accepts 7 of 8), verifies the GPU is visible inside WSL (`nvidia-smi`), installs
-Unsloth + bitsandbytes there, and sends the Gate 0 report. The Colab CLI is NOT installed by default any more
-(decision below); it stays a fallback.
+**Next step:** Gate 0 report sent 2026-10-05; waiting for Phil on (a) pushing `opencv-expert-training` (needs a
+GitHub sign-in once) and (b) WSL mirrored networking so WSL Python can reach the Windows Ollama API. After his OK:
+Stage 1 hydrotest, local (Path L): create `train/train_lora.py` from PLAN.md §8.1 and a 64-example `contour_area`
+format set, verify base repo IDs/licenses/chat templates, then run `QLORA=1 MAX_STEPS=30` for the 7B inside tmux
+session `train` (predicted ~107 tok/s, ~52 min; see 2026-10-05 entry).
+
+Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
+`C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-05 Stage 0 complete inside WSL2 (Gate 0)
+
+What ran
+- Phil installed WSL 3.0.1 + Ubuntu 24.04.5 (kernel 6.18.40.1), distro vhdx at `D:\WSL\Ubuntu-24.04\ext4.vhdx`, `~` has
+  946 GB free. Phil installed `python3-venv python3-dev build-essential cmake libcurl4-openssl-dev` (gcc 13.3, cmake 3.28).
+- `C:\Users\ptmel\.wslconfig`: `memory=24GB`, `swap=16GB` (default was 15 GB). Reason: merging a 7.6B LoRA into 16-bit
+  weights for GGUF export handles ~15 GB of tensors; 15 GB of RAM left no margin.
+- Cloned the branch into WSL (`~/Hands-On-ML`) from a git bundle of the Windows clone (Linux git refuses the `/mnt/c`
+  repo as "dubious ownership"); `origin` points to GitHub.
+- Reference env `~/venvs/cv5` (requirements-cv5.txt): `pytest` 33 passed (6.6 s); `demo_exec_vs_mms`: exec-only accepts
+  7 of 8 wrong solutions, lint + manufactured + metamorphic reject 8 of 8. Both match the reference exactly.
+- Training env `~/venvs/train` via `setup/train_env.sh` (log and `pip freeze` in `~/opencv-expert/logs/`):
+  torch 2.12.1+cu130, unsloth 2026.9.14, unsloth_zoo 2026.9.9, transformers 5.5.0, trl 0.24.0, peft 0.21.2,
+  bitsandbytes 0.50.2, xformers 0.0.35, triton 3.7.1, accelerate 1.15.0, datasets 4.3.0, opencv 5.0.0, numpy 2.4.6.
+  `pytest` in this venv: 33 passed, so one venv can both train and grade.
+- GPU inside WSL: RTX 3060, bf16 supported, 10.93 / 12.00 GiB free (desktop holds the rest).
+
+Predicted vs measured
+- fp16 4096^2 matmul: predicted 20-27 TFLOP/s (spec 25.6 dense, fp32 accumulate); measured 24.5 TFLOP/s.
+  Consequence: Path L's peak assumption holds; at 20 % utilization the 7.6B QLoRA prediction is 24.5e12 x 0.2 / (6 x 7.6e9)
+  = ~107 tok/s, so the hydrotest (30 steps x 16 x ~700 tok = 336k tok) predicts ~52 min.
+
+Findings and open items
+- Ollama 0.32.9 runs on Windows (model present: gemma4:latest, 9.6 GB). WSL uses NAT networking, so the Windows API at
+  127.0.0.1:11434 is unreachable from WSL (both localhost and the host IP time out). `ollama.exe` via interop works
+  (the client runs on the Windows side). Recommendation: `networkingMode=mirrored` in `.wslconfig` rather than a second
+  Ollama inside WSL, because two servers would compete for the same 12 GB of VRAM.
+- Before every GPU job: `ollama ps` must show no loaded model; a loaded model would take VRAM from training.
+- Version watch (Rule 6): trl 0.24.0 is old relative to transformers 5.5.0; it is what unsloth 2026.9.14 resolved.
+  Check `train_on_responses_only` and SFTConfig argument names against this trl at the hydrotest.
+- Docker is not installed; Rule 4 bulk runs fall back to the sandbox alone until Stage 4.
+- Monitoring: long jobs run detached in tmux 3.4 (`tmux attach -t train`), log to `~/opencv-expert/logs/`, with
+  TensorBoard for curves.
+
+Decisions
+- The distro's vhdx lives on D: and all work happens in `~` (ext4). Mechanism: `~` is physically on D: but avoids
+  9P overhead on `/mnt/d` for venvs, pytest and dataloaders. Only GGUF hand-off to the Windows Ollama uses `/mnt/d`.
 
 ## 2026-10-04 Decision: train locally on the RTX 3060, not on Colab
 
