@@ -10,3 +10,6 @@ merged_16bit/
 gguf/
 runs/
 data/raw/
+# written by Unsloth into the working directory, and by setup/commit_watchdog.ps1
+unsloth_compiled_cache/
+*.log

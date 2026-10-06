@@ -1,13 +1,180 @@
 # opencv-expert logbook
 
-**Next step:** Gate 0 report sent 2026-10-05; waiting for Phil on (a) pushing `opencv-expert-training` (needs a
-GitHub sign-in once) and (b) WSL mirrored networking so WSL Python can reach the Windows Ollama API. After his OK:
-Stage 1 hydrotest, local (Path L): create `train/train_lora.py` from PLAN.md §8.1 and a 64-example `contour_area`
-format set, verify base repo IDs/licenses/chat templates, then run `QLORA=1 MAX_STEPS=30` for the 7B inside tmux
-session `train` (predicted ~107 tok/s, ~52 min; see 2026-10-05 entry).
+**Next step:** Stage 1 hydrotest is running in tmux session `train` (`bash opencv-specialist/train/hydrotest.sh`,
+log `~/opencv-expert/logs/hydro_*.log`, per-base results in `~/opencv-expert/runs/hydro-<base>/summary.json` and
+`hydro_eval.json`). When it finishes: fill in the measured column of the 2026-10-05 Stage 1 table, diagnose any
+miss > 3x (Rule 1), commit, and report which candidates passed. Then Stage 2 (benchmark, CPU).
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-05 Stage 1 hydrotest: setup and predictions (Phil OK'd Gate 0: mirrored networking, push, Stage 1)
+
+Setup
+- `.wslconfig` gained `networkingMode=mirrored`; WSL reaches the Windows Ollama at 127.0.0.1:11434 (version 0.32.9).
+- New `train/`: `config.py` (one source for SYSTEM, chat-template rendering, Ollama TEMPLATE/PARAMETERs),
+  `make_format_set.py` (64 train + 4 dev examples: 4 phrasings of `contour_area`, assistant = REFERENCE; plumbing
+  only, never for real training, Rule 5), `train_lora.py` (PLAN.md §8.1 adapted: QLoRA, batch 1 x GA 16, asserts the
+  base template equals `render_turn`, checks the loss mask, logs step-0 dev loss, tokens/s, peak VRAM, TensorBoard),
+  `ollama_create.py` (uploads the GGUF over the Ollama API, writes the Modelfile), `hydro_eval.py` (generates one
+  solution through Ollama, grades it with the four gates in the sandbox), `hydrotest.sh` (all three bases in sequence).
+- tensorboard 2.21.0 added to `~/venvs/train`.
+
+Base candidates (verified on the HF Hub, 2026-10-05)
+| base | repo used | license | arch | weights |
+|---|---|---|---|---|
+| Qwen2.5-Coder-7B-Instruct (default) | unsloth/Qwen2.5-Coder-7B-Instruct-bnb-4bit | apache-2.0 | Qwen2ForCausalLM | 5.5 GB NF4 (15.2 GB bf16 upstream) |
+| Qwen3.5-4B | unsloth/Qwen3.5-4B (no pre-quantized copy exists) | apache-2.0 | Qwen3_5ForConditionalGeneration (VLM) | 9.3 GB bf16 |
+| Qwen3.5-9B | unsloth/Qwen3.5-9B (no pre-quantized copy exists) | apache-2.0 | Qwen3_5ForConditionalGeneration (VLM) | 19.3 GB bf16 |
+
+Chat templates (measured with each upstream tokenizer)
+- Qwen2.5: ChatML; matches PLAN.md §8.3 exactly. Answer prefix `<|im_start|>assistant\n`.
+- Qwen3.5: ChatML plus an empty `<think>\n\n</think>\n\n` before every non-thinking answer, and it trims the answer
+  (the REFERENCE's trailing newline is dropped before `<|im_end|>`). The first check failed on exactly that newline;
+  `render_turn` now trims for Qwen3.5 and all three bases render identically to their own templates (64/64).
+  Consequence: for Qwen3.5 the `train_on_responses_only` response marker and the Ollama TEMPLATE both end with the
+  empty think block, so serving matches training in non-thinking mode.
+- Format finding to raise before Stage 4 (Rule 7): PLAN.md §8.4's server asks Ollama for JSON (`format: {"code": ...}`)
+  but §8.1's targets are bare code. Training and serving must use one output format; decide before data generation.
+
+Tokens: 64 examples, mean 357 tokens (Qwen2.5) / 370 (Qwen3.5), max 372; answer 127 / 133 tokens. MAX_LEN 2048 is
+ample. 30 steps x 16 = 480 sequences = 7.5 passes over the 64 examples (fine for plumbing; expect train loss -> ~0).
+
+Predictions (Rule 1), COMPUTE.md method with the measured 24.5 TFLOP/s and 20 % utilization: tok/s = 4.9e12 / (6N)
+| base | N (B) | tok/s | train tokens | train min | peak VRAM | download | merge + GGUF |
+|---|---|---|---|---|---|---|---|
+| qwen2.5-coder-7b | 7.6 | ~107 | 171k | ~27 | ~7-8 GiB | 5.5 + 15.2 GB (merge source) | ~15 min |
+| qwen3.5-4b | 4.7 | ~174 | 178k | ~17 | ~4-5 GiB | 9.3 GB | ~10 min |
+| qwen3.5-9b | 9.65 | ~85 | 178k | ~35 | ~8-9 GiB | 19.3 GB | ~20 min |
+Plus a one-time llama.cpp build (~5-10 min). Downloads at an assumed 20-50 MB/s. Whole chain: ~3-3.5 h wall.
+Risk to the tok/s prediction: 360-token sequences at batch 1 underfill the GPU's tiles, so a miss on the slow side
+is likely; it only counts as a bug beyond 3x (< 36 tok/s for the 7B). N for Qwen3.5 includes the vision tower,
+which a text-only forward skips, so those two predictions lean slow.
+VRAM: 10.9 GiB free with the desktop running; `hydrotest.sh` refuses to start a base while Ollama holds a model.
+
+7B, early measurement (steps 1-3, launched 21:03 in tmux `train`)
+- Load 1.6 min (5.5 GB NF4 download at ~25 MB/s). Loss mask: 128 tokens = answer + end token. Step-0 dev loss 0.5947.
+- Steady 369 tok/s (step 2 -> 3: 5,715 tokens in 15.49 s), 16.5 s/step: **3.4x faster than the ~107 predicted**.
+- Rule 1 diagnosis (a >3x miss in either direction): tokens are real (5,715 per step = 16 x 357, batch 1, no padding);
+  loss sane (0.595 -> 0.594 -> 0.579 during warmup); implied work 6 x 7.6e9 x 369 = 16.8 TFLOP/s = 69 % of the measured
+  24.5 TFLOP/s peak, so physically possible (a counting bug would show > 100 %). The miss is the assumed 20 % utilization:
+  NF4 dequantization is cheap next to the matmuls at 357-token micro-batches (MLP weight 3584 x 18944: ~2 ms of matmul
+  vs ~0.5 ms to dequantize 136 MB at 360 GB/s), and Unsloth overlaps activation offload with compute.
+  Bears on PLAN.md §7 question 6 (expected vs measured cost): evidence for Phil, answer left to him.
+- Revised predictions for the jobs not yet started, scaled by 369 x 7.6 / N (same utilization assumed for the Qwen3.5
+  path, though FastModel's VLM route may be less tuned): qwen3.5-4b ~600 tok/s, 178k tokens ~5 min;
+  qwen3.5-9b ~290 tok/s, ~10 min. Full Stage 5 epoch (2.1 M tokens) on the 7B: ~1.6 h, not ~5.3 h.
+
+7B attempt 1 killed at step 9/30 (operator error, 21:08)
+- transformers 5.5 ignores `SFTConfig(logging_dir=...)` (deprecated; it reads env `TENSORBOARD_LOGGING_DIR`), so the
+  events went to `./runs` inside the repo. I moved that folder to `~/opencv-expert/runs/...` mid-run, assuming the writer
+  kept its file descriptor; it reopens the file by path on every flush, so the next flush raised FileNotFoundError and
+  the run died. No checkpoint existed yet (SAVE_STEPS=15). Lesson: never move or rename files a live job writes.
+- Fix: `train_lora.py` sets `TENSORBOARD_LOGGING_DIR=$OUT/tb` before building the trainer. The partial run's events and
+  summary are kept in `~/opencv-expert/runs/hydro-qwen2.5-coder-7b-attempt1/`. Its 9 steps confirm the speed:
+  2:25 for 9 steps, ~362 tok/s.
+- The chain continued to qwen3.5-4b as designed. A 7B rerun is queued in tmux window `rerun-7b` (`train/after.sh`),
+  starting when the main log prints "hydrotest finished"; the 5.5 GB NF4 weights are cached.
+
+qwen3.5-4b: HYDROTEST PASS (21:08-21:30)
+| item | predicted | measured |
+|---|---|---|
+| load (incl. 9.3 GB download) | 3-8 min | 2.3 min |
+| train tok/s | ~174 original / ~600 revised | 472 (177,721 tokens in 376.5 s); within 3x of both |
+| peak VRAM | 4-5 GiB | 6.46 GiB reserved |
+| merge 16-bit + GGUF Q4_K_M | ~10 min + llama.cpp build | 2.3 + 8.0 min (llama.cpp build included) |
+| Q4_K_M size / decode | | 2.59 GiB (+ 0.63 GiB BF16 mmproj vision projector) / 76.5 tok/s |
+- Loss mask 133 tokens; step-0 dev loss 0.3974 -> final 0.0001; train loss 0.0395. LoRA 32.5 M of 4.57 B params
+  (language layers only). Memorized the 64 near-identical examples, as a plumbing run should.
+- Generated code is byte-identical to REFERENCE; all four gates pass.
+- Finding (Rule 6/7): Ollama 0.32.9 tags the qwen35 GGUF with capabilities [tools, thinking, completion] and THINKS BY
+  DEFAULT in /api/chat, whatever our TEMPLATE says: the first eval generated 526 tokens (~390 of hidden thinking, then the
+  code). The same model given our exact training prompt via raw /api/generate emits the 133-token answer and stops.
+  With `think: false` /api/chat also returns 133 tokens, identical to raw: so non-thinking serving matches training.
+  `hydro_eval.py` now sends `think: false` whenever the model reports the thinking capability; the thinking-mode
+  result is kept as `hydro_eval_thinking_default.json`. PLAN.md §8.4's MCP server must also send `think: false`.
+- Finding: `save_pretrained_gguf` writes its own merged 16-bit copy (8.7 GB in `gguf/`) and the GGUFs into `gguf_gguf/`,
+  so the separate `save_pretrained_merged` call duplicates ~2 min and 8.7 GB per run. Keep one in Stage 6.
+- Fixed `ollama_create.py`: it wrote our Modelfile before looking for Unsloth's, so an Unsloth Modelfile in the same
+  directory would have been overwritten unseen. It now keeps Unsloth's as `Modelfile.unsloth` and compares TEMPLATEs.
+
+qwen3.5-9b attempt 1: CUDA OOM while loading (21:30-21:34)
+- Download (19.3 GB) completed into the shared `~/.cache/huggingface/hub/blobs` store (hub cache now 32 GB).
+- `transformers.modeling_utils.caching_allocator_warmup` asked for one 7.38 GiB fp16 block and CUDA refused it with
+  10.92 GiB reported free. Mechanism (hypothesis): the WSL2/WDDM paravirtualized driver cannot hand out a single block of
+  that size even when the total is free; the 4B's smaller warm-up block succeeded.
+- 7.38 GiB is also the measured resident size of the 4-bit 9B (NF4 language layers plus bf16 embeddings and vision
+  tower), so the peak-VRAM prediction rises from ~8-9 to ~10-10.5 GiB (4B: 6.46 GiB peak = weights + ~2.6 GiB).
+  That is within ~0.5 GiB of the 10.9 GiB free: training may OOM even if loading succeeds.
+- Retry queued in tmux window `retry-9b`, after the 7B rerun: same run with
+  `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` (lets the allocator map the block from smaller pieces).
+  Prediction: loads; trains at ~290 tok/s (~10 min) if the peak stays under 10.9 GiB, else OOM at step 1.
+  If it fails again, report the 9B as not trainable on 12 GB with this stack; it stays a bake-off (inference) candidate.
+
+21:35-21:37: 7B rerun and 9B retry both failed with CUDA OOM; idle until 22:53
+- 7B rerun: OOM in the step-0 dev evaluation asking for 220 MiB, with 5.17 GiB reported free (5.73 GiB held by PyTorch).
+- 9B retry (expandable_segments): the same 7.38 GiB warm-up refusal with 10.92 GiB reported free.
+- My log watcher had a bug (it captured "0" twice and its failure test errored every loop), so neither failure was seen
+  until it timed out at 22:52: ~75 min of idle GPU. Fixed.
+- Allocation probe at 22:53 on the idle GPU (`torch.empty` + fill): largest single block 10 GiB OK; 26.25 GiB total in
+  256 MiB chunks (WDDM pages CUDA allocations into shared system memory beyond the 12 GiB of VRAM, so a "fit" can
+  silently become slow rather than fail). So neither the 7.38 GiB block nor the 7B's working set exceeds what the
+  card can give when nothing else holds it.
+- Hypothesis: interference from my own Ollama calls on the same GPU. Between 21:33 and 21:35 I loaded the 4B in the
+  Windows Ollama three times to investigate the thinking finding (one with the default 5-minute keep-alive). The
+  failures cluster in exactly that window, and `hydrotest.sh` only checks `/api/ps` at the start of each base; Ollama
+  also returns from a `keep_alive: 0` request before its runner has released VRAM. Test: rerun with no Ollama activity.
+- Rule for operators (me): no Ollama or other GPU work while a training job runs.
+- Relaunched 22:55: 7B then 9B in the tmux `job` window (`bash train/hydrotest.sh qwen2.5-coder-7b qwen3.5-9b`), with
+  the predictions above (7B ~369 tok/s, ~8 min of training; 9B ~290 tok/s, ~10 min, peak ~10-10.5 GiB, which may spill
+  into shared memory and run slow instead of failing).
+
+qwen2.5-coder-7b run 2: training complete, export killed by a Windows out-of-memory event (22:55-23:06)
+- With no Ollama activity the 7B passed the step that OOM'd at 21:36 (supports the interference hypothesis). Its first
+  three losses (0.5953, 0.5942, 0.5786) equal attempt 1's exactly: the seeded run reproduces.
+| item | predicted | measured |
+|---|---|---|
+| train tok/s | ~107 original / ~369 revised | 356.9 (171,481 tokens in 480.4 s) |
+| peak VRAM | ~7-8 GiB | 7.7 GiB reserved |
+| loss | | step-0 dev 0.5947 -> final dev 0.0005; train 0.094; LoRA 40.4 M params |
+- The adapter (161 MB) and summary.json were saved at 23:04. The export then began downloading the 14.2 GB bf16 base
+  (the merge source) and at 23:06:15 Windows ran out of commit: 8x iaStorVD "driver failed to allocate memory",
+  dwm.exe terminated "could not allocate additional memory" (23:06:30), and the WSL VM died (Hyper-V switch ports
+  deleted 23:06:16). No sleep or hibernate event.
+- Mechanism: commit limit 45.0 GB = 31.7 GB RAM + 13.3 GB system-managed page file on C: (C: has 18 GB free, so the
+  page file cannot grow much). Windows apps already commit ~25-27 GB (measured 26.8 GB with WSL at 1.85 GB after
+  restart). `.wslconfig memory=24GB` let the VM's Linux page cache (filled by the 14 GB download) grow until the sum
+  passed 45 GB. My 24 GB setting was sized for the merge without checking Windows' own commit.
+- Not relaunched: this affects the stability of Phil's desktop, so the fix needs his OK. Proposal: `memory=14GB` (26.8 +
+  14 = 40.8 < 45) plus page-cache reclaim; close heavy apps during runs; optionally move/enlarge the page file on D:
+  (a Windows setting, his to change). Prepared `train/export_gguf.py` to export the saved 7B adapter without retraining.
+
+2026-10-06 06:24 (launched; log `hydro_run3_20261006_062423.log`; Windows commit free 17.6 GB at start, so the
+14 GB VM leaves ~3.6 GB in the worst case) Phil chose: `memory=14GB` + `[experimental] autoMemoryReclaim=dropcache` (accepted without warnings by
+WSL 3.0.1; the VM now shows 13 GiB), then export + grade the 7B, then one 9B attempt.
+- Safeguards: a Windows-side commit watchdog (every 5 s; below 3 GB free commit it pkills `train.train_lora` /
+  `train.export_gguf` in WSL and logs the minimum seen), and `hydrotest.sh` now waits up to 2 min for an idle GPU
+  (empty `/api/ps` and < 2.5 GB used) before each base instead of only checking `/api/ps`.
+- Predictions (Rule 1):
+  - 7B export from adapter: 14.2 GB bf16 download at 25-50 MB/s (5-10 min) + merge and Q4_K_M (~10 min; llama.cpp
+    already built) = ~15-20 min; WSL RAM pinned at its 14 GB cap by page cache; Windows commit free stays >= ~4 GB.
+  - 7B grade: 128-token reply identical to REFERENCE, all four gates pass; decode ~50-60 tok/s (4.4 GB Q4 on 360 GB/s).
+  - 9B: load from cache 3-5 min; train ~290 tok/s (~10 min) if the ~10-10.5 GiB peak fits in VRAM. If it spills into
+    shared memory, tok/s drops several-fold and Windows commit falls; the watchdog stops it at 3 GB free.
+
+06:24-06:27 result: the watchdog stopped the 7B export; I stopped the 9B
+- Windows free commit: 17.6 GB at 06:24:13 -> 7.3 GB at 06:25:15 -> 2.31 GB at 06:25:46, when the watchdog killed
+  `train.export_gguf` (it had loaded the adapter in 0.7 min and just begun the 14.2 GB bf16 download). Prediction
+  (">= ~4 GB free") missed: 15.3 GB consumed = the 14 GB VM cap (page cache from the download fills it) + ~1.3 GB more,
+  plausibly the WDDM-backed CUDA allocations of the 4-bit model.
+- Two tooling faults of mine: the resume script went on to the 9B after the kill, and the watchdog had exited after
+  firing, so the 9B was loading unguarded; I killed the chain by hand at 06:27 (no Windows errors this time).
+  Fixed: the watchdog now kills the chain scripts before the Python jobs; `hydrotest.sh` stops the chain when a step
+  exits 137/143 instead of starting the next base.
+- Conclusion: with ~26-27 GB of Windows commit at idle and a 45 GB limit, this PC has ~18 GB for WSL, minus margin.
+  Any step that streams a multi-GB download or checkpoint through WSL fills the VM to its cap. The 7B export (14.2 GB
+  download + merge) and anything 9B do not fit safely as configured. Decision needed from Phil (page file on D:, a
+  smaller VM cap with fewer apps open, or moving the export off this PC); 9B local training not recommended.
 
 ## 2026-10-05 Stage 0 complete inside WSL2 (Gate 0)
 
