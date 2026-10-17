@@ -25,9 +25,16 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
    - *Removed or moved to contrib:* `CascadeClassifier` (and the Haar XMLs), `HOGDescriptor`,
      `cv2.ml`, G-API, `readNetFromCaffe`/`Darknet`.
    - *Missing from the 5.0 main wheel but not on the wiki's breaking-changes list:* **AKAZE, KAZE,
-     BRISK, AGAST, `BOWKMeansTrainer`, the GOTURN tracker.**
+     BRISK, AGAST, `BOWKMeansTrainer`, the GOTURN tracker.** (Refined 2026-10-17: "not named on
+     the migration wiki page". opencv/opencv PR #25292 moved KAZE, AKAZE, AGAST, BRISK and BOW to
+     contrib; no source was found for GOTURN.)
    - *New:* `FontFace`, and the dtypes `CV_Bool`/`CV_32U`/`CV_64U`/`CV_64S`. bool masks, uint32
-     and float16 arrays are now accepted where 4.14 raised.
+     and float16 arrays are now accepted where 4.14 raised, *in the probed calls*. (Corrected
+     2026-10-17 after the Stage 2 build: this is per function, not general. bool is accepted by
+     `countNonZero`, `findNonZero` and `mask=` arguments, by `moments` only with
+     `binaryImage=True`, and is still rejected by `findContours`, `connectedComponents*`,
+     `threshold`, `dilate`/`erode`, the blurs, `cvtColor`, `warpAffine` and `add`. `bitwise_not`
+     accepts bool but returns all-true bytes 0xFE/0xFF instead of the negation.)
    - *`VideoCapture.get()`* on an unsupported property returns −1 instead of 0.
 2. **The "1D output" change is a set of point defects, not a rule.** That matters for training:
    a model that over-generalizes will break code that still works.
@@ -41,11 +48,21 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
 3. **Behaviour drift that never raises:**
    - **MSER returns 0 regions** with default parameters on a text image where 4.14 returns 7. The
      defaults are identical; `min_diversity=0` gives 170. This looks like a regression in 5.0.0's
-     diversity pruning; I found no upstream issue yet.
+     diversity pruning; I found no upstream issue yet. (Qualified 2026-10-17: the text image is
+     drawn with `putText`, which itself changed, so "7 to 0" mixes an input change with a detector
+     change. The clean evidence is the texture probe, identical input in both versions, 22 to 0
+     regions; and on 5.0 the defaults give 0 on all 7 images tried, with any `min_diversity` of
+     0.1 or more.)
    - `warpAffine`/`warpPerspective` changed by up to 4 gray levels on ~3 % of pixels (uint8).
    - Text rendering changed: `getTextSize` (155,22)→(136,27), and 13 % of glyph pixels differ.
    - The wiki says `INTER_NEAREST` "now follows Pillow". **Not observed**: the mapping is
      identical on all 450 size pairs swept. Measure; don't trust anyone's claim, mine included.
+     (Added 2026-10-17: `INTER_NEAREST_EXACT` *did* change on at least 5 of those 450 pairs, and
+     the wiki's claim that the two flags are now equivalent is contradicted: their mappings differ.)
+   - (Added 2026-10-17) `putText` ignores `lineType` for Hershey fonts and always anti-aliases,
+     which explains the glyph-pixel change; `getTextSize` height is now the font's line height,
+     independent of the string. `findChessboardCorners` returns its corners reversed when the
+     board's top-left square is white.
 4. **Timeless gotchas** (same in both versions; they seed the gotcha suite):
    - int64 arrays are silently **narrowed to int32 with wraparound** (`cv2.add` on `2**40` gives `0`).
    - Drawing on `img[:, :, ::-1]` or `img.T` raises.
@@ -55,8 +72,10 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
    - `imread`/`imdecode` return `None` rather than raising.
 5. **`exec()` is not a verifier: measured.** `python -m cvbench.demo_exec_vs_mms` grades the
    reference and 9 plausible mistakes. The `exec()` filter would have **accepted 7 of 8 wrong
-   solutions**. The other three gates together rejected 8 of 8, and each gate caught something the
-   others missed (§4.1).
+   solutions**. The other three gates together rejected 8 of 8 (§4.1). (Corrected 2026-10-17: only
+   the manufactured gate (5 mistakes) and the metamorphic gate (1) catch something no other gate
+   sees; lint and exec-only reject early what later gates also catch, and lint keeps the
+   try/except habit from being selected for.)
 6. **The tolerance law holds.** Over 3,500 single-shape gauge blocks, error/perimeter ranged over:
    - `contourArea`: [−0.589, +0.120]; the half-pixel inward shave on curved shapes, exactly 0
      where polygon vertices sit on pixel centres.

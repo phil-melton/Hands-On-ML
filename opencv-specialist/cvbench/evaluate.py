@@ -8,6 +8,10 @@
 The gates are run independently so you can see which defect each one catches.
 In production they run in order and stop at the first failure.
 
+A fifth entry, ``api``, only reports: it names OpenCV APIs the probes measured as missing in
+5.0 (cvbench/api_check.py) for the error taxonomy and repair prompts. It never blocks, the
+code still runs, and it does not count towards the four gates (Gate 2 decision 4, 2026-10-17).
+
 A family module provides: SPEC, make_scene(seed), inputs(scene),
 verify_manufactured(scene, out), transforms(scene), verify_metamorphic(base, variants).
 """
@@ -39,6 +43,9 @@ def evaluate_solution(family: ModuleType, code: str, *, n_scenes: int = 20, n_me
 
     findings = lint(code)
     gates["lint"] = Gate(not findings, "; ".join(map(str, findings)) or "clean")
+
+    from cvbench.api_check import api_gate  # local import: api_check imports Gate from this module
+    gates["api"] = api_gate(code)
 
     r = run_solution(code, [family.inputs(s) for s in scenes], lint=False, timeout_s=timeout_s)
     if not r.ok:

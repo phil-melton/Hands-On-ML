@@ -16,10 +16,15 @@ This project specializes an open code model as an **OpenCV 5.0 worker** for an o
 | `sandbox/` | Lint gate and subprocess runner: timeout with process-group kill, rlimits, GUI/network/write guards |
 | `cvbench/contract.py` | The task contract: prompt rendering and output checks |
 | `cvbench/families/contour_area.py` | Worked task family: manufactured-solution and metamorphic verifiers, tolerance calibrated on 3,500 gauge blocks |
-| `cvbench/families/README.md` | How to write the next families, and which ones to write |
-| `cvbench/evaluate.py` | Four-gate grader (exec-only, lint, manufactured, metamorphic) for any family |
+| `cvbench/families/*.py` | Nine families in all (Stage 2): each with its tolerance law, calibration numbers and pinned gate matrix |
+| `cvbench/families/README.md` | How to write a family, and the status of the nine |
+| `cvbench/gotchas/` | 40 executable checks of version gotchas (17 in the 5.0 subset, 17 timeless, 6 controls) |
+| `cvbench/api_check.py` | Report-only gate naming APIs measured as missing in 5.0, generated from the probe results |
+| `cvbench/splits.py`, `data/splits/` | 99 dev and 198 test tasks with disjoint seed ranges; 2 families held out of training |
+| `cvbench/evaluate.py` | Four-gate grader (exec-only, lint, manufactured, metamorphic) plus the report-only `api` entry |
 | `cvbench/demo_exec_vs_mms.py` | Why `exec()` isn't a verifier: it accepts 7 of 8 wrong solutions |
-| `tests/` | 33 tests; they pass on OpenCV 5.0.0 and 4.14.0 |
+| `train/`, `setup/` | Stage 1 tooling: QLoRA training, GGUF export, Ollama registration, the commit watchdog |
+| `tests/` | 578 tests on OpenCV 5.0.0 (the original 33 also pass on 4.14.0) |
 
 ## Quickstart
 
@@ -31,7 +36,7 @@ python3 -m venv .venv-cv5 && . .venv-cv5/bin/activate
 pip install -r requirements-cv5.txt
 
 python -m cvbench.demo_exec_vs_mms   # the gate matrix, about 5 s
-pytest                               # 33 tests, about 10 s
+pytest                               # 578 tests, about 2 min
 ```
 
 Reproduce the version diff with a second environment:

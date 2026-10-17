@@ -31,9 +31,21 @@ grades any family through the four gates.
 6. **Pin the gate matrix in a test.** If a mutant passes every gate, either it is harmless for this
    task (document it, like `rgb2gray`) or your verifier has a blind spot.
 
-## Next families (yours to design)
+## Status (Stage 2, 2026-10-17)
 
-These are ordered roughly by how hard the 4.14 → 5.0 diff hits them. The last column is the
+Built and calibrated: `contour_area`, `hough_segments`, `chessboard_corners`, `perspective_rectify`,
+`feature_homography`, `histogram_stats`, `color_segmentation`, `components_stats`, `text_layout`
+(nine families). Held out from training (dev/test only): `chessboard_corners` and
+`color_segmentation`. Not built as families (Gate 2 decision 2): `face_detect` (needs an ONNX model
+the sandbox cannot fetch; covered by `cvbench/api_check.py` and the gotcha suite) and
+`mser_regions` (a library regression; covered by the gotcha suite). Each module's docstring holds
+its tolerance law and calibration numbers; its test pins the gate matrix. The answers to the
+questions below are in those modules, and some of them differ from the questions' framing
+(LOGBOOK.md, 2026-10-17).
+
+## The families as first framed
+
+These were ordered roughly by how hard the 4.14 → 5.0 diff hits them. The last column was the
 question to answer *before* writing code. It is not the answer.
 
 | family | 5.0 exposure (measured) | physics question for the verifier |
@@ -46,5 +58,5 @@ question to answer *before* writing code. It is not the answer.
 | `histogram_stats` | `calcHist` → `(256,)`, was `(256, 1)` | Integer counts are exact, so the tolerance is zero; the trap is shape and dtype |
 | `color_segmentation` (HSV `inRange`) | none | Unlike `contour_area`, this one *does* catch BGR/RGB swaps. Red hue wraps around 0/180: what symmetry does that break? |
 | `text_layout` | `getTextSize` and glyph pixels changed | If the font changes, what stays invariant? Bounding-box containment, not pixels |
-| `components_stats` | bool masks now accepted | Areas and centroids of pixel sets are exact; centroids are covariant under translation |
+| `components_stats` | bool masks now accepted by some calls; `connectedComponents*` still require uint8 (measured 2026-10-17) | Areas and centroids of pixel sets are exact; centroids are covariant under translation |
 | `mser_regions` | **0 regions** with default params on 5.0.0 (7 on 4.14) | A verifier would have caught this library regression. Report it upstream with `probes/api_diff.py` as the minimal repro |

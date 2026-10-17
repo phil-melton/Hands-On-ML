@@ -1,13 +1,65 @@
 # opencv-expert logbook
 
-**Next step:** Stage 1 is complete (2026-10-06 summary below). Push `opencv-expert-training` (needs Phil's GitHub
-sign-in), then Stage 2 (benchmark, CPU): draft 7-9 task families from `cvbench/families/README.md` with their tolerance
-laws, calibration and gate matrices, the absent-in-5.0 lint rule, the ~40-check gotcha suite and the dev/test splits,
-then stop at Gate 2 for Phil's design review. For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while
-training, and discard the first Ollama request after a model is created before timing decode.
+**Next step:** Stage 2 is built (2026-10-17 entry below) and waits at ⛔ Gate 2: Phil reviews each family's law,
+calibration and gate matrix and the open decisions in the doc "opencv-expert: Gate 2 Benchmark Design Review"
+(claude.ai artifact e068df7a-77cd-457c-a477-b0170d0637ae). Apply his decisions (some need re-pinning a test), then
+Stage 3 (baseline bake-off). For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
+discard the first Ollama request after a model is created before timing decode. Working method since 2026-10-17: I
+orchestrate Sonnet 5.5 / Haiku 4.5 subagents (one brief and one set of files each, no git), verify every report by
+re-running its tests, and integrate, log and commit myself.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-17 Stage 2 built: benchmark, gotcha suite, removed-API gate (CPU only)
+
+Gate 2 pre-read decisions (Phil): 1-3, 5-7 agreed; 4 changed: removed APIs get a separate gate that only reports.
+Built by 10 subagents in parallel (8 Sonnet families + Sonnet gotcha suite + Haiku api_check); every report verified by
+re-running its tests. Full suite after integration: **567 passed in 120 s** (OpenCV 5.0.0.93, WSL2); with the splits
+below, 578. Splits (Haiku, `cvbench/splits.py`, `data/splits/`): 99 dev + 198 test tasks, 11/22 per family, both held-out
+families flagged; gotcha manifest 40 rows, test only. Seed ranges DEV [3.1 M, 4 M), TEST [4 M, 5 M), FOUNDRY [5 M, 6 M)
+reserved for Stage 4. The agent's grep found feature_homography's drift calibration at seeds 3,000,000-3,008,999,
+overlapping my first DEV start (3 M), so I moved DEV to 3.1 M and added a test that no scored seed was used to calibrate.
+Note: prompt_sha1 depends only on family and phrasing (36 distinct prompts), so prompt-level decontamination cannot
+tell dev from test; seeds separate them.
+
+| family | draft law | as built | calibration basis | tests |
+|---|---|---|---|---|
+| hough_segments | a + b*t endpoints | held: 1.9 + 0.7 t px; no angle term | 24,000 gauge blocks; 0 false rejects in 20,000 scenes | 47 |
+| chessboard_corners (held out) | a + b*noise/contrast | REFUTED, replaced: blur-dependent bias + noise/contrast term | 3,840 blocks fit; 6,000 fresh scenes 100 % | 36 |
+| perspective_rectify | a + b*blur corners; image by correlation | PARTLY: mean follows blur, worst case flat; ~7-8 px | 2,000 blocks, 8,000 corners | 32 |
+| feature_homography | a + b/sqrt(N) | holds for SIFT (b 20), NOT for ORB (heavy tail); active profile sift+orb b 60 | 24,000 pairs | 32 |
+| histogram_stats | exact counts, 1e-9 floats | held | all 2^24 colours; 3.16 M px | 55 |
+| color_segmentation (held out) | exact areas | held | 1,200 blocks; 2,000 scenes | 42 |
+| components_stats | exact; centroids 1e-6 | held | 1,200 blocks, 4,320 components | 32 |
+| text_layout | containment + centring | held, per-axis (0.065 / 0.18 x ink height) + a second layer | 4,000 blocks | 31 |
+Also: `cvbench/gotchas/` (40 checks: 17 in the 5.0 subset, 17 timeless, 6 controls; 88 wrong variants, 42 of them run
+cleanly) 169 tests; `cvbench/api_check.py` (24-entry catalogue generated from the probe JSONs) 58 tests, integrated into
+`evaluate.py` as a report-only `api` entry (local import: api_check imports Gate).
+
+New 5.0 measurements made while building (outside the 213 probes; details in the modules and PLAN.md §0 corrections):
+- bool acceptance is per function: countNonZero, findNonZero, mask= yes; moments only with binaryImage=True;
+  findContours, connectedComponents*, threshold, dilate, blurs, cvtColor, add no. `bitwise_not(bool)` returns all-true
+  bytes 0xFE/0xFF (silent wrong). Re-measured by me.
+- findChessboardCorners returns reversed order when the top-left square is white (300/300).
+- putText ignores lineType for Hershey fonts (always anti-aliased); getTextSize height = font line height.
+- connectedComponents label order is not raster order at connectivity 8.
+- SIFT keypoints are offset +0.246 px in x and y; ORB about -0.1.
+- remap with a float32 map1 silently reinterprets a map2 of another dtype; MSER defaults give 0 regions on all 7 images
+  tried; createLineSegmentDetector().detect returns (N,4); cvtColor BGR2GRAY is not the classic 14-bit formula.
+- One unreproduced "double free or corruption" abort in a mixed bool/uint32/float16 script (2 of ~20 runs).
+- All 213 recorded probes re-ran identically on 5.0.0.
+
+Corrections to our own records (PLAN.md §0 and cvbench/families/README.md edited, dated 2026-10-17):
+- "Each gate caught something the others missed" was an overclaim: only the manufactured (5) and metamorphic (1) gates
+  catch something unique in contour_area. Tier A should be the conjunction of gates (decision for Phil).
+- MSER "7 -> 0" is confounded by the changed putText fixture; the clean evidence is the texture probe 22 -> 0.
+- INTER_NEAREST_EXACT changed; the wiki's "both flags equivalent, follow Pillow" is contradicted.
+- The six "unlisted" removals: PR #25292 documents four; no source for GOTURN.
+
+Process notes: one agent overwrote another's scratch file (fixed with per-family prefixes); my 2026-10-05/06 one-off
+scripts vanished from the session temp folder (temp cleanup or an agent's `rm`; nothing needed lost). White papers
+(3 drafts, LaTeX) are on Phil's Google Drive, kept outside the repo.
 
 ## 2026-10-06 Stage 1 complete: summary
 
