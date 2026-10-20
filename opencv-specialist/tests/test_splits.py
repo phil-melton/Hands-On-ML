@@ -49,7 +49,17 @@ def test_no_scored_seed_was_used_to_calibrate_a_tolerance():
     defaults = inspect.signature(feature_homography.measure_metamorphic_drift).parameters
     lo, n = defaults["seed"].default, defaults["n"].default
     dev, test = sp.build_splits()
-    assert not any(lo <= row["seed"] < lo + n for row in dev + test)
+    # every graded scene of a task, not just its first seed
+    assert not any(lo < row["seed"] + sp.N_SCENES and row["seed"] < lo + n for row in dev + test)
+
+
+def test_scene_windows_are_disjoint_and_match_the_grader():
+    # A task is graded on scenes seed .. seed + n_scenes - 1 (cvbench.evaluate); no two tasks may share a scene.
+    import inspect
+    from cvbench.evaluate import evaluate_solution
+    assert sp.N_SCENES == inspect.signature(evaluate_solution).parameters["n_scenes"].default
+    windows = sorted((r["seed"], r["seed"] + sp.N_SCENES) for r in DEV + TEST)
+    assert all(a_end <= b_start for (_, a_end), (b_start, _) in itertools.pairwise(windows))
 
 
 def test_dev_and_test_seeds_are_disjoint_unique_and_inside_their_ranges():

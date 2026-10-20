@@ -325,3 +325,18 @@ def test_opencv5_facts_behind_the_mutants():
     sift_desc = np.zeros((3, 128), np.float32)
     with pytest.raises(cv2.error):
         cv2.BFMatcher(cv2.NORM_HAMMING).knnMatch(sift_desc, sift_desc, k=2)  # Hamming needs uint8 descriptors
+
+
+def test_bfmatcher_crosscheck_cannot_feed_the_ratio_test():
+    """Measured 2026-10-20 on 5.0.0: crossCheck=True with knnMatch(k=2) raises cv2.error (code -215, batchDistance:
+    K == 1 && update == 0 && mask.empty()), so an ORB pipeline cannot combine cross-checking with Lowe's ratio test.
+    k=1 still works: one entry per query, empty when the pair is not mutual (same count as match())."""
+    rng = np.random.default_rng(0)
+    d1, d2 = (rng.integers(0, 256, (n, 32), dtype=np.uint8) for n in (60, 80))  # ORB-sized binary descriptors
+    cross = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    with pytest.raises(cv2.error, match=r"K == 1 && update == 0 && mask\.empty\(\)") as info:
+        cross.knnMatch(d1, d2, k=2)
+    assert info.value.code == -215
+    knn1 = cross.knnMatch(d1, d2, k=1)
+    assert len(knn1) == len(d1) and sum(len(m) for m in knn1) == len(cross.match(d1, d2))
+    assert all(len(m) == 2 for m in cv2.BFMatcher(cv2.NORM_HAMMING).knnMatch(d1, d2, k=2))  # without crossCheck: fine

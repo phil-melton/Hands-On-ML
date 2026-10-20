@@ -54,8 +54,10 @@ contract is ambiguous there (the price is recorded next to the constants). Ambig
 decision is excluded the same way: in no-shrink scenes the getTextSize box fits with a >= 3 px margin,
 in shrink scenes the *ink* overflows by >= 10 % at the requested scale, so solutions that decide
 "fits" by the metric box or by the ink agree. Finally a scene is only accepted if the reference
-placement keeps its own ink inside the box: glyphs can overhang the getTextSize box (a leading "j" hooks
-2-4 px to the left of the origin), and a box with 0-3 px of slack could otherwise reject a correct answer.
+placement keeps its own ink inside the box: glyphs can overhang the getTextSize box (only a leading "j" does,
+and only to the left of the origin: 1-4 px at the scales the scenes draw at, up to 5 px at the gauge blocks'
+larger scales; measured next to the constants), and a box with 0-3 px of slack could otherwise reject a correct
+answer.
 
 5.0 findings made on the way (OpenCV 5.0.0.93, measured, see calibrate())
   * cv2.putText ignores ``lineType`` for Hershey fonts: LINE_4, LINE_8 and LINE_AA give bit-identical,
@@ -155,6 +157,17 @@ NAME_LONGER = "longer string"
 # What the population restriction buys (same measurement on the excluded blocks):
 #       strings that do not reach the cap height (n=200): tau_y 0.346 (vs 0.143)
 #       the two script faces (n=200):                     tau_x 0.078, width slack lo 0.123 (vs 0.059)
+# Ink outside the getTextSize box (measured 2026-10-20, OpenCV 5.0.0.93; the box is x in [0, tw-1], y in
+# [-th, base-1] from the putText origin; px beyond it, per side):
+#   4000 "tall" gauge blocks, rng seed 7_000_000 (the stream of calibrate(n=4000, seed=7_000_000, n_scenes=1,
+#   scene_seed=7_000_001, n_side=0), whose tall["overhang_px_max"] is the 5 below): 114 blocks overhang, all on the
+#   left and all starting with "j" (136 blocks start with j or J): 1 px x16, 2 px x43, 3 px x33, 4 px x19,
+#   5 px x3 (scales 2.34-2.49, i.e. beyond the 2.0 the scenes are built at). Right, top and bottom: never.
+#   1000 scenes, make_scene seeds 7_000_000..7_000_999, ink box at s_fit (s_req when it fits; the reference lands
+#   within 3 % of it): 20 overhang,
+#   all left: 1 px x5, 2 px x8, 3 px x4, 4 px x3. (This text used to say "2-4 px": 1 px occurs in scenes and 5 px
+#   in the gauge blocks.) A scene with a "j" that would hook out of a tight box is rejected by make_scene's
+#   placed-ink test; tests/test_text_layout.py pins "left only, leading j only, <= 5 px" on 400 gauge blocks.
 # Layer 2, scenes (n=400, 5.0.0): ink box minus the scratch render of putText at the reported scale: 0 px
 # in both axes, so DIM_TOL = 1 px is one quantum (a fringe pixel whose coverage x contrast is below half a
 # grey level on the real canvas but not on the scratch one). Strongest ink pixel: coverage 0.985 .. 1.0 on
@@ -502,6 +515,19 @@ _LOOP = ("    while (tw > w or th + base > h) and s > 0.1:\n"
          "        " + _GTS + "\n")
 _PUT = "    cv2.putText(out, text, org, face, s, tuple(color), thickness)\n"
 
+# How often the manufactured gate rejects the two mutants that agree with the reference on some scenes
+# (measure_mutant_failure_rates(): make_scene seeds 7_000_000..7_001_999 = 2000 scenes, 1000 that fit (even seeds)
+# and 1000 that must shrink (odd seeds); each mutant runs through sandbox.run_solution; OpenCV 5.0.0.93; measured
+# 2026-10-20; brackets are 95 % Wilson intervals):
+#   baseline_ignored     417 / 2000 = 20.8 % (19.1-22.7); text fits 117 / 1000 = 11.7 %, must shrink 300 / 1000 = 30.0 %
+#   proportional_shrink  304 / 2000 = 15.2 % (13.7-16.8); text fits 0 / 1000 (it is the reference there),
+#                        must shrink 304 / 1000 = 30.4 % (27.6-33.3)
+# A "k of 40" count depends on which 40 scenes: 40 consecutive seeds (50 windows) give 3-14 failures of baseline_ignored
+# (mean 8.3) and 3-10 of proportional_shrink (mean 6.1); the first 40 scenes that must shrink give 15 and 13.
+# Two figures quoted before this was measured do not reproduce as stated: "baseline_ignored fails about 27 % of scenes"
+# (20.8 % of mixed scenes; two other 1000-scene blocks, seeds 7_000_000.. and 7_050_000.., gave 20.5 % and 23.5 %;
+# 21 / 70 = 30 % on the 70 seeds 2000..2069 of tests/test_text_layout.py), and "proportional_shrink fails 12 of 40 scenes"
+# (about 6 of 40 mixed scenes; 12 is what 40 scenes that must shrink give, 40 x 30.4 % = 12.2).
 # Plausible model mistakes. Each runs without raising unless noted.
 MUTANTS: dict[str, tuple[str, str]] = {
     "int_rounding (harmless)": (
@@ -533,8 +559,9 @@ MUTANTS: dict[str, tuple[str, str]] = {
         "Centres with true division: putText rejects a float origin. Raises cv2.error.",
         _mutate((_ORG, _FLOAT_ORG))),
     "swallowed_float_origin": (
-        "The same bug caught with `except cv2.error: pass`, leaving the canvas untouched. The lint only bans "
-        "*broad* excepts, so this slips through it.",
+        "The same bug caught with `except cv2.error: pass`, leaving the canvas untouched. Not a *broad* except, so "
+        "`broad-except` misses it; the lint's `swallowed-except` rule (a handler whose body only discards the "
+        "error) rejects it. Exec-only and the metamorphic gate (a constant output is invariant) keep it.",
         _mutate((_ORG, _FLOAT_ORG),
                 (_PUT, "    try:\n        cv2.putText(out, text, org, face, s, tuple(color), thickness)\n"
                        "    except cv2.error:\n        pass\n"))),
@@ -695,7 +722,33 @@ def measure_metamorphic_drift(n: int = 300, seed: int = 50_000) -> dict:
     return worst
 
 
+def measure_mutant_failure_rates(n: int = 2000, seed: int = 7_000_000, chunk: int = 50) -> dict:
+    """Share of scenes the manufactured gate rejects for the two mutants that agree with the reference on some scenes.
+
+    Scenes are make_scene(seed .. seed + n - 1): even seeds fit at the requested scale, odd seeds must shrink. The mutants
+    run through the sandbox (as everything generated does). ``per_40`` is (min, max, mean) of the failure count over
+    consecutive windows of 40 seeds, i.e. how far a "k of 40" count from a small sample moves."""
+    from sandbox.run import run_solution
+    scenes = [make_scene(seed + i) for i in range(n)]
+    out = {"n": n, "seeds": (seed, seed + n - 1)}
+    for name in ("baseline_ignored", "proportional_shrink"):
+        failed: list[bool] = []
+        for a in range(0, n, chunk):
+            batch = scenes[a:a + chunk]
+            r = run_solution(MUTANTS[name][1], [inputs(s) for s in batch], timeout_s=240)
+            assert r.ok, r.summary()
+            failed += [not verify_manufactured(s, o) for s, o in zip(batch, r.outputs)]
+        fits = [f for f, s in zip(failed, scenes) if not s.shrink]
+        shrink = [f for f, s in zip(failed, scenes) if s.shrink]
+        win = [sum(failed[i:i + 40]) for i in range(0, n - 39, 40)]
+        out[name] = {"all": (sum(failed), n), "fits": (sum(fits), len(fits)), "must_shrink": (sum(shrink), len(shrink)),
+                     "first_40_must_shrink": sum(shrink[:40]),
+                     "per_40": (min(win), max(win), round(sum(win) / len(win), 2))}
+    return out
+
+
 if __name__ == "__main__":
     import json
     print(json.dumps(calibrate(), indent=1))
     print("metamorphic drift of the reference:", measure_metamorphic_drift())
+    print("mutant failure rates:", measure_mutant_failure_rates())

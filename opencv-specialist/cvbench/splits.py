@@ -6,8 +6,10 @@ Seed ranges (one million seeds each, disjoint):
     TEST     [4_000_000, 5_000_000)   held out: score a model here, do not tune on it
     FOUNDRY  [5_000_000, 6_000_000)   reserved for Stage 4 training-data generation; never used here
 
-Each family owns a block of SEED_BLOCK seeds inside its split's range, so seed = start + SEED_BLOCK * f + j
-(f = family index, j = task index). Seeds are unique within a split and across splits.
+Each family owns a block of SEED_BLOCK seeds inside its split's range, so seed = start + SEED_BLOCK * f + SCENE_STRIDE * j
+(f = family index, j = task index). Task j is graded on scenes seed .. seed + N_SCENES - 1 (cvbench.evaluate), so the
+scene windows are pairwise disjoint within and across splits. 2026-10-20: the stride was 1 until then, so adjacent tasks
+shared 19 of their 20 scenes and a family's 22 test tasks covered only 41 distinct scenes; tasks are meant to be independent draws.
 
 Seed audit, grepped over cvbench/ and tests/ when the ranges were fixed: exactly one literal falls in
 [3_000_000, 6_000_000), the default seed=3_000_000 (n=9_000, i.e. seeds 3_000_000..3_008_999) of
@@ -69,9 +71,14 @@ DEV_RANGE = (3_100_000, 4_000_000)  # starts past feature_homography's drift-cal
 TEST_RANGE = (4_000_000, 5_000_000)
 FOUNDRY_RANGE = (5_000_000, 6_000_000)
 SEED_BLOCK = 1_000  # seeds per family inside a split's range
+SCENE_STRIDE = 40   # seed gap between consecutive tasks of a family: at least the grader's n_scenes = 20, with headroom
+N_SCENES = 20       # cvbench.evaluate.evaluate_solution's default n_scenes; tests pin it to the grader's default
 
 DEV_PER_FAMILY = 11   # 9 families -> 99 dev tasks
 TEST_PER_FAMILY = 22  # 9 families -> 198 test tasks
+
+assert SCENE_STRIDE >= N_SCENES, "consecutive tasks would share scenes"
+assert SCENE_STRIDE * (TEST_PER_FAMILY - 1) + N_SCENES <= SEED_BLOCK, "a family's scene windows must fit inside its seed block"
 
 SPLITS_DIR = Path(__file__).resolve().parent.parent / "data" / "splits"
 
@@ -100,7 +107,7 @@ def _split_rows(split: str, start: int, per_family: int) -> list[dict]:
                 "split": split,
                 "family": name,
                 "phrasing_index": i,
-                "seed": start + SEED_BLOCK * f + j,
+                "seed": start + SEED_BLOCK * f + SCENE_STRIDE * j,
                 "held_out": row.held_out,
                 "subset": row.subset,
                 "prompt_sha1": _sha1(_prompt(fam, i)),

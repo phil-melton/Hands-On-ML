@@ -1,15 +1,69 @@
 # opencv-expert logbook
 
-**Next step:** Stage 2 is built (2026-10-17 entry below) and waits at ⛔ Gate 2: Phil reviews each family's law,
-calibration and gate matrix and the open decisions in the doc "opencv-expert: Gate 2 Benchmark Design Review"
-(claude.ai artifact e068df7a-77cd-457c-a477-b0170d0637ae). Apply his decisions (some need re-pinning a test), then
-Stage 3 (baseline bake-off). For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
+**Next step:** Stage 3 (2026-10-20 entry below). Base GGUFs are built; register them with
+`~/opencv-expert/scratch/register_bases.sh` once Ollama's Model location is D:\ollama\models (Phil sets it in the Ollama
+app's Settings; it overrides OLLAMA_MODELS). Then a smoke run (`bakeoff.run generate --split dev --per-family 1`) to
+measure tokens per answer and decode speed on Ollama 0.40.4, write the prediction here, greedy pass for all 4 rungs,
+samples overnight, report, ⛔ Gate 3. For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
 discard the first Ollama request after a model is created before timing decode. Working method since 2026-10-17: I
 orchestrate Sonnet 5.5 / Haiku 4.5 subagents (one brief and one set of files each, no git), verify every report by
 re-running its tests, and integrate, log and commit myself.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-20 Gate 2 decisions applied; Stage 3 prepared (CPU only)
+
+Gate 2 (Phil, results tab of the review doc): Agree on all 12 recommendations. Built by 8 subagents (6 Sonnet, 2 Haiku);
+every report verified by re-running its tests or measurement.
+
+| decision | applied as | evidence |
+|---|---|---|
+| 1 accept ORB-class homography | kept; tail re-check on 96,000 fresh pairs (4x) | SIFT 0 rejects; ORB-Hamming 0.183 % [0.158, 0.212] vs 0.2 % budget, stable per block; its max grows with n (70 -> 401) while p99.8 stays 59, so the budget is a rate |
+| 2 Tier A = every gate | PLAN.md §4.1 | fixed threshold passes manufactured, fails only metamorphic |
+| 4 stronger dimming in hough | `GAIN_STRONG = 0.25` transform + `fixed_low_canny` mutant; 52 tests | 5 legitimate pipelines: drift exactly 0.0 on 600 scenes (also at 0.2, 0.15) |
+| 7 lint for swallowed specific exceptions | rule `swallowed-except` (handler of only pass/continue/break/constant; any `contextlib.suppress` call) | 258 items linted old vs new: only text_layout `swallowed_float_origin` changed; no reference flagged |
+| 10 contour constants | measured, comments added | TOL_C0 unused by contourArea and by pixel count (2,000 scenes + minimal gauges) |
+| 12 upstream reports | `upstream/` drafts + repros | only `bitwise_not(bool)` is worth filing (no duplicate; still on `5.x`) |
+| 3, 5, 6, 8, 9, 11 | no change needed | |
+
+Findings that need Phil at Gate 3 (no tolerance changed, Rule 3):
+- hough: Canny(30,100) fails only 17.8 % of scenes at gain 0.25, so a 5-scene metamorphic gate catches it 62 % of the
+  time; Canny(20,60) and (10,30) still pass. Gains 0.2/0.15 or a larger n_meta would close more of it.
+- contour_area: pixel count reaches |err|/P = 0.643 on multi-shape scenes (calibration said 0.598): TOL_C = 0.75 is
+  1.17x the worst case, under the 1.25x margin rule. Nothing rejected; raising TOL_C would be loosening.
+- **Benchmark power and contamination.** dev and test share the same 37 prompts (4 phrasings per family, 5 for
+  feature_homography); only the grading scenes differ. At T=0 identical prompts give identical code, so test pass@1
+  has ~37 (+40 gotcha) independent units, not 238: the bakeoff report gives by-prompt (cluster) SEs and sign tests
+  beside the binomial ones. And Stage 4 data written from these phrasings would contain the test prompts. Proposal
+  for Gate 3, before the success criteria freeze: many more phrasings, disjoint between dev, test and foundry.
+- Fixed now (my Stage 2 integration bug): tasks used consecutive seeds while the grader uses scenes seed..seed+19,
+  so adjacent tasks shared 19 of 20 scenes. Splits now use `SCENE_STRIDE = 40`; tests pin disjoint windows and that
+  no graded scene was a calibration seed. Only `seed` fields changed in dev/test; ids and prompts are unchanged.
+- feature_homography mutant labels: `best_10_matches (within accepted accuracy)` fails 1.8 % of scenes, i.e. 31 % of
+  20-scene gates on fresh seeds (it passes the pinned seed-0 matrix); `orb_norm_l2 (harmless here)` 0.40 %, 7.7 %.
+- Process: Phil's interrupt at ~09:50 stopped the homography and splits agents before they reported; I finished both
+  from their scratch outputs (tail measurements complete) and wrote the two split tests myself.
+
+Records corrected (PLAN.md §0, dated 2026-10-20; module docstrings): chessboard corner reversal, CCL label order and
+the SIFT +0.25 px offset behave identically on 4.14 (not 5.0 changes; SIFT's is the `enable_precise_upscale=False`
+default, issue #23123). The MSER regression is opencv/opencv #29652, fixed on `5.x` (PR #29653), not in any release.
+`remap`'s map2 reinterpretation is fixed on `5.x` (PR #30286). Builder figures that did not reproduce and are now
+corrected in the modules: components border contact 66.6 % (2,000 scenes; 69 % was the test's 120), text_layout
+`baseline_ignored` 20.8 % (not 27 %), chessboard window-8 dimmed drift 0.086 (not 0.077), histogram 1/(2N) at
+N = 18564. Reproduced exactly: histogram 43,864 mismatches vs the 14-bit luma formula (cvtColor is the 15-bit one),
+color_segmentation 2,000 scenes 0 failures.
+
+Stage 3 preparation
+- `bakeoff/` (12 modules, 79 tests): generate (Ollama /api/chat, recorded options, warm-up discarded, resumable),
+  grade (process pool, can follow generation), taxonomy (format / api / lint / timeout / convention / algorithm /
+  other), stats (pass@k, McNemar, cluster SEs), report, predict. Rungs r1-7b, r2-4b, r3-9b, r4-7b-notes.
+- `bakeoff/notes_5_0.md`: 1,455 Qwen2.5 tokens, every line traced to the diff report, PLAN.md §0 or api_check.
+- Base GGUFs in ~/opencv-expert/bases/ from the bf16 weights with the Stage 1 llama.cpp (b11408), text model only:
+  4B 2.59 GiB (4.6 + 3.0 min), 7B 4.36 GiB (5.0 + 3.8 min; tokenizer from the bnb-4bit training repo, the unsloth
+  bf16 repo ships none), 9B 5.38 GiB (6.5 + 6.2 min). Sizes match Stage 1's 4B and 7B exactly.
+- Ollama auto-updated to 0.40.4 (was 0.32.9). Its store (15.9 GB) was copied to D:\ollama\models (C: has 17 GB free;
+  the bases need 13); the app's own Model location setting overrides the OLLAMA_MODELS user variable I set.
 
 ## 2026-10-17 Stage 2 built: benchmark, gotcha suite, removed-API gate (CPU only)
 

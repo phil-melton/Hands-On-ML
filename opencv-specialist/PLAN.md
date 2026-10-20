@@ -52,7 +52,9 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
      drawn with `putText`, which itself changed, so "7 to 0" mixes an input change with a detector
      change. The clean evidence is the texture probe, identical input in both versions, 22 to 0
      regions; and on 5.0 the defaults give 0 on all 7 images tried, with any `min_diversity` of
-     0.1 or more.)
+     0.1 or more.) (Updated 2026-10-20: it is a regression and already reported: opencv/opencv
+     issue #29652, fixed on the `5.x` branch by PR #29653 on 2026-08-04 (a one-line change in
+     `mser.cpp`). No release since 5.0.0 carries the fix, so the pinned wheel still shows it.)
    - `warpAffine`/`warpPerspective` changed by up to 4 gray levels on ~3 % of pixels (uint8).
    - Text rendering changed: `getTextSize` (155,22)→(136,27), and 13 % of glyph pixels differ.
    - The wiki says `INTER_NEAREST` "now follows Pillow". **Not observed**: the mapping is
@@ -63,6 +65,15 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
      which explains the glyph-pixel change; `getTextSize` height is now the font's line height,
      independent of the string. `findChessboardCorners` returns its corners reversed when the
      board's top-left square is white.
+   - (Corrected 2026-10-20, from the upstream-issue checks in `upstream/`: three Stage 2 findings
+     are **not 5.0 changes**; each behaves identically on 4.14.0. The chessboard corner reversal
+     follows the board's square layout (issue #22083; docs expanded by PR #30208). The
+     `connectedComponents` label order is documented: SAUF orders labels row-major, Spaghetti and
+     BBDT do not. The SIFT +0.25 px offset is the known `enable_precise_upscale=False` default
+     (issue #23123); with `True` it falls below 0.03 px. Also: `remap`'s silent `map2`
+     reinterpretation is fixed on `5.x` by PR #30286, and bool support is still moving on `5.x`, so
+     the per-function bool list above describes the 5.0.0.93 wheel only. The one candidate worth
+     filing upstream is `bitwise_not` on bool.)
 4. **Timeless gotchas** (same in both versions; they seed the gotcha suite):
    - int64 arrays are silently **narrowed to int32 with wraparound** (`cv2.add` on `2**40` gives `0`).
    - Drawing on `img[:, :, ::-1]` or `img.T` raises.
@@ -167,6 +178,10 @@ it runs free and private on local images.
   - A: manufactured solution
   - B: metamorphic + contract
   - C: runs + contract only. Never used as a fine-tuning target.
+
+  (Decided 2026-10-20 at Gate 2: **Tier A requires every gate** (lint, manufactured, metamorphic,
+  contract), not the manufactured gate alone. Stage 2 measured why: a fixed threshold passes the
+  manufactured gate in contour_area and perspective_rectify and fails only the metamorphic one.)
 - **Keep the scrap.** Failed attempt + error message + fix = a repair example. Under 5.0 these
   are mostly 4.x-isms, the most valuable rows you have.
 

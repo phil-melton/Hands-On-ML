@@ -161,10 +161,16 @@ EDGE_S, EDGE_V = 120, 254  # S of an edge swatch (diff 120 over max 254 -> 120.4
 # blocks (single shapes: 8 kinds x 4 colours x both red lobes, OpenCV 5.0.0): the reference's error in every
 # colour, leaks into the other three colours included, is exactly 0 px in all 1200 (worst |error| = 0 px,
 # 0 blocks with any error). Margin: none to add; any non-zero error is a bug in the generator or the reference.
+# Whole scenes (make_scene, all 8 kinds, distractors, 22 edge swatches), the reference on 2000 fresh scenes,
+# seeds 7_300_000..7_301_999, called in-process (no sandbox): reference_solve(**inputs(scene)) then
+# verify_manufactured at TOL_PX = 0 gave 0 failures and a largest |count error| of 0 px over all 8000 counts
+# (501 of the 2000 scenes omit one colour class). An earlier report of "2,000 scenes, 0 failures" had no
+# recorded method or seeds; this is the re-measurement. The calibration above is the 1200 gauge blocks.
 TOL_PX = 0
 # measure_metamorphic_drift(): the reference's four counts moved by exactly 0 px under every transform
 # (translate, rot90, mirror, dim) in 300 scenes: translate / rot90 / mirror permute pixels, dim is exact on
-# this scene class (see "Metamorphic checks").
+# this scene class (see "Metamorphic checks"). The same 2000 fresh scenes (seeds above) through transforms()
+# and verify_metamorphic: 0 failures, largest count drift 0 px.
 META_TOL_PX = 0
 
 

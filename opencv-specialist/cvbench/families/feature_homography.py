@@ -59,7 +59,9 @@ inliers; ``orb_solve``: ORB(2000), Hamming, ratio test, plain RANSAC). Results (
   its mirror image sit exactly 0.500 px apart, n ~ 2250 per axis; ORB: -0.09 to -0.12 px, level dependent).
   The offset is fixed in each image's own frame, so it stops cancelling once H rotates or scales one image
   against the other. Its size (0.25 px x |R - I| ~ 0.1 px at 20 degrees) is consistent with the ~0.1 px
-  floor of the SIFT errors; the floor was not isolated any further.
+  floor of the SIFT errors; the floor was not isolated any further. (2026-10-20: the offset is not new in 5.0;
+  4.14 shows it too. It is the default ``enable_precise_upscale=False`` (opencv/opencv issue #23123); with
+  ``SIFT_create(enable_precise_upscale=True)`` it falls below 0.03 px. All calibration here uses the default.)
 * Draft probes (the true frame corners): SIFT e median 0.224 (vs 0.166 inset), max 2.23 (vs 1.32); ORB e
   median 1.07 (vs 0.66), max 18.9 (vs 11.9), 313 pairs above 5 px (vs 35). Hence the inset.
 * Beyond the served scenes (2000 pairs: N down to 18, noise to 12, blur to 1.6 px, rotation to 30 deg):
@@ -78,6 +80,14 @@ Which pipelines count as correct is a decision, not a measurement. Both profiles
 * ``sift+orb`` (active): TOL_B = 60 is the 99.8th percentile of plain ORB's e*sqrt(N) (59): 0.18 % of ORB
   pairs and none of the 24000 SIFT pairs exceed it, so a 20-scene gate rejects plain ORB with probability
   4 % (a false-reject budget of 0.2 % per scene, chosen; 3000 further make_scene scenes: 0.30 %). Tolerance 7.7 / 4.2 / 2.7 px at N = 60 / 201 / 494.
+  Tail re-check, 2026-10-20 (96000 fresh pairs, seeds 7200000-7295999, 4x the calibration sample): SIFT 0
+  rejects (95 % CI <= 0.004 %); ORB with Hamming 176 = 0.183 % [0.158, 0.212] (Wilson), within the budget, and
+  stable across four 24000-pair blocks (51 / 33 / 45 / 47). Its maximum keeps growing with n (e*sqrt(N) 70 at
+  1500 pairs, 401 at 48000; Hill tail index ~5.2) while its 99.8th percentile stays at 59 [57.5, 60.7], so the
+  budget must be stated as a rate, never as a worst case. Mutants for comparison: ``orb_norm_l2`` 0.40 % per
+  scene (2x the budget; 7.7 % of 20-scene gates), ``best_10_matches`` 1.8 % (31 % of gates; tail index ~1.6).
+  On 200 scenes (seeds 7297000-7297199) the reference, ``no_ratio_test`` and ``rgb2gray`` pass every scene,
+  ORB with Hamming 199, ``best_10_matches`` 197, ``orb_norm_l2`` 198.
   This matches the approved design, in which ORB with Hamming matching is a valid pipeline and ORB with
   NORM_L2 a mutant. It still separates gross mistakes (wrong direction, no RANSAC, affine instead of
   projective) by the 20-scene "all must pass" rule, but a single scene separates them only weakly.

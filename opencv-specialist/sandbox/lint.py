@@ -15,6 +15,14 @@ gui            cv2 window/GUI calls: they hang or fail in a headless worker
 io             cv2 file/device I/O: the contract passes arrays in and out
 broad-except   bare ``except:`` or ``except (Base)Exception``: it hides failures from the
                verifier, and exec-only filtering would *select for* it
+swallowed-except  a handler whose whole body only discards the error (``pass``, ``...`` or any
+               bare constant, ``continue``, ``break``), whatever it catches (``except cv2.error:
+               pass`` is specific, but the failure is as invisible), and any call of
+               ``contextlib.suppress`` (``suppress``, ``cl.suppress`` and ``from contextlib import
+               suppress as s`` too): the same behaviour spelled differently. A handler that does
+               anything visible (assigns a fallback, returns, raises, calls) is not flagged: a
+               returned fallback is a value the manufactured-solution verifier judges, only the
+               silent discard is the target. A bare ``except: pass`` reports both rules.
 """
 from __future__ import annotations
 
@@ -47,10 +55,17 @@ class Finding:
         return f"line {self.line}: [{self.rule}] {self.message}"
 
 
+def _discards(stmt: ast.stmt) -> bool:
+    """Nothing visible happens: ``pass``, ``continue``, ``break`` or a bare constant (``...``, a string)."""
+    return isinstance(stmt, (ast.Pass, ast.Continue, ast.Break)) or (
+        isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant))
+
+
 class _Visitor(ast.NodeVisitor):
     def __init__(self) -> None:
         self.findings: list[Finding] = []
         self.aliases: dict[str, str] = {}  # local name -> root module
+        self.suppress_names: set[str] = set()  # local names bound to contextlib.suppress
 
     def flag(self, rule: str, node: ast.AST, message: str) -> None:
         self.findings.append(Finding(rule, getattr(node, "lineno", 0), message))
@@ -74,6 +89,10 @@ class _Visitor(ast.NodeVisitor):
                 elif a.name in CV2_FORBIDDEN:
                     rule, msg = CV2_FORBIDDEN[a.name]
                     self.flag(rule, node, f"cv2.{a.name}: {msg}")
+        if root == "contextlib":
+            for a in node.names:
+                if a.name in ("suppress", "*"):  # a star import binds `suppress` too
+                    self.suppress_names.add(a.asname or "suppress")
         self.generic_visit(node)
 
     def visit_Attribute(self, node: ast.Attribute) -> None:
@@ -86,6 +105,13 @@ class _Visitor(ast.NodeVisitor):
     def visit_Call(self, node: ast.Call) -> None:
         if isinstance(node.func, ast.Name) and node.func.id in BANNED_BUILTINS:
             self.flag("builtin", node, f"`{node.func.id}()` is not allowed in a solution")
+        f = node.func
+        if (isinstance(f, ast.Name) and f.id in self.suppress_names) or (
+                isinstance(f, ast.Attribute) and f.attr == "suppress" and isinstance(f.value, ast.Name)
+                and self.aliases.get(f.value.id) == "contextlib"):
+            # any call, not only the `with` form: `ctx = suppress(...)` must not be a way round the rule
+            self.flag("swallowed-except", node, "`contextlib.suppress` silently discards errors; "
+                                                "let them raise or handle them visibly")
         self.generic_visit(node)
 
     def visit_ExceptHandler(self, node: ast.ExceptHandler) -> None:
@@ -96,6 +122,11 @@ class _Visitor(ast.NodeVisitor):
             for t in types:
                 if isinstance(t, ast.Name) and t.id in ("Exception", "BaseException"):
                     self.flag("broad-except", node, f"`except {t.id}` hides failures from the verifier")
+        # independent of the type: a specific `except cv2.error: pass` hides the failure just as well. A broad
+        # handler reports both rules; broad-except comes first, so RunResult.error (findings[0]) reads as before.
+        if all(_discards(s) for s in node.body):
+            what = "except" if node.type is None else f"except {ast.unparse(node.type)}"
+            self.flag("swallowed-except", node, f"`{what}:` only discards the error; handle it visibly or let it raise")
         self.generic_visit(node)
 
 

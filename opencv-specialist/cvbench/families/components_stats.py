@@ -32,11 +32,22 @@ of the output (area descending; equal areas by the top-left corner of the box, y
 
 Two measured OpenCV 5.0.0 facts shape the family (see ``measure_bool_mask_support`` and the tests)
 -----------------------------------------------------------------------------------------------
-* "numpy bool masks are now accepted" is true of the binding, not of every function. ``countNonZero``,
-  ``moments``, ``bitwise_not`` take a bool array, but ``connectedComponents[WithStats]``,
-  ``findContours``, ``threshold``, ``dilate`` still reject it (an assertion inside the algorithm,
-  not the 4.x "data type = bool is not supported"). The input is a bool mask so the 4.x workaround
-  (``mask.astype(np.uint8)``) is still required, and the idiom "5.0 takes bools, so pass it straight in" fails.
+* "numpy bool masks are now accepted" is true of the binding, not of every function behind it, and "does not
+  raise" is not "gives the right answer". Re-measured on OpenCV 5.0.0 / numpy 2.4.6 with
+  ``measure_bool_mask_support`` and a throwaway script (an 8x8 mask holding one 3x4 block of True):
+    - ``countNonZero(mask)`` works: 12, as for the uint8 mask.
+    - ``moments(mask)`` raises cv2.error (-210, unsupported format) with the default ``binaryImage=False``.
+      It works only as ``moments(mask, binaryImage=True)``, which equals the uint8 result in all 24 moments.
+    - ``bitwise_not(mask)`` does not raise and is a SILENT WRONG ANSWER: it returns a bool array whose bytes
+      are 0xFE where the mask is True and 0xFF where it is False (the uint8 operation on the bytes 1 and 0,
+      with a bool dtype on top), so every element reads True (``.all()`` is True, ``.sum()`` is 64 where
+      ``~mask`` has 52). Use ``~mask`` / ``np.logical_not``, or ``bitwise_not`` on a 0/255 uint8 mask.
+    - ``connectedComponents[WithStats]`` (assertion ``iDepth == CV_8U || iDepth == CV_8S``), ``findContours``
+      and ``threshold`` (-210, unsupported format, raised inside ``threshold``) and ``dilate`` (-213,
+      "Unsupported data type (=9)") still raise: errors inside the algorithm, not at the binding. On 4.14.0 all
+      eight functions fail at the binding with "data type = bool is not supported".
+  The input is a bool mask so the 4.x workaround (``mask.astype(np.uint8)``) is still required, and the idiom
+  "5.0 takes bools, so pass it straight in" fails (or, for ``bitwise_not``, silently corrupts the mask).
 * The default CCL algorithm labels components in raster order of their first pixel at connectivity 4,
   but *not* at connectivity 8 (200 of 200 random masks violate it; WU and SAUF are the exceptions among the
   seven algorithms). The pattern fits a block-based scan over pairs of rows: two equal-area components whose
@@ -112,7 +123,7 @@ PHRASINGS = [
 SIZE = (240, 320)  # (H, W) of every manufactured mask; verify_metamorphic relies on it (it never sees the scene)
 H0, W0 = SIZE
 GAP = 1  # empty pixels kept between the reserved boxes of different objects (so none touch, even diagonally)
-P_EDGE = 0.1  # chance that an object is snapped against an image edge
+P_EDGE = 0.1  # chance that an object is snapped against an image edge (66.6 % of scenes touch the border: make_scene)
 PAD = ((5, 2), (7, 3))  # np.pad widths ((top, bottom), (left, right)): the "translate" symmetry
 SHIFT = (PAD[1][0], PAD[0][0])  # (dx, dy) = (7, 5) that padding applies to every x, y
 TRANSLATE = f"translate(+{SHIFT[0]},+{SHIFT[1]})"
@@ -360,6 +371,13 @@ def make_scene(seed: int) -> Scene:
     Every scene holds: one connectivity-sensitive object (diag_pair / diag_line / checker), a stagger pair
     (the tie-break), two single pixels (equal areas, the smallest possible), and 3-7 other objects. Some
     objects touch the image border.
+
+    Border contact (a scene with at least one object whose reserved box touches an image edge; on every scene
+    measured this is the same set as "some True pixel lies in the first or last row or column of the mask"):
+    1332 of 2000 fresh scenes, seeds 7_300_000..7_301_999, = 66.6 % (95 % Wilson interval 64.5-68.6 %; 682 of 1000
+    at connectivity 8, 650 of 1000 at 4). The 120 scenes of seeds 0..119 that tests/test_components_stats.py pins
+    to 30 < count < 110 hold 83 = 69.2 %, which is where the earlier "about 69 %" reproduces: a 120-scene sample, not
+    the population rate (16 disjoint 120-scene batches of the fresh scenes span 71..87, i.e. 59-73 %).
     """
     rng = np.random.default_rng(seed)
     H, W = SIZE
@@ -678,7 +696,11 @@ def measure_metamorphic_drift(n: int = 100, seed: int = 50_000) -> dict:
 
 
 def measure_bool_mask_support() -> dict[str, str]:
-    """Which OpenCV functions accept a numpy bool array on this build (the 5.0 'bool masks' claim, itemised)."""
+    """Which OpenCV functions accept a numpy bool array on this build (the 5.0 'bool masks' claim, itemised).
+
+    "accepted" means only that no cv2.error was raised, not that the result is right. ``moments`` is probed with
+    ``binaryImage=True``: without it, a bool array raises. ``bitwise_not`` is "accepted" but returns bytes 0xFE
+    (True) and 0xFF (False), so every element reads True: a silent wrong answer (see the module docstring)."""
     m = np.zeros((8, 8), bool)
     m[2:5, 2:5] = True
     probes = {

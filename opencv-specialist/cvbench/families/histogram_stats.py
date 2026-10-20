@@ -17,7 +17,10 @@ two laws.
 * Floats (``mean``, ``std``): the truth is computed in exact integer arithmetic
   (sum v*h and sum v^2*h as Python ints, one rounding at the end). A correct solution's own
   error is float64 roundoff, ~eps * O(log N) (measured by ``calibrate()``). The smallest
-  *convention* difference is population vs sample std: relative 1/(2N) >= 2.6e-5 here.
+  *convention* difference is population vs sample std: relative sqrt(N/(N-1)) - 1 ~ 1/(2N). The
+  generator builds N = H*W <= 120*160 = 19200, so it is >= 1/(2*19200) = 2.6e-5 for every scene it can
+  build (3.1e-4 at the smallest N = 1600); on the 400 ``calibrate()`` scenes, whose largest N is 18564,
+  the smallest effect is 2.69e-5.
   FLOAT_RTOL sits between: |got - true| <= FLOAT_RTOL * max(1, |true|).
 
 Gray levels are defined as BT.601 luma, ``round(0.299 R + 0.587 G + 0.114 B)``. That is what
@@ -26,6 +29,15 @@ colours whose luma lies within ~0.003 of a rounding tie (``calibrate()`` sweeps 
 colours; 20753 disagree, never by more than one level). Scenes never use a colour within
 TIE_MARGIN of a tie, so the manufactured gray plane is unambiguous for any reasonable
 implementation, and 255 - img maps gray v to exactly 255 - v.
+
+Which integer formula that is, measured over the same domain (all 2^24 BGR colours through
+``cv2.cvtColor(BGR2GRAY)``, OpenCV 5.0.0; 4.14.0 gives identical counts), against each candidate:
+the 15-bit fixed-point formula ``(9798 R + 19235 G + 3735 B + 16384) >> 15`` has 0 mismatches, i.e.
+cvtColor *is* that formula; the classic 14-bit formula ``(4899 R + 9617 G + 1868 B + 8192) >> 14``
+(coefficients summing to 2^14) has 43,864 mismatches (never by more than one level); the exact
+round-half-up luma ``(299 R + 587 G + 114 B + 500) // 1000`` has 20,753 (the figure above); float64
+``np.rint(0.299 R + 0.587 G + 0.114 B)`` has 22,906. So each of those other candidates disagrees with
+cvtColor on 0.12-0.26 % of the colours (20,753 to 43,864 of 16,777,216), always by one level.
 
 Median convention (discrete data): the *lower* median, i.e. the ceil(N/2)-th smallest pixel =
 the smallest level v with cumulative count >= N/2. For even N it is the lower of the two middle
@@ -114,10 +126,13 @@ COUNT_TOL = 0
 #   one-pass E[x^2] - E[x]^2, float64                         3.1e-14   (cancellation when std << mean)
 #   cv2.meanStdDev                                            1.2e-13
 #   numpy float32                                             1.1e-7
-#   population vs sample std (ddof=1), smallest effect        2.7e-5    (= 1/(2N) at N = 19200)
-# FLOAT_RTOL = 1e-9 is 8.1e3 above the worst float64 error and 2.7e4 below the smallest convention effect
-# (about the log-midpoint of the gap). It therefore also rejects float32 arithmetic (1.1e-7): see the
-# open question in the report.
+#   population vs sample std (ddof=1), smallest effect        2.7e-5   (see the note below)
+# The ddof=1 effect is sqrt(N/(N-1)) - 1 ~ 1/(2N): 2.69e-5 at N = 18564, the largest N among these 400 scenes
+# (hence "2.7e-5"). It is NOT 1/(2N) at N = 19200: 19200 = 120*160 is the largest N the generator can build and
+# gives 2.60e-5, the smallest effect any scene can have.
+# FLOAT_RTOL = 1e-9 is 8.1e3 above the worst float64 error and 2.7e4 below the smallest convention effect on
+# these scenes (2.6e4 at the largest possible N; about the log-midpoint of the gap). It therefore also rejects
+# float32 arithmetic (1.1e-7): see the open question in the report.
 FLOAT_RTOL = 1e-9
 # The symmetries are exact on the multiset, so counts and medians must match exactly and only float64 roundoff
 # can move the floats. measure_metamorphic_drift(), reference over 300 scenes x 7 symmetries: max count drift 0,
@@ -127,6 +142,8 @@ META_RTOL = FLOAT_RTOL
 # Scenes never use a colour whose luma is within TIE_MARGIN gray levels of a rounding tie.
 # calibrate(): cvtColor disagrees with the exact round-half-up luma on 20753 of 2^24 colours, all of them
 # within 0.003 of a tie; 0 disagreements at distance >= 0.05. TIE_MARGIN = 0.05 is ~17x the worst case.
+# (cvtColor is the 15-bit fixed-point formula exactly, 0 mismatches over the 2^24 colours; the classic 14-bit
+# formula disagrees with it on 43,864 colours: the module docstring has the formulas and the other candidates.)
 TIE_MARGIN = 0.05
 _MARGIN_MILLI = round(TIE_MARGIN * 1000)
 
@@ -465,7 +482,7 @@ MUTANTS: dict[str, tuple[str, str]] = {
         "level low. A tolerance of a count or two would not notice.",
         _mutate((_GRAY, "gray = (img[:, :, ::-1] @ np.array([0.299, 0.587, 0.114])).astype(np.uint8)"))),
     "std_ddof1": (
-        "Sample standard deviation (N-1). Off by a relative 1/(2N) ~ 1e-5: far above FLOAT_RTOL.",
+        "Sample standard deviation (N-1). Off by a relative 1/(2N), 2.6e-5 to 3.1e-4 here: far above FLOAT_RTOL.",
         _mutate(("gray.std()", "gray.std(ddof=1)"))),
     "median_np_int": (
         "int(np.median(...)): np.median averages the two middle pixels of an even-sized image and int() "

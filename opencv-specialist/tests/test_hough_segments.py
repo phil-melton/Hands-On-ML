@@ -16,6 +16,7 @@ EXPECTED = {
     "no_merge":            (True,    True,  False,       False),
     "plain_union":         (True,    True,  False,       False),
     "fixed_canny":         (True,    True,  True,        False),
+    "fixed_low_canny":     (True,    True,  True,        False),
     "fixed_threshold_127": (True,    True,  True,        False),
     "unordered":           (True,    True,  False,       True),
 }
@@ -27,6 +28,7 @@ REASON = {
     ("no_merge", "manufactured"): "duplicate or fragmentary",
     ("plain_union", "manufactured"): "has no row within",
     ("fixed_canny", "metamorphic"): "dim x0.45",
+    ("fixed_low_canny", "metamorphic"): "dim x0.25",  # and not x0.45: that dimming was the gap this one closes
     ("fixed_threshold_127", "metamorphic"): "dim x0.45: 0 segments",
     ("unordered", "manufactured"): "smaller x",
 }
@@ -107,7 +109,7 @@ def test_mutants_fail_for_the_documented_reason(matrix, key):
 
 def test_expected_matrix_covers_every_mutant():
     assert set(EXPECTED) == {"reference", *fam.MUTANTS}
-    assert 5 <= len(fam.MUTANTS) <= 8
+    assert 5 <= len(fam.MUTANTS) <= 9  # was 8 (families/README.md: 5-8); fixed_low_canny is the ninth
 
 
 def test_exec_only_misses_most_wrong_solutions(matrix):
@@ -159,7 +161,8 @@ def test_calibration_still_covers_fresh_gauge_blocks():
     assert c["hausdorff_minus_endpoint"] < 0.01  # the metric question: end point distance = Hausdorff distance
     assert c["angle"]["reject_atan(2*tol/L)"] == 0.0  # the end point test already bounds the angle
     assert c["misses"]["reference"] == 0
-    # the physics: the stroke's own pixels end ceil(t/2) beyond the end point (round caps) and no further
+    # the physics: the stroke's own pixels end ceil(t/2) beyond the end point (round caps) and no further,
+    # except that a 1-px line has no cap (measured: 0, 1, 2, 2 px for t = 1..4)
     fit = {w: v["max"] for w, v in c["panel"]["fitLine"].items()}
     assert fit[1] < 0.35 and 0.9 < fit[2] < 1.2 and 1.9 < fit[3] < 2.2 and 1.9 < fit[4] < 2.2, fit
     # the angle step does not enter the law once the stroke is widened and refined ...
@@ -185,6 +188,9 @@ def test_constants_follow_from_the_recorded_measurement():
     assert all(tols[w] >= 1.25 * v for w, v in RECORDED_PANEL_WORST.items())
     assert all(tols[w] >= 1.25 * v for w, v in RECORDED_SCENE_WORST.items())
     assert fam.META_TOL[fam.T_DIM] == 1.0 and fam.META_TOL[fam.T_SHIFT] == fam.META_TOL[fam.T_ROT] == 5.0
+    assert fam.GAIN == 0.45 and fam.GAIN_STRONG == 0.25  # GAIN is shared with contour_area: not this family's to change
+    assert fam.META_TOL[fam.T_DIM_STRONG] == 1.0 and fam.T_DIM_STRONG == "dim x0.25"
+    assert fam.T_DIM in fam.transforms(fam.make_scene(0)) and fam.T_DIM_STRONG in fam.transforms(fam.make_scene(0))
 
 
 def test_tolerance_scales_with_stroke_width():
@@ -198,16 +204,44 @@ def test_metamorphic_drift_of_the_reference_is_inside_the_tolerances():
     d = fam.measure_metamorphic_drift(n=40, seed=7_000)
     for name in (fam.T_SHIFT, fam.T_ROT, fam.T_MIRROR):  # recorded: max 2.83 px over 600 scenes
         assert d[name]["max"] <= fam.META_TOL[name] / 1.25, (name, d[name])
-    assert d[fam.T_DIM]["max"] == 0.0  # dimming does not touch the geometry: exactly invariant
+    for name in (fam.T_DIM, fam.T_DIM_STRONG):  # dimming does not touch the geometry: exactly invariant
+        assert d[name] == {"max": 0.0, "p99": 0.0, "mean": 0.0}, (name, d[name])
 
 
 def test_adaptive_pipelines_are_invariant_to_dimming_and_fixed_thresholds_are_not():
     adaptive = sandbox_drift(otsu_canny_code(), n=25, seed=8_000)
-    assert adaptive[fam.T_DIM] == 0.0
+    assert adaptive[fam.T_DIM] == adaptive[fam.T_DIM_STRONG] == 0.0
     for name in (fam.T_SHIFT, fam.T_ROT, fam.T_MIRROR):
         assert adaptive[name] <= 4.0 <= fam.META_TOL[name] / 1.25, (name, adaptive[name])
     fixed = sandbox_drift(fam.MUTANTS["fixed_canny"][1], n=25, seed=8_000)
     assert fixed[fam.T_DIM] > fam.META_TOL[fam.T_DIM]
+
+
+def test_a_low_fixed_canny_survives_the_gentle_dimming_and_not_the_strong_one():
+    """Gate 2 review, decision 4. Canny(30, 100) is exactly invariant under x0.45 (the gap), while under x0.25
+    some strokes move more than the tolerance or vanish (107 of 600 scenes at seeds 7_100_000-7_100_599)."""
+    low = sandbox_drift(fam.MUTANTS["fixed_low_canny"][1], n=40, seed=7_100_000)
+    assert low[fam.T_DIM] == 0.0
+    assert low[fam.T_DIM_STRONG] > fam.META_TOL[fam.T_DIM_STRONG], low
+
+
+def test_strong_dimming_keeps_the_weakest_thin_stroke_the_generator_can_draw():
+    """1-px strokes of gray 150 on gray 50 are the least contrast make_scene can produce (100 gray levels); at x0.25
+    they are 38 on 12, and a correct pipeline still sees every one of them: the gate must not reject correct code."""
+    img = np.full((fam.H, fam.W, 3), 50, np.uint8)
+    segs = [fam.Segment((40, 40), (200, 40), 1), fam.Segment((60, 90), (60, 250), 1),
+            fam.Segment((120, 100), (260, 220), 1), fam.Segment((300, 60), (420, 300), 1)]
+    for s in segs:
+        cv2.line(img, s.p1, s.p2, (150, 150, 150), 1)
+    assert all(fam.segment_distance(a, b) >= fam.CLEAR for i, a in enumerate(segs) for b in segs[i + 1:])
+    scene = fam.Scene(img, segs, 50, -1)
+    dimmed = fam.transforms(scene)[fam.T_DIM_STRONG]["img"]
+    assert int(dimmed[40, 100, 0]) - int(dimmed[0, 0, 0]) == 38 - 12
+    for name, code in (("reference", fam.REFERENCE), ("Otsu-driven Canny", otsu_canny_code())):
+        r = run_solution(code, [{"img": img}, {"img": dimmed}], lint=False, timeout_s=60)
+        assert r.ok, r.summary()
+        assert fam.verify_manufactured(scene, r.outputs[0]), name
+        assert np.array_equal(np.asarray(r.outputs[0]["segments"]), np.asarray(r.outputs[1]["segments"])), name
 
 
 @pytest.mark.parametrize("prelude, thresholds", [
@@ -221,7 +255,7 @@ def test_other_adaptive_canny_pipelines_are_invariant_to_dimming(prelude, thresh
     code = fam.MUTANTS["fixed_canny"][1].replace(old, new)
     assert code != fam.MUTANTS["fixed_canny"][1]
     drift = sandbox_drift(code, n=15, seed=9_000)
-    assert drift[fam.T_DIM] == 0.0
+    assert drift[fam.T_DIM] == drift[fam.T_DIM_STRONG] == 0.0
     for name in (fam.T_SHIFT, fam.T_ROT, fam.T_MIRROR):
         assert drift[name] <= fam.META_TOL[name], (name, drift[name])
 
@@ -303,6 +337,18 @@ def test_hough_lines_p_shape_is_the_5_0_exposure():
     assert lines.ndim == 2 and lines.shape[1] == 4 and lines.dtype == np.int32
     assert lines.reshape(-1, 4).shape == lines.shape  # the version-proof idiom is a no-op here
     assert cv2.HoughLinesP(np.zeros((50, 50), np.uint8), 1, np.pi / 180, 20) is None
+
+
+def test_lsd_detect_returns_n_by_4_float32_in_5_0():
+    """Measured on OpenCV 5.0.0: lines are (N, 4) float32 (no singleton axis); width and prec are (N,) float64;
+    nfa is None; an image without a segment gives None in all four."""
+    assert cv2.__version__.startswith("5."), cv2.__version__
+    gray = cv2.cvtColor(fam.make_scene(7_160_001).img, cv2.COLOR_BGR2GRAY)
+    lines, width, prec, nfa = cv2.createLineSegmentDetector().detect(gray)
+    assert lines.ndim == 2 and lines.shape[1] == 4 and lines.shape[0] > 0 and lines.dtype == np.float32, lines.shape
+    assert width.shape == prec.shape == (len(lines),) and width.dtype == prec.dtype == np.float64 and nfa is None
+    assert lines.reshape(-1, 4).shape == lines.shape  # the version-proof idiom of _est_lsd is a no-op here
+    assert cv2.createLineSegmentDetector().detect(np.zeros((100, 100), np.uint8)) == (None, None, None, None)
 
 
 def test_scene_generation_is_deterministic_and_well_posed():

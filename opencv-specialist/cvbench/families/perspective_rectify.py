@@ -10,11 +10,14 @@ of the measurement.
 Contract choices
 ----------------
 * Corner order is fixed by *image position*, not by what is printed on the card: TL has the smallest x+y,
-  BR the largest x+y, TR the smallest y-x, BL the largest y-x. The rule is unambiguous (generation keeps a
-  GAP of px between the winner and the runner-up of each of the four tests, 2*sqrt(2) times the corner
-  tolerance, so a corner error cannot flip a label) and it is what a document scanner does. Scenes roll the
-  card by a multiple of 90 degrees plus up to 25 degrees, so the printed top of the card is anywhere and the
-  rectified image is "as the photo sees it".
+  BR the largest x+y, TR the smallest y-x, BL the largest y-x. The rule is unambiguous: generation keeps
+  GAP = 30 px between the winner and the runner-up of each of the four tests. A corner error e moves x+y and
+  y-x of a corner by at most sqrt(2)*e, so it can close a gap by at most 2*sqrt(2)*e; for the largest corner
+  tolerance, TOL_A + TOL_B*BLUR_RANGE[1] = 6.4 + 0.75*2.2 = 8.05 px, that is 22.8 px < 30 px, so a corner
+  error cannot flip a label (the smallest gap generated on 300 fresh scenes, seeds 7_300_000..7_300_299, is
+  35.4 px). It is also what a document scanner does. Scenes roll the card by a multiple of 90 degrees plus
+  up to 25 degrees, so the printed top of the card is anywhere and the rectified image is "as the photo
+  sees it".
 * ``out_w`` and ``out_h`` are inputs (never equal: |out_w - out_h| >= 24, so swapping them shows). The four
   corners map to the four corner pixels of the output: corners[0] -> warped[0, 0], corners[1] ->
   warped[0, out_w-1], corners[2] -> warped[out_h-1, out_w-1], corners[3] -> warped[out_h-1, 0].
@@ -109,7 +112,7 @@ BORDER = 16.0  # px: the true corners stay this far inside the frame
 MU = 0.10  # paper margin and unjudged band, as a fraction of each side
 RAMP = 0.04  # width of the smooth margin -> picture transition, fraction of a side
 ROLL_MAX = 25.0  # degrees of in-plane roll on top of a multiple of 90
-GAP = 30.0  # px: best vs second-best corner for each position test (>= 2*sqrt(2) * the corner tolerance)
+GAP = 30.0  # px: best vs second-best corner for each position test (>= 2*sqrt(2) * the largest corner tolerance, 22.8 px)
 ANGLE_RANGE = (55.0, 125.0)  # interior angles of the card as photographed, degrees
 MIN_EDGE = 100.0  # px: shortest side of the photographed card
 AREA_RANGE = (0.15, 0.70)  # card area as a fraction of the photo

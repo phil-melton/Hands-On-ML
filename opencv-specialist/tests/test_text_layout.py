@@ -21,7 +21,7 @@ EXPECTED = {
     "baseline_ignored":         (True,     True,  False,       True),
     "wh_swapped":               (True,     True,  False,       True),
     "float_origin":             (False,    True,  False,       False),
-    "swallowed_float_origin":   (True,     True,  False,       True),   # lint passes: `except cv2.error` is not broad
+    "swallowed_float_origin":   (True,     False, False,       True),   # lint: `except cv2.error: pass` is swallowed-except (not broad)
     "no_shrink":                (True,     True,  False,       False),
     "top_left_origin":          (True,     True,  False,       False),
     "proportional_shrink":      (True,     True,  False,       True),
@@ -61,6 +61,11 @@ def test_exec_only_misses_most_wrong_solutions(matrix):
     wrong = [n for n in EXPECTED if n not in HARMLESS]
     assert sum(matrix[n]["exec-only"].passed for n in wrong) == len(wrong) - 1  # only float_origin raises
     assert all(not all(matrix[n][g].passed for g in GATES[1:]) for n in wrong)
+
+
+def test_swallowed_float_origin_is_caught_by_swallowed_except_not_by_broad_except(matrix):
+    detail = matrix["swallowed_float_origin"]["lint"].detail
+    assert "swallowed-except" in detail and "broad-except" not in detail  # `except cv2.error` is specific
 
 
 def test_the_two_verifier_gates_catch_different_mutants(matrix):
@@ -134,6 +139,37 @@ def test_5_0_text_metrics_that_the_docstring_relies_on():
     # cap height 21 px: the 6 px of headroom are what leaves centred ink low
     cap = -fam._ink_box("H", cv2.FONT_HERSHEY_SIMPLEX, 1.0, 1)[1]
     assert cap == 21 and h_flat - cap == 6
+
+
+def test_ink_leaves_the_text_size_box_only_on_the_left_by_a_leading_j():
+    """The overhang figures recorded in text_layout.py: left side only, a leading 'j' only, at most 5 px."""
+    rng = np.random.default_rng(7_000_000)
+    n, worst, hooked = 0, 0, []
+    while n < 400:
+        scale, thick = round(float(rng.uniform(0.5, 2.5)), 2), int(rng.integers(1, 4))
+        text, face = fam._rand_text(rng), fam.FACES[int(rng.integers(len(fam.FACES)))]
+        if len(text) < 1 or not fam._reaches_cap(text, face, scale, thick):
+            continue
+        n += 1
+        x0, y0, x1, y1 = fam._ink_box(text, face, scale, thick)
+        (tw, th), base = cv2.getTextSize(text, face, scale, thick)  # the box: x in [0, tw-1], y in [-th, base-1]
+        assert x1 <= tw - 1 and y0 >= -th and y1 <= base - 1, (text, face, scale, thick)
+        if x0 < 0:
+            hooked.append((text[0], -x0))
+        worst = max(worst, -x0)
+    assert hooked and {c for c, _ in hooked} == {"j"}, hooked
+    assert worst <= 5
+
+
+def test_mutant_failure_rates_are_measured_by_a_function_and_the_fitting_scenes_never_fail():
+    r = fam.measure_mutant_failure_rates(n=80, seed=7_000_000)
+    assert r["seeds"] == (7_000_000, 7_000_079)
+    for name in ("baseline_ignored", "proportional_shrink"):
+        assert r[name]["all"][1] == 80 and r[name]["fits"][1] == r[name]["must_shrink"][1] == 40
+        assert r[name]["all"][0] == r[name]["fits"][0] + r[name]["must_shrink"][0]
+    # proportional_shrink only differs from the reference when the width overflows, so a scene that fits cannot fail it
+    assert r["proportional_shrink"]["fits"][0] == 0 and r["proportional_shrink"]["must_shrink"][0] > 0
+    assert r["baseline_ignored"]["all"][0] > 0
 
 
 def test_putText_ignores_lineType_for_hershey_fonts_on_5_0():

@@ -2,8 +2,9 @@
 
 Choose the answer first (method of manufactured solutions): the corners are the image of the
 grid points (i, j) of a flat board under a known homography (a pinhole camera looking at the
-board from up to ~30 degrees off-axis, rolled by up to 22 degrees). The photo is rendered *from*
-that homography. Every grid line is a straight image line, and a straight edge seen through a
+board with pitch and yaw each drawn uniformly in +-32 degrees and a roll of up to 22 degrees; the
+board normal then lies up to ~43 degrees off the optical axis, see ``_pose``). The photo is rendered
+*from* that homography. Every grid line is a straight image line, and a straight edge seen through a
 Gaussian PSF has the exact profile erf(d / (sigma sqrt 2)) (d = signed distance to the line),
 so the board is the product of these edge profiles and its saddle points sit exactly on the
 manufactured corners: no supersampling, no phase error in the truth. Pixel (col, row) is
@@ -143,7 +144,7 @@ PHRASINGS = [
 #
 # A, W, K: upper-envelope fit (least squares on law - error with a heavy penalty on law < error,
 # numpy Nelder-Mead, `fit_envelope`) to the per-scene worst corner error of the refined estimator
-# over the 3840 gauge blocks of calibrate() (12 blurs 0..2.5 px x 8 noise/contrast ratios 0..0.085,
+# over the 3840 gauge blocks of calibrate() (12 blurs 0..2.5 px x 8 noise/contrast ratios 0..0.08,
 # 40 boards each, contrast 60..200; OpenCV 5.0.0; max over cornerSubPix windows 8 and 11 and both
 # termination criteria). The fit recovered (A, W, K) = (0.2601, 0.5022, 7.314) from two independent
 # runs; the noise exponent of sigma_e, left free, came out 1.00 (0.9-1.1). Without the 8-bit
@@ -163,13 +164,14 @@ A_ALIAS, W_ALIAS, K_NOISE = 0.26, 0.50, 7.3
 TOL_M = 1.5
 
 # META_TOL: set distance between the mapped corners of the original and those found in a transformed
-# image (800 scenes x 4 transforms; the board was found every time). The reference
-# (findChessboardCorners + cornerSubPix(11, 11), eps 0.001) moves by <= 0.0008 px under
-# translate/rot90/mirror and <= 0.094 px when the image is dimmed x0.5 (the rounding noise doubles in
-# relative terms); window 8 gives the same (0.0009, 0.077); the loose termination eps = 0.1, a
-# legitimate setting, moves by <= 0.074 px under the exact symmetries and <= 0.130 px under
-# dimming. META_TOL = 0.2 is ~1.5x the worst of those, and far below the 0.7-1.0 px that a
-# pixel-centre convention slip produces under mirror/rot90.
+# image (measure_metamorphic_drift(), 600 scenes x 4 transforms, seeds 800_000..800_599; the board was found
+# every time). Re-run on OpenCV 5.0.0 with n=600: the reference
+# (findChessboardCorners + cornerSubPix(11, 11), eps 0.001) moves by <= 0.0007 px under
+# translate/rot90/mirror and <= 0.094 px (0.0939) when the image is dimmed x0.5 (the rounding noise doubles
+# in relative terms); window 8 gives 0.0009 and 0.086 (an earlier record said 0.077, which did not reproduce
+# on these 600 scenes); the loose termination eps = 0.1, a legitimate setting, moves by <= 0.074 px (0.0735)
+# under the exact symmetries and <= 0.130 px (0.1298) under dimming. META_TOL = 0.2 is ~1.5x the worst of
+# those, and far below the 0.7-1.0 px that a pixel-centre convention slip produces under mirror/rot90.
 META_TOL = 0.2
 
 # What calibrate() / validate_on_prior() / measure_metamorphic_drift() recorded (OpenCV 5.0.0,
@@ -231,7 +233,13 @@ def _rot(rx: float, ry: float, rz: float) -> np.ndarray:
 def _pose(rng: np.random.Generator, sx: int, sy: int, tilt: float = 1.0) -> tuple[np.ndarray, float]:
     """Homography board -> image (board units = squares, origin at the board's top-left corner).
 
-    Returns it with the smallest local square size (px per square) over the board."""
+    Returns it with the smallest local square size (px per square) over the board.
+
+    Pose draws: pitch and yaw each uniform in +-32 degrees and roll uniform in +-22 degrees (all times ``tilt``);
+    an attempt is kept only if every local square is >= SQ_MIN px and the quiet zone clears the MARGIN. Over 600
+    accepted scenes (seeds 7_300_000..7_300_599) the largest |pitch|, |yaw|, |roll| are 31.8, 32.0, 22.0 degrees,
+    and the angle between the board normal and the optical axis, acos(cos(pitch) cos(yaw)), has a median of 23.8,
+    a 99th percentile of 41.1 and a maximum of 43.1 degrees (25 % of the scenes exceed 30 degrees)."""
     for _ in range(500):
         pitch, yaw = np.radians(tilt * rng.uniform(-32, 32, 2))
         roll = math.radians(tilt * rng.uniform(-22, 22))

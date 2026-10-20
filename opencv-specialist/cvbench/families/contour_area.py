@@ -76,7 +76,15 @@ BORDER, GAP = 14, 5  # px kept clear at the image border and between shapes
 # Worst |error| / P = 0.598, so TOL_C = 0.75 carries ~25 % margin. TOL_C0 covers the corner
 # quantization of the smallest shapes. META_TOL: the reference's sorted areas moved by exactly
 # 0.0 px^2 under every transform in 300 scenes (the symmetries preserve the pixel set).
+# TOL_C0 check, 2026-10-20 (OpenCV 5.0.0): slack = |err| - TOL_C * P in px^2, shapes paired by position.
+#   contourArea (reference), 2000 scenes, seeds 7400000-7401999: max -9.05, p99 -11.02; uses none of TOL_C0.
+#   Pixel count, 2000 scenes, seeds 7430000-7431999: max -4.43, p99 -11.92; 0 of 10016 shapes have slack > 0.
+#   Minimal-size gauges, 7 kinds: contourArea max -11.02, pixel count max -5.00 (rect 6x6). TOL_C0 unused.
+#   Open (for Phil): in those multi-shape scenes the pixel count reaches |error| / P = 0.643 (contourArea
+#   0.589), so TOL_C = 0.75 is 1.17x the worst case seen, under the 1.25x margin rule. No shape is rejected.
 TOL_C, TOL_C0 = 0.75, 2.0
+# META_TOL check, 2026-10-20 (OpenCV 5.0.0): reference drift under 4 transforms, 8000 checks in 2000
+#   scenes (seeds 7420000-7421999): max 0.0, p99 0.0 px^2, margin 1 - max/META_TOL = 100 %.
 META_TOL = 1.0
 
 

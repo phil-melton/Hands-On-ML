@@ -11,8 +11,10 @@ A stroke of width ``t`` drawn by ``cv2.line`` is a band with round caps. A detec
 the band, not the centre line it was drawn from, so an end point it reports can differ
 from the manufactured one (the centre-line end) through four mechanisms:
 
-1. *along the axis*, the round cap extends the stroke past the end point by ~t/2
-   (read off the pixels: 0, 1, 2, 2 px for t = 1..4; fitLine finds exactly that);
+1. *along the axis*, the round cap extends the stroke past the end point by ceil(t/2) px, except
+   that a 1-px line has no cap at all (read off the pixels of 3000 random angles per width in
+   OpenCV 5.0.0: at most 0, 1, 2, 2 px for t = 1..4, so t/2 rounded up, not t/2; fitLine finds
+   exactly that);
 2. *across the axis*, a detector may run along any part of the band: up to t/2;
 3. *pixel snapping*: every reported coordinate is rounded, +-0.5 px per axis;
 4. *pre-filter*: a pipeline that widens the mask with a 3x3 dilation (the standard remedy
@@ -67,8 +69,10 @@ atan(2 * tol / L) none (``calibrate()["angle"]``): a separate angle test adds no
 Symmetries (``transforms``): shift, rot90 and mirror move the end points with the image
 (covariant: expected = the same map applied to the base end points); end points within a
 row and rows within the output are compared as sets, because the contract's canonical
-order (smaller x first) is not preserved by rot90 or mirror. Dimming leaves the output
-unchanged (invariant). ``verify_metamorphic`` never sees the scene, so the maps use the
+order (smaller x first) is not preserved by rot90 or mirror. Dimming, at x0.45 and again at
+x0.25, leaves the output unchanged (invariant); the second, stronger dimming is here because a
+low fixed Canny threshold survives the first (see the comment above ``META_TOL``).
+``verify_metamorphic`` never sees the scene, so the maps use the
 fixed image size ``H`` x ``W`` and the fixed shift below. A segment's direction is an axis,
 not a vector (mod 180 degrees): rot90 adds 90 degrees to it and a mirror negates it, which
 the end point maps already encode. The order is checked on manufactured scenes only.
@@ -84,7 +88,10 @@ worst case keeps growing with the sample (4.0 / 3.16 / 5.0 / 4.47 px at 6000 blo
 2.24 / 4.47 / 4.12 px at 1200), it misses 8-15 thin strokes per 6000, and on 600 multi-stroke
 scenes it moves up to 8.5 px under the symmetries and changed the stroke count in 2-3 of
 them. Fitting the law to a tail that does not converge would make the tolerance depend on
-the sample size.
+the sample size. Measured on OpenCV 5.0.0 (``tests`` pin it): ``createLineSegmentDetector().detect(gray)``
+returns a 4-tuple ``(lines, width, prec, nfa)`` whose ``lines`` has shape (N, 4) and dtype float32
+(11 rows for a 5-stroke scene; two-dimensional, no singleton axis), ``width`` and ``prec`` are (N,)
+float64, ``nfa`` is None, and an image without a segment gives None in all four.
 """
 from __future__ import annotations
 
@@ -133,9 +140,10 @@ N_RANGE = (3, 6)
 AXIS_FRAC = 0.25  # share of strokes drawn exactly horizontal or vertical
 SHIFT = (7, -5)  # px, well inside BORDER
 GAIN = 0.45  # dim factor, shared with contour_area
+GAIN_STRONG = 0.25  # stronger dim factor, this family only (why: the comment above META_TOL)
 
 T_SHIFT = f"translate({SHIFT[0]:+d},{SHIFT[1]:+d})"
-T_ROT, T_MIRROR, T_DIM = "rot90", "mirror", f"dim x{GAIN}"
+T_ROT, T_MIRROR, T_DIM, T_DIM_STRONG = "rot90", "mirror", f"dim x{GAIN}", f"dim x{GAIN_STRONG}"
 
 # Calibrated by calibrate() on 4 x 6000 single-stroke gauge blocks (6000 per seed = 1500 per width, OpenCV
 # 5.0.0, seeds 12345 / 999 / 2024 / 7). Worst end point error (px) by stroke width t = 1 / 2 / 3 / 4 (seed
@@ -156,11 +164,30 @@ TOL_A, TOL_B = 1.9, 0.7
 #   median-driven Canny, max-relative Canny, Otsu mask + 7x7 closing (200 scenes): dimming exactly 0.0,
 #                        geometric max 3.0 / 4.0 / 4.0 px (the first two), 2.83 px (the third)
 #   fixed Canny(100,200) dimming: 9 % of strokes move more than 1 px, one scene changed its stroke count
+# Why a second, stronger dimming (GAIN_STRONG = 0.25; Gate 2 review, decision 4). GAIN = 0.45 does not make a
+# low fixed Canny threshold move: Canny(30, 100) (the fixed_canny mutant with lower thresholds, now the mutant
+# fixed_low_canny) passed all four gates before this transform, both on the pinned scenes and on 10 of 10 fresh
+# gate seeds, and its dimming x0.45 drift was exactly 0.0 on 600 scenes (0 rejected; seeds 7_100_000-7_100_599).
+# Calibration of dimming x0.25 on the same 600 scenes (2669 strokes, via sandbox.run_solution; the reference through
+# measure_metamorphic_drift too), tolerance 1.0 px:
+#   reference, Otsu-driven Canny, median-driven Canny, max-relative Canny, Otsu mask + 7x7 closing:
+#                        mean = p99 = max = 0.0 px, 0 of 600 scenes rejected, no stroke count changed (also 0.0
+#                        at x0.2 and x0.15); on 200 scenes drawn at the weakest the generator allows (1 px, gray 150
+#                        on gray 50: contrast 100 -> 26 gray levels after the dimming) all five still find every
+#                        stroke and stay at 0.0 px; margin 1.0 >= 1.25 x 0.0 holds, with room to spare
+#   Canny(30, 100)       mean 0.19, p99 3.0, max inf (4 scenes changed the stroke count); 7 % of strokes move more
+#                        than 1 px, 107 of 600 scenes (17.8 %) fail the check, and 123 of 200 fresh gates (n_meta = 5)
+#                        reject it, all of them at x0.25 (before: 0 of 600 scenes, 0 of 10 gates)
+#   Canny(100, 200)      at x0.25: 425 of 600 scenes fail the check (at x0.45: 116 of 600)
+# What remains open: the stronger dimming is not a general detector of low fixed thresholds. Canny(20, 60) and
+# Canny(10, 30) still pass at x0.25 (0 of 300 scenes rejected; Canny(20, 60) starts to fail at x0.2, 11 of 300),
+# and Canny(30, 100) is rejected by 62 % of the gates (123 of 200), not by all: 17.8 % of the scenes fail, so
+# a gate of 5 scenes rejects it with probability 1 - 0.822**5 = 62 %.
 # A geometric symmetry re-samples the Hough accumulator / the Canny edge chains, so an end point can move by
 # the estimator's own tail error: 5.0 = 1.25 x the larger of the two pipelines (4.0). Dimming does not touch
 # the geometry, so every estimator that thresholds adaptively is exactly invariant: 1.0 px is one pixel of
 # snapping, and what a hard-coded threshold does shows up as a larger move.
-META_TOL = {T_SHIFT: 5.0, T_ROT: 5.0, T_MIRROR: 5.0, T_DIM: 1.0}
+META_TOL = {T_SHIFT: 5.0, T_ROT: 5.0, T_MIRROR: 5.0, T_DIM: 1.0, T_DIM_STRONG: 1.0}
 
 
 @dataclass(frozen=True)
@@ -341,6 +368,7 @@ def transforms(scene: Scene) -> dict[str, dict]:
         T_ROT: {"img": np.ascontiguousarray(np.rot90(img))},
         T_MIRROR: {"img": np.ascontiguousarray(img[:, ::-1])},
         T_DIM: {"img": np.round(img.astype(np.float32) * GAIN).astype(np.uint8)},
+        T_DIM_STRONG: {"img": np.round(img.astype(np.float32) * GAIN_STRONG).astype(np.uint8)},
     }
 
 
@@ -353,7 +381,7 @@ def expected_under(name: str, seg: np.ndarray) -> np.ndarray | None:
         return np.c_[y1, W - 1 - x1, y2, W - 1 - x2]
     if name == T_MIRROR:
         return np.c_[W - 1 - x1, y1, W - 1 - x2, y2]
-    if name == T_DIM:
+    if name in (T_DIM, T_DIM_STRONG):
         return seg
     return None
 
@@ -475,6 +503,11 @@ MUTANTS: dict[str, tuple[str, str]] = {
     "fixed_canny": (
         "Mask from Canny(100, 200) closed with a 7x7 kernel instead of Otsu: absolute edge thresholds.",
         _mutate((_THRESH, "mask = cv2.morphologyEx(cv2.Canny(gray, 100, 200), cv2.MORPH_CLOSE, "
+                          "np.ones((7, 7), np.uint8))"))),
+    "fixed_low_canny": (
+        "As fixed_canny but with Canny(30, 100): low absolute thresholds that survive the x0.45 dimming and only "
+        "give way under the x0.25 one.",
+        _mutate((_THRESH, "mask = cv2.morphologyEx(cv2.Canny(gray, 30, 100), cv2.MORPH_CLOSE, "
                           "np.ones((7, 7), np.uint8))"))),
     "fixed_threshold_127": (
         "Hard-coded binary threshold: right for these scenes, wrong for a dimmer image.",
@@ -680,7 +713,7 @@ def calibrate(n: int = 2400, seed: int = 12345) -> dict:
 def measure_metamorphic_drift(n: int = 300, seed: int = 50_000, solve=reference_solve) -> dict:
     """How far ``solve``'s end points sit from the covariant prediction, per symmetry, over all strokes of
     ``n`` scenes: {symmetry: {"max": px, "p99": px, "mean": px}}. ``inf`` if a stroke count changed."""
-    moved: dict[str, list[float]] = {T_SHIFT: [], T_ROT: [], T_MIRROR: [], T_DIM: []}
+    moved: dict[str, list[float]] = {name: [] for name in META_TOL}
     for i in range(n):
         scene = make_scene(seed + i)
         base = solve(scene.img)["segments"].astype(float)
