@@ -64,6 +64,47 @@ Stage 3 preparation
   bf16 repo ships none), 9B 5.38 GiB (6.5 + 6.2 min). Sizes match Stage 1's 4B and 7B exactly.
 - Ollama auto-updated to 0.40.4 (was 0.32.9). Its store (15.9 GB) was copied to D:\ollama\models (C: has 17 GB free;
   the bases need 13); the app's own Model location setting overrides the OLLAMA_MODELS user variable I set.
+  Phil set it at 18:28; bases registered as base-qwen2.5-coder-7b / base-qwen3.5-4b / base-qwen3.5-9b.
+- Checked on 0.40.4: an explicit system message replaces the Modelfile SYSTEM (prompt_eval_count 71 with and without
+  it; 19 with a 2-word system), so the harness's system message is not rendered twice; `think: false` still gives no
+  thinking on both Qwen3.5 bases (75 prompt tokens = 71 + the empty think block).
+- Smoke run prediction (Rule 1): dev, 1 task per family (9), greedy + 2 samples = 27 replies per rung, 4 rungs, num_ctx
+  8192. Assume ~300 tokens per reply; decode 65 (7B, Stage 1), 80 (4B, Stage 1), ~45 tok/s (9B: 4B rate scaled by
+  2.59/5.38 GiB, bandwidth-bound, plus some headroom) -> ~4.6 / 3.8 / 6.7 / 4.6 s per reply, ~9 min generation
+  + ~1.5 min of loads. 0 CU.
+- Smoke run measured (`~/opencv-expert/bakeoff/smoke-20261020/`): 17.5 min generation (pred ~10.5).
+
+  | rung | decode tok/s (pred) | tokens/reply (pred) | truncated at 1024 | s/reply | pass@1, 9 dev tasks |
+  |---|---|---|---|---|---|
+  | r1-7b | 63.3 (65) | 329 (300) | 0/27 | 5.3 | 1/9 |
+  | r2-4b | 79.2 (80) | 910 (300) | 17/27 | 11.7 | 0/9 |
+  | r3-9b | 52.9 (45) | 845 (300) | 14/27 | 16.2 | 0/9 |
+  | r4-7b-notes | 61.8 | 334 | 0/27 | 5.6 | 2/9 |
+
+  Decode speeds are within 20 % of prediction. The miss is reply length: the Qwen3.5 bases write ~90-line solutions
+  (docstrings, comments, defensive checks; no repetition loops), so 1024 tokens cuts them mid-function and the
+  unclosed fence grades as a syntax error. That measures the cap, not the model: smoke 2 measures uncapped
+  lengths (num_predict 4096) before the full run. Notes block measured at 1455 tokens. Some 4B NameErrors are
+  real (it imported numpy inside solve() but never cv2).
+- Grader bug found by the smoke run: chessboard_corners' metamorphic check raised on an empty answer on both images
+  (Hausdorff distance of two empty sets). Fixed (`_set_distance` returns 0 for two empty sets; the manufactured gate
+  rejects the empty answer) with a regression test; a degenerate-output fuzz of all nine families' verifiers
+  (empty, zero, scalar, NaN outputs) found no other raise.
+- Smoke 2 (`smoke2-20261020`, Qwen3.5 rungs, 9 dev tasks, greedy + 1 sample, num_predict 4096): median 1068 (4B) /
+  1296 (9B) tokens, but 3/18 and 6/18 replies still ran to 4096. Those are reasoning written as code comments with
+  thinking off, sometimes a loop (one 9B reply repeats a comment 45x; another says "I think I'm stuck in a loop").
+  Every reply over ~1500 tokens failed, finished or not; the one pass was 642 tokens.
+  Decision: num_predict 2048 for every rung. Mechanism: past ~1.5k tokens these bases are looping, not finishing;
+  2048 changes no pass/fail in the sample and halves the time those replies cost. Truncations are reported.
+- Full run design (`bakeoff-20261020`): test split + gotchas. Pass 1: greedy on all 238 tasks with `--dedupe-greedy`
+  (77 distinct prompts, each reply graded on every task's own scenes: T=0 makes the repeats identical). Pass 2: 5
+  samples at T=0.8 on one task per distinct prompt (77 tasks), since samples per prompt, not per task, carry the
+  information. Rung order r1, r4, r2, r3. num_ctx 8192, num_predict 2048.
+- Prediction (Rule 1), 462 replies per rung (77 greedy + 385 sampled): s/reply = tokens / measured tok/s + prompt
+  -> r1 329/63.3 + 0.2 = 5.4 s; r4 5.7 s; r2 1202/79.2 + 0.2 = 15.4 s; r3 1352/52.9 + 0.3 = 25.9 s (token means
+  under a 2048 cap, from smoke 2). Generation 42 + 44 min + 2.0 h + 3.3 h = **6.8 h** (range 5-8 h: gotcha replies
+  are probably shorter), pass 1 alone ~67 min. Grading ~2,500 grades, 20-40 min of CPU overlapping generation.
+  0 CU, watchdog running (14 h from 18:41). Started ~19:30, expected done ~02:30.
 
 ## 2026-10-17 Stage 2 built: benchmark, gotcha suite, removed-API gate (CPU only)
 

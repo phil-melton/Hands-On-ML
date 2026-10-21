@@ -296,3 +296,13 @@ def test_prompt_renders_the_contract():
     assert 3 <= len(fam.PHRASINGS) <= 5 and fam.PHRASINGS[0] == fam.SPEC.task
     scene = fam.make_scene(0)
     assert check_outputs(fam.SPEC, fam.reference_solve(**fam.inputs(scene))) == []
+
+
+def test_metamorphic_check_survives_empty_answers():
+    # Found by the Stage 3 smoke run (2026-10-20): a model that returned no corners on every image crashed the
+    # verifier (min of an empty array). Empty everywhere is consistent; the manufactured gate is what rejects it.
+    empty = {"corners": np.zeros((0, 2), np.float32)}
+    names = ["translate(+7,-5)", "rot90", "mirror", "dim x0.5"]
+    assert fam.verify_metamorphic(empty, {n: empty for n in names})
+    one = {"corners": np.array([[10.0, 20.0]], np.float32)}
+    assert not fam.verify_metamorphic(empty, {"rot90": one})

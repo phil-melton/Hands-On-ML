@@ -397,6 +397,8 @@ def tolerance(scene: Scene) -> float:
 def _set_distance(a: np.ndarray, b: np.ndarray) -> float:
     """Hausdorff distance between two point sets: order-free, and unambiguous here because the corner
     spacing (>= 15 px) is far above every tolerance used."""
+    if len(a) == 0 or len(b) == 0:  # equal shapes are checked first, so both are empty: identical sets
+        return 0.0 if len(a) == len(b) else float("inf")
     d = np.linalg.norm(a[:, None, :] - b[None, :, :], axis=2)
     return float(max(d.min(axis=1).max(), d.min(axis=0).max()))
 
