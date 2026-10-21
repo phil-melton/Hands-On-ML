@@ -1,16 +1,51 @@
 # opencv-expert logbook
 
-**Next step:** Stage 3 (2026-10-20 entry below). Base GGUFs are built; register them with
-`~/opencv-expert/scratch/register_bases.sh` once Ollama's Model location is D:\ollama\models (Phil sets it in the Ollama
-app's Settings; it overrides OLLAMA_MODELS). Then a smoke run (`bakeoff.run generate --split dev --per-family 1`) to
-measure tokens per answer and decode speed on Ollama 0.40.4, write the prediction here, greedy pass for all 4 rungs,
-samples overnight, report, ⛔ Gate 3. For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
+**Next step:** waiting at ⛔ Gate 3 (2026-10-21 entry below). Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
+its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
+homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed
+prompts, record the frozen criteria here, then Stage 4. Open audit: are the hough "strokes were missed" failures the
+1 px strokes? For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
 discard the first Ollama request after a model is created before timing decode. Working method since 2026-10-17: I
 orchestrate Sonnet 5.5 / Haiku 4.5 subagents (one brief and one set of files each, no git), verify every report by
 re-running its tests, and integrate, log and commit myself.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-21 Stage 3 complete: baseline bake-off (local GPU, 0 CU)
+
+Run `bakeoff-20261020` (19:23-00:36): 4 rungs x 238 test tasks (198 family + 40 gotchas), greedy with deduped prompts +
+5 samples on one task per distinct prompt (77); 2,492 replies graded, 0 grader errors. Copies in
+`bakeoff/results/bakeoff-20261020/` (report, summary, audit, config, gzipped generations and grades, hash manifest).
+
+| rung | pass@1 all (SE by prompt) | 5.0 subset | timeless | held-out | pass@5 all | pass@1 with imports supplied |
+|---|---|---|---|---|---|---|
+| r1 Qwen2.5-Coder-7B | 15.5 (4.5) | 6.7 | 30.3 | 38.6 | 40.3 | 18.1 |
+| r2 Qwen3.5-4B | 8.0 (3.8) | 3.4 | 15.7 | 25.0 | 35.1 | 23.1 |
+| r3 Qwen3.5-9B | 32.8 (6.5) | 18.8 | 56.2 | 36.4 | 54.5 | 32.8 |
+| r4 7B + notes | 21.4 (5.2) | 13.4 | 34.8 | 38.6 | 45.5 | 23.1 |
+
+Paired pass@1 (p per task / per prompt): 9B - 7B +17.2 (7e-7 / 0.023); 9B - 4B +24.8 (1e-13 / 2e-6); notes - 7B +5.9
+(0.004 / 0.18); 9B - notes +11.3 (0.003 / 0.31).
+Predicted vs measured: generation 6.8 h vs 5.17 h; greedy pass 67 vs 51 min; decode 63.2 / 79.3 / 52.9 tok/s (as in
+the smoke runs); tokens per reply 238 / 965 / 1,041 vs 329 / 1,202 / 1,352 (gotchas draw shorter replies).
+
+Findings
+- PLAN.md §7 question 1: convention errors dominate (T=0 failures, 7B: 98 convention, 78 algorithm; 9B: 95 / 33).
+  Lever table: prior, so fine-tune. The notes move the 7B's failures from convention (98 -> 51) to algorithm (78 -> 90).
+- The three families no rung passes are model failures, audited: hough_segments (4.x unpacking of 5.0's (N,4) lines,
+  invented APIs), chessboard_corners (removed NumPy 2 aliases, reversed order; the notes rung raises "Chessboard not
+  found" on all 22, cause not audited), text_layout (ink outside the box; the 9B returns None). Not yet audited: whether
+  the hough "strokes were missed" failures are the 1 px strokes (Gate 2 decision 3).
+- The contract never asks for imports ("Write one function, `def solve(...)`"): 316 replies failed on NameError cv2/np;
+  all 88 of the 7B's have no import anywhere in the reply. Diagnostic re-grade with the imports prepended (official
+  scores unchanged, `diag_imports.json`): 4B 8.0 -> 23.1, 7B 15.5 -> 18.1, 9B unchanged. Proposed contract fix for Gate 3.
+- Truncation at num_predict 2048: 4B 120/623 replies, 9B 186/623, 7B 1, notes 0.
+- Incident: free commit sat at 4-6.5 GB for most of the run and touched 2.95 GB at 23:18; the watchdog fired, killed
+  nothing (its patterns covered only `train.`), and exited, so the last 78 min ran unguarded; no crash.
+  `setup/commit_watchdog.ps1` now also kills bake-off jobs (resumable) and unloads Ollama models. Next long job: 4
+  grading workers if the PC is in use.
 
 ## 2026-10-20 Gate 2 decisions applied; Stage 3 prepared (CPU only)
 
