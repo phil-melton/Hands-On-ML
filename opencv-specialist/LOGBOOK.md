@@ -1,11 +1,28 @@
 # opencv-expert logbook
 
-**Next step:** waiting at ⛔ Gate 4a. Phil reviews "opencv-expert: Gate 4a Teacher Pilot Review"
-(https://claude.ai/artifact/D8CfyV4jQmtMJ7YFa3gxJe): 8 decisions (teacher Qwen3.8-27B; widen tasks with ~40
-teacher-written phrasings per family + ~30 drill tasks; repair pairs by pairing failed and verified answers of a spec;
-Tier A only; fenced-code answer format; 8 samples on hough/text_layout + a thinking-mode test; ~3,000 examples;
-full generation ~12 CU, cap 24). Then build the drills and phrasings (CPU), full generation (Colab), data/train.jsonl.
-Pilot done (3.27 CU of 12, 2026-10-22 entry); Gate 3 applied and baselines frozen. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+**Next step:** Stage 4 build after Gate 4a (2026-10-22, entry below): drills, teacher-written phrasings, a
+thinking-mode test, then full generation on Colab within Phil's 100 CU cap, then data/train.jsonl and data/dev.jsonl.
+
+**Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
+foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0
+changes, disjoint from the gotcha suite (Agree); 3 repair pairs by pairing a failed answer + grader message with the
+same spec's verified answer, <= 1 per spec (Agree); 4 Tier A only (Agree); 5 answer format = a fenced python block with
+imports and solve, no prose (Agree); 6 CHANGED: "use thinking if it increases accuracy" - test thinking mode and use
+it wherever it raises the Tier-A rate, not only per CU; 7 ~3,000 examples, ~70 / 15-20 / 10 % mix (Agree); 8 CHANGED:
+**cap 100 CU** for full generation, "if more CU gets a better model then let's use it" - spend for quality (thinking,
+more samples, a stronger teacher where measured better), each session still predicted first and killed at 2x.
+
+Replay data (decision 7's ~10 %): `nvidia/OpenCodeInstruct` @ 8f3ba5ba (CC-BY-4.0, checked on the HF API by me;
+answers by Qwen2.5-Coder-32B-Instruct, Apache-2.0; the card says the data may be used to train models). One pinned
+shard (127 MB, sha256 342757e0..., outside git); filtered to unit-test-passing, judge >= 4, no cv2, deduped; 600 rows
+in `~/opencv-expert/replay/replay.jsonl` (sha256 d74d3503...), answers already single fenced python blocks; Qwen3.5
+tokens: answer median 189, p99 747. Caveats: competitive-programming style prompts (low diversity, fine for
+retention); attribute NVIDIA OpenCodeInstruct (arXiv:2504.04030, CC BY 4.0) if the adapter is published; check 13-gram
+overlap against the MBPP+ slice when Stage 6 builds it. Rejected the runner-up (BigCode OpenRAIL-M would pass use
+restrictions onto a model trained on its outputs).
+Next Colab test session (before full generation): on the 58 hard-family specs (hough_segments, text_layout), compare
+INT4 vs the official `Qwen/Qwen3.8-27B-FP8` (30.9 GB, fits an A100-40) and thinking on vs off; plus the phrasing
+generation. Whichever raises the Tier-A rate becomes the full-generation configuration. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed
