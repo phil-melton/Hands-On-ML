@@ -1,0 +1,253 @@
+{
+ "answer_tokens": 5599891,
+ "args": {
+  "chat_template_kwargs": {
+   "enable_thinking": false
+  },
+  "chunk": 50,
+  "dtype": "auto",
+  "enforce_eager": false,
+  "gpu_memory_utilization": 0.9,
+  "limit": 0,
+  "max_model_len": 8192,
+  "max_tokens": 2048,
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "prompts": "/content/generate_prompts.jsonl",
+  "quantization": null,
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "samples": 4,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_k": 0,
+  "top_p": 0.8
+ },
+ "chunks": [
+  {
+   "gen_s": 81.189,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 57006,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 81.524,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 56387,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 310.228,
+   "n_prompts": 50,
+   "n_samples": 380,
+   "output_tokens": 297242,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 341.664,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 333832,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 336.22,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 323063,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 230.77,
+   "n_prompts": 50,
+   "n_samples": 268,
+   "output_tokens": 211229,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 181.131,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 150393,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 150.807,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 121192,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 123.708,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 96850,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 143.623,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 112476,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 163.162,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 138440,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 177.044,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 147502,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 192.991,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 169654,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 254.695,
+   "n_prompts": 50,
+   "n_samples": 244,
+   "output_tokens": 226250,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 538.915,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 480175,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 525.759,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 479208,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 529.667,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 477923,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 517.683,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 465926,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 522.703,
+   "n_prompts": 50,
+   "n_samples": 400,
+   "output_tokens": 472745,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 103.786,
+   "n_prompts": 50,
+   "n_samples": 208,
+   "output_tokens": 75870,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 108.933,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 90017,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 93.804,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 78003,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 150.066,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 142107,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 105.032,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 74372,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 107.009,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 87732,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 136.8,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 122715,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 110.019,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 83816,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 36.925,
+   "n_prompts": 22,
+   "n_samples": 88,
+   "output_tokens": 27766,
+   "thinking_tokens": 0
+  }
+ ],
+ "complete": true,
+ "env": {
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "python": "3.13.15",
+  "torch": "2.13.0+cu130",
+  "transformers": "5.17.0",
+  "vllm": "0.31.0"
+ },
+ "finished_at": "2026-10-22T21:20:50+00:00",
+ "gen_s": 6355.857000000001,
+ "groups": {
+  "generate": {
+   "answer_tokens": 5599891,
+   "cut_off": 161,
+   "n_prompts": 1372,
+   "n_samples": 7188,
+   "output_tokens": 5599891,
+   "thinking_tokens": 0,
+   "truncated_thinking": 0
+  }
+ },
+ "load_s": 602.792,
+ "model": "RedHatAI/Qwen3.8-27B-INT4",
+ "n_invocations": 1,
+ "n_prompts": 1372,
+ "n_samples": 7188,
+ "output_tokens": 5599891,
+ "output_tokens_per_s": 881.0599420345674,
+ "prompt_tokens": 2532618,
+ "thinking_tokens": 0,
+ "wall_s": 6964.601
+}

@@ -1,0 +1,117 @@
+{
+ "answer_tokens": 299077,
+ "args": {
+  "chat_template_kwargs": {
+   "enable_thinking": false
+  },
+  "chunk": 40,
+  "dtype": "auto",
+  "enforce_eager": false,
+  "gpu_memory_utilization": 0.9,
+  "limit": 0,
+  "max_model_len": 16384,
+  "max_tokens": 2048,
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "prompts": "/content/generate_prompts.jsonl",
+  "quantization": null,
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "samples": 4,
+  "seed": 0,
+  "temperature": 0.8,
+  "top_k": 0,
+  "top_p": 0.95
+ },
+ "chunks": [
+  {
+   "gen_s": 48.377,
+   "n_prompts": 40,
+   "n_samples": 120,
+   "output_tokens": 38179,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 108.915,
+   "n_prompts": 40,
+   "n_samples": 144,
+   "output_tokens": 90534,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 156.49,
+   "n_prompts": 40,
+   "n_samples": 160,
+   "output_tokens": 132580,
+   "thinking_tokens": 0
+  },
+  {
+   "gen_s": 1609.975,
+   "n_prompts": 40,
+   "n_samples": 160,
+   "output_tokens": 1209365,
+   "thinking_tokens": 1179648
+  },
+  {
+   "gen_s": 2798.49,
+   "n_prompts": 40,
+   "n_samples": 160,
+   "output_tokens": 1925663,
+   "thinking_tokens": 1923154
+  },
+  {
+   "gen_s": 896.226,
+   "n_prompts": 16,
+   "n_samples": 64,
+   "output_tokens": 576152,
+   "thinking_tokens": 570594
+  }
+ ],
+ "complete": true,
+ "env": {
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "python": "3.13.15",
+  "torch": "2.13.0+cu130",
+  "transformers": "5.17.0",
+  "vllm": "0.31.0"
+ },
+ "finished_at": "2026-10-22T19:13:15+00:00",
+ "gen_s": 5618.472999999999,
+ "groups": {
+  "nothink": {
+   "answer_tokens": 223205,
+   "cut_off": 4,
+   "n_prompts": 80,
+   "n_samples": 320,
+   "output_tokens": 223205,
+   "thinking_tokens": 0,
+   "truncated_thinking": 0
+  },
+  "phrasing": {
+   "answer_tokens": 67805,
+   "cut_off": 0,
+   "n_prompts": 56,
+   "n_samples": 168,
+   "output_tokens": 67805,
+   "thinking_tokens": 0,
+   "truncated_thinking": 0
+  },
+  "think": {
+   "answer_tokens": 8067,
+   "cut_off": 282,
+   "n_prompts": 80,
+   "n_samples": 320,
+   "output_tokens": 3681463,
+   "thinking_tokens": 3673396,
+   "truncated_thinking": 282
+  }
+ },
+ "load_s": 606.166,
+ "model": "RedHatAI/Qwen3.8-27B-INT4",
+ "n_invocations": 1,
+ "n_prompts": 216,
+ "n_samples": 808,
+ "output_tokens": 3972473,
+ "output_tokens_per_s": 707.0378375049592,
+ "prompt_tokens": 330106,
+ "thinking_tokens": 3673396,
+ "wall_s": 6225.691
+}

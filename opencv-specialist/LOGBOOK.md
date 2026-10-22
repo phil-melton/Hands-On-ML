@@ -64,7 +64,22 @@ Full generation `full1-20261022` prediction (Rule 1): 1,372 specs (7 families x 
 drills x 3 = 120 prompts; 398 distinct prompts), 7,188 samples (k 8 for hough_segments and text_layout); per-family
 tokens per sample from s1's non-thinking run; 5.56 M output tokens at 707 tok/s (s1's measured rate) = 131 min + 10 min
 load + 2 min setup = **143 min, 12.9 CU** ($1.29), kill at 286 min. text_layout is 44 % of the tokens. Output is saved
-every 50 prompts and the stage is resumable. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+every 50 prompts and the stage is resumable.
+Measured full1 (14:24-16:21): 7,188 of 7,188 completions, 28 chunks; load 603 s, generation 6,356 s; 5.60 M output
+tokens at 881 tok/s (predicted 707); 161 cut at 2,048 tokens. `colab usage` 687.01 -> 676.85 = **10.16 CU** (predicted
+12.9). One transient allocator OOM line at 21:10 UTC (566 MB); no chunk failed, nothing missing.
+**Stage 4 Colab total: 23.15 CU** of the 100 cap (pilot 3.27, s1 8.83, failed FP8 0.89, full 10.16). Balance 676.85.
+Verify (local, 4 workers, 18 min): Tier A 3,637 / 7,188 (50.6 %), 0 grader errors. By family: contour 400/420,
+perspective 408/420, histogram 364/420, homography 305/428, components 274/420, hough 286/1,296 (22 %), text_layout
+376/2,104 (18 %), drills 1,224/1,680 (73 %). Kept 2,225 (cap 2 per spec, 142 AST duplicates). Repair pairs by pairing:
+688 (convention 271, algorithm 257, api 96, other 64).
+**Dataset (Stage 4 output):** `data/train.jsonl` 2,847 rows (13.7 MB), `data/dev.jsonl` 153 rows on 34 prompts disjoint
+from train (0.7 MB), `data/manifest.json`. 3,000 examples: 2,100 verified solutions (70 %), 600 repair pairs (20 %),
+300 replay (10 %); 691 distinct prompts; Tier A only; no thinking-mode samples; held-out families absent; every row's
+system prompt = `train.config.SYSTEM`; every final answer one fenced python block (checked by me over all rows).
+Tokens under the Qwen3.5-9B template: mean 1,128, p50 1,031, **p99 3,252**, max 4,390; 0 template mismatches; every row
+has exactly one response marker (repair rows train only on the final fix). p99 sets Stage 5's MAX_LEN (3,328, or
+4,096 to keep every row whole). Phil reviews the doc "opencv-expert: Gate 3 Bake-off
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed

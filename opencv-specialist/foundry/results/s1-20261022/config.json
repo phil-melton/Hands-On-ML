@@ -1,0 +1,47 @@
+{
+ "phrasings": {
+  "families": [
+   "components_stats",
+   "contour_area",
+   "feature_homography",
+   "histogram_stats",
+   "hough_segments",
+   "perspective_rectify",
+   "text_layout"
+  ],
+  "k": 3,
+  "max_tokens": 1500,
+  "per_request": 6,
+  "requests": 56,
+  "temperature": 0.9,
+  "top_p": 0.95,
+  "variants": 8
+ },
+ "think_test": {
+  "drills": 16,
+  "k": 4,
+  "n_specs": 80,
+  "notes_path": "/home/ptmel/Hands-On-ML/opencv-specialist/bakeoff/notes_5_0.md",
+  "notes_sha1": "d001b818021874803fab468401e6dbe4cd56b092",
+  "nothink": {
+   "chat_template_kwargs": {
+    "enable_thinking": false
+   },
+   "max_tokens": 2048,
+   "temperature": 0.7,
+   "top_k": 0,
+   "top_p": 0.8
+  },
+  "per_family": 8,
+  "think": {
+   "chat_template_kwargs": {
+    "enable_thinking": true
+   },
+   "max_tokens": 12288,
+   "temperature": 0.6,
+   "top_k": 20,
+   "top_p": 0.95
+  }
+ },
+ "updated": "2026-10-22T17:28:21+00:00"
+}

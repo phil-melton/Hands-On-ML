@@ -1,0 +1,368 @@
+{
+ "builder": {
+  "base": "qwen3.5-9b",
+  "cap": 2,
+  "dev_frac": 0.05,
+  "keep_shares": true,
+  "replay": "/home/ptmel/opencv-expert/replay/replay.jsonl",
+  "root": null,
+  "runs": [
+   "full1-20261022"
+  ],
+  "seed": 0,
+  "shares": {
+   "repair": 0.2,
+   "replay": 0.1,
+   "solution": 0.7
+  },
+  "system_sha1": "8816cfa0d37520336c61a1fb561c39caf98d3b90",
+  "total": 3000
+ },
+ "composition": {
+  "all": {
+   "by_family": {
+    "(replay)": 300,
+    "components_stats": 269,
+    "contour_area": 218,
+    "drills": 738,
+    "feature_homography": 289,
+    "histogram_stats": 244,
+    "hough_segments": 367,
+    "perspective_rectify": 221,
+    "text_layout": 354
+   },
+   "by_kind": {
+    "repair": 600,
+    "replay": 300,
+    "solution": 2100
+   },
+   "by_kind_family": {
+    "repair": {
+     "components_stats": 82,
+     "contour_area": 17,
+     "drills": 134,
+     "feature_homography": 82,
+     "histogram_stats": 40,
+     "hough_segments": 138,
+     "perspective_rectify": 11,
+     "text_layout": 96
+    },
+    "replay": {
+     "(replay)": 300
+    },
+    "solution": {
+     "components_stats": 187,
+     "contour_area": 201,
+     "drills": 604,
+     "feature_homography": 207,
+     "histogram_stats": 204,
+     "hough_segments": 229,
+     "perspective_rectify": 210,
+     "text_layout": 258
+    }
+   },
+   "distinct_prompts": 691,
+   "rows": 3000,
+   "share_by_kind": {
+    "repair": 0.2,
+    "replay": 0.1,
+    "solution": 0.7
+   },
+   "sources": {
+    "foundry-teacher (apache-2.0)": 2700,
+    "nvidia/OpenCodeInstruct@8f3ba5bafe4d6e8db46082cf7ae6741bc370604d (CC-BY-4.0)": 300
+   },
+   "thinking_rows": 0
+  },
+  "dev": {
+   "by_family": {
+    "(replay)": 12,
+    "components_stats": 26,
+    "contour_area": 13,
+    "drills": 14,
+    "feature_homography": 27,
+    "histogram_stats": 4,
+    "hough_segments": 47,
+    "perspective_rectify": 10
+   },
+   "by_kind": {
+    "repair": 33,
+    "replay": 12,
+    "solution": 108
+   },
+   "by_kind_family": {
+    "repair": {
+     "components_stats": 7,
+     "feature_homography": 9,
+     "hough_segments": 17
+    },
+    "replay": {
+     "(replay)": 12
+    },
+    "solution": {
+     "components_stats": 19,
+     "contour_area": 13,
+     "drills": 14,
+     "feature_homography": 18,
+     "histogram_stats": 4,
+     "hough_segments": 30,
+     "perspective_rectify": 10
+    }
+   },
+   "distinct_prompts": 34,
+   "rows": 153,
+   "share_by_kind": {
+    "repair": 0.2157,
+    "replay": 0.0784,
+    "solution": 0.7059
+   },
+   "sources": {
+    "foundry-teacher (apache-2.0)": 141,
+    "nvidia/OpenCodeInstruct@8f3ba5bafe4d6e8db46082cf7ae6741bc370604d (CC-BY-4.0)": 12
+   },
+   "thinking_rows": 0
+  },
+  "train": {
+   "by_family": {
+    "(replay)": 288,
+    "components_stats": 243,
+    "contour_area": 205,
+    "drills": 724,
+    "feature_homography": 262,
+    "histogram_stats": 240,
+    "hough_segments": 320,
+    "perspective_rectify": 211,
+    "text_layout": 354
+   },
+   "by_kind": {
+    "repair": 567,
+    "replay": 288,
+    "solution": 1992
+   },
+   "by_kind_family": {
+    "repair": {
+     "components_stats": 75,
+     "contour_area": 17,
+     "drills": 134,
+     "feature_homography": 73,
+     "histogram_stats": 40,
+     "hough_segments": 121,
+     "perspective_rectify": 11,
+     "text_layout": 96
+    },
+    "replay": {
+     "(replay)": 288
+    },
+    "solution": {
+     "components_stats": 168,
+     "contour_area": 188,
+     "drills": 590,
+     "feature_homography": 189,
+     "histogram_stats": 200,
+     "hough_segments": 199,
+     "perspective_rectify": 200,
+     "text_layout": 258
+    }
+   },
+   "distinct_prompts": 657,
+   "rows": 2847,
+   "share_by_kind": {
+    "repair": 0.1992,
+    "replay": 0.1012,
+    "solution": 0.6997
+   },
+   "sources": {
+    "foundry-teacher (apache-2.0)": 2559,
+    "nvidia/OpenCodeInstruct@8f3ba5bafe4d6e8db46082cf7ae6741bc370604d (CC-BY-4.0)": 288
+   },
+   "thinking_rows": 0
+  }
+ },
+ "created": "2026-10-22T21:40:03+00:00",
+ "dev": {
+  "distinct_prompts": 34,
+  "rows": 153,
+  "share": 0.051
+ },
+ "files": {
+  "dev.jsonl": {
+   "bytes": 723050,
+   "rows": 153,
+   "sha256": "7eeabaa7788adce9e1006365984c7c48e97e4673efeff5a9e7ce796afaf89c5f"
+  },
+  "train.jsonl": {
+   "bytes": 13709765,
+   "rows": 2847,
+   "sha256": "c38faf932dfc6fcf43870ad95daff1f39a5602ffc4123f41037e5a25849a6ad6"
+  }
+ },
+ "inputs": {
+  "replay": {
+   "held_out_topic": 1,
+   "kept": 599,
+   "path": "/home/ptmel/opencv-expert/replay/replay.jsonl",
+   "rows": 600,
+   "sha256": "d74d3503e8c6731458a15d15b99513c8e2bd38336992346a575696d0e7f7eb22"
+  },
+  "runs": [
+   {
+    "format_rejects": {
+     "finish_reason length": 1
+    },
+    "grades": 7188,
+    "repairs": 688,
+    "run": "full1-20261022",
+    "selection": {
+     "candidates": 3636,
+     "duplicates": 142,
+     "over_cap": 1270
+    },
+    "solutions": 2224,
+    "teacher": {
+     "gpu": "A100",
+     "license": "apache-2.0",
+     "model": "RedHatAI/Qwen3.8-27B-INT4",
+     "quantization": null,
+     "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa"
+    },
+    "tier_A": 3637
+   }
+  ]
+ },
+ "max_file_bytes": 50000000,
+ "stages": {
+  "after_dedup": {
+   "repair": 688,
+   "replay": 599,
+   "solution": 2137
+  },
+  "collected": {
+   "repair": 688,
+   "replay": 599,
+   "solution": 2224
+  },
+  "decontamination": {
+   "repair": {
+    "checked": 688,
+    "dropped": {},
+    "dup_threshold": 0.25,
+    "first_drop": {},
+    "run_limit": 17
+   },
+   "replay": {
+    "checked": 599,
+    "dropped": {},
+    "dup_threshold": 0.25,
+    "first_drop": {},
+    "run_limit": 17
+   },
+   "solution": {
+    "checked": 2224,
+    "dropped": {},
+    "dup_threshold": 0.25,
+    "first_drop": {},
+    "run_limit": 17
+   }
+  },
+  "dedup": {
+   "dropped": {
+    "solution": 87
+   }
+  },
+  "mix": {
+   "repair": {
+    "selected": 600,
+    "shortfall": 0,
+    "supply": 688,
+    "target": 600,
+    "total": 3000
+   },
+   "replay": {
+    "selected": 300,
+    "shortfall": 0,
+    "supply": 599,
+    "target": 300,
+    "total": 3000
+   },
+   "solution": {
+    "selected": 2100,
+    "shortfall": 0,
+    "supply": 2137,
+    "target": 2100,
+    "total": 3000
+   }
+  }
+ },
+ "tokens": {
+  "dev": {
+   "base": "qwen3.5-9b",
+   "by_kind": {
+    "repair": {
+     "max": 2529,
+     "mean": 1794.4,
+     "n": 33,
+     "p50": 1770,
+     "p99": 2529
+    },
+    "replay": {
+     "max": 973,
+     "mean": 477.0,
+     "n": 12,
+     "p50": 465,
+     "p99": 973
+    },
+    "solution": {
+     "max": 1939,
+     "mean": 943.9,
+     "n": 108,
+     "p50": 987,
+     "p99": 1723
+    }
+   },
+   "max": 2529,
+   "mean": 1090.7,
+   "n": 153,
+   "note": "p99 sets Stage 5's MAX_LEN (train_lora refuses to truncate: it stops when the longest example exceeds it)",
+   "p50": 1049,
+   "p99": 2461,
+   "rows_without_exactly_one_response_marker": 0,
+   "template_mismatches": 0,
+   "tokenizer": "Qwen/Qwen3.5-9B"
+  },
+  "train": {
+   "base": "qwen3.5-9b",
+   "by_kind": {
+    "repair": {
+     "max": 4390,
+     "mean": 1900.2,
+     "n": 567,
+     "p50": 1858,
+     "p99": 3750
+    },
+    "replay": {
+     "max": 1526,
+     "mean": 505.4,
+     "n": 288,
+     "p50": 462,
+     "p99": 1155
+    },
+    "solution": {
+     "max": 2512,
+     "mean": 997.5,
+     "n": 1992,
+     "p50": 984,
+     "p99": 2222
+    }
+   },
+   "max": 4390,
+   "mean": 1127.5,
+   "n": 2847,
+   "note": "p99 sets Stage 5's MAX_LEN (train_lora refuses to truncate: it stops when the longest example exceeds it)",
+   "p50": 1031,
+   "p99": 3252,
+   "rows_without_exactly_one_response_marker": 0,
+   "template_mismatches": 0,
+   "tokenizer": "Qwen/Qwen3.5-9B"
+  }
+ }
+}
