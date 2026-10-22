@@ -1,0 +1,349 @@
+{
+ "family": "histogram_stats",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "overlaps a scored task": 50,
+   "near-duplicate of a kept candidate": 50,
+   "content": 3,
+   "quota": 1
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Return the 256-bin gray-level histogram, mean, standard deviation and median of the image's gray levels, where each pixel's gray level is the rounded ITU-R BT.601 luma.",
+   "sha1": "2e5ada79946f57a906995dac3eada040f474210a",
+   "request": "phr-histogram_stats-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 256-bin gray-level histogram and the mean, standard deviation, and median of the gray levels, using BT.601 luma for pixel values.",
+   "sha1": "7ee3b68db15e38f775f9f97ee915c2dd42558a8a",
+   "request": "phr-histogram_stats-00",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Could you calculate the 256-bin gray-level histogram along with the mean, standard deviation, and median of the gray values, where each pixel's gray level is determined by the ITU-R BT.601 luma formula rounded to the nearest integer?",
+   "sha1": "c5a1a94fc3239bf615a58551b51d9ce96a92b359",
+   "request": "phr-histogram_stats-01",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you determine the 256-bin gray-level histogram alongside the mean, standard deviation and median of the gray levels, defining each pixel's gray value as the ITU-R BT.601 luma round(0.299 R + 0.587 G + 0.114 B)?",
+   "sha1": "5a4f4d79ad4c631c26f6f68d3e18eef24777d905",
+   "request": "phr-histogram_stats-01",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a color image and need to calculate its 256-bin gray-level histogram along with the mean, standard deviation, and median of the gray levels, where each pixel's gray value is defined as the ITU-R BT.601 luma, specifically round(0.299 R + 0.587 G + 0.114 B), the value cv2.COLOR_BGR2GRAY produces.",
+   "sha1": "2c92e53c253439a805ba4282c3228c52fd69399f",
+   "request": "phr-histogram_stats-02",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Determine the gray value of each pixel using the rounded ITU-R BT.601 luma formula, round(0.299 R + 0.587 G + 0.114 B), which matches cv2.COLOR_BGR2GRAY. (2) Construct the 256-bin gray-level histogram from these values. (3) Report the mean, standard deviation and median of the gray levels.",
+   "sha1": "efa1d4ce3489a535fdb6e1cda2567fe9852b137f",
+   "request": "phr-histogram_stats-04",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Calculate the 256-bin gray-level histogram, mean, standard deviation, and median. (2) Define gray levels using ITU-R BT.601 luma, computed as round(0.299 R + 0.587 G + 0.114 B), which matches the output of cv2.COLOR_BGR2GRAY.",
+   "sha1": "91ebf16444faab9ca84f5266bde988ba5a32efb4",
+   "request": "phr-histogram_stats-04",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Derive the BT.601 luma for each pixel by rounding 0.299 R + 0.587 G + 0.114 B, then compute the 256-bin gray-level histogram and the mean, standard deviation and median of these gray levels.",
+   "sha1": "0bb0954a998e8576496c0f1a058bb64f58cb83d3",
+   "request": "phr-histogram_stats-06",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 256-bin gray-level histogram, the mean, the standard deviation, and the median of the gray levels for the provided image, where the gray level of every pixel is calculated as the ITU-R BT.601 luma value, which is defined as round(0.299 R + 0.587 G + 0.114 B) and corresponds to the value produced by cv2.COLOR_BGR2GRAY.",
+   "sha1": "344ebc9abbd15f3a6e77d9d5655dead203947771",
+   "request": "phr-histogram_stats-07",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 256-bin gray-level histogram for the image by first establishing the gray level of each pixel as the ITU-R BT.601 luma, defined as round(0.299 R + 0.587 G + 0.114 B), which is the value cv2.COLOR_BGR2GRAY produces, and then calculate the mean, standard deviation and median of those resulting gray levels.",
+   "sha1": "800b58d7306b87ee58b6793e90b7f552b4ceb57a",
+   "request": "phr-histogram_stats-07",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How can we obtain the 256-bin histogram of the image's gray levels, and the corresponding mean, standard deviation, and median, using the ITU-R BT.601 luma value for each pixel as defined by the rounding rule?",
+   "sha1": "293b513f95bf7345ff097a53944eeb4cef6f871e",
+   "request": "phr-histogram_stats-01",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How would you calculate the 256-bin gray-level histogram and the corresponding mean, standard deviation and median, using the ITU-R BT.601 luma defined as round(0.999 R + 0.587 G + 0.114 B) for the gray level of each pixel?",
+   "sha1": "6ab11c349cb4d7f1229d40b85d7b54495680a629",
+   "request": "phr-histogram_stats-01",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the gray level for each pixel by applying the rounded ITU-R BT.601 luma conversion to the image. Using these resulting gray values, compute the 256-bin histogram, the mean, the standard deviation, and the median.",
+   "sha1": "cd520933a81716273a713e4ea2df95c31f43adf7",
+   "request": "phr-histogram_stats-06",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Generate the 256-bin gray-level histogram, compute the mean, calculate the standard deviation, and identify the median of the image's gray levels, using a gray level definition where each pixel is the ITU-R BT.601 luma equal to round(0.299 R + 0.587 G + 0.114 B), which is the specific value that cv2.COLOR_BGR2GRAY produces.",
+   "sha1": "ad8abd2b33c4d3e6b8a7f8ad374434c306fcb076",
+   "request": "phr-histogram_stats-07",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 256-bin gray-level histogram of the input image, and simultaneously report the mean, standard deviation, and median of the resulting gray levels, noting that the gray value for any pixel is the integer result of rounding the expression 0.299 R + 0.587 G + 0.114 B, which corresponds to the standard ITU-R BT.601 luma computation.",
+   "sha1": "6bc92e022aba5d769eb130fecc266fe53d629304",
+   "request": "phr-histogram_stats-07",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "For the provided image, derive the gray level of every pixel using the ITU-R BT.601 luma formula round(0.299 R + 0.587 G + 0.114 B), the specific value cv2.COLOR_BGR2GRAY produces, and subsequently report the 256-bin gray-level histogram along with the mean, standard deviation and median of these gray levels.",
+   "sha1": "339f3e71c6577155634e7e8f68c3fc1798117f09",
+   "request": "phr-histogram_stats-07",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you provide the 256-bin gray-level histogram and the statistical metrics (mean, standard deviation, and median) for the gray levels, assuming gray is computed as the rounded ITU-R BT.601 luma of the RGB channels?",
+   "sha1": "d3ca3048ec0e370455e12ce10754f9e082fdf356",
+   "request": "phr-histogram_stats-01",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to process an image to obtain its 256-bin gray-level histogram plus the mean, standard deviation, and median of its gray levels, with the gray level of every pixel determined by the ITU-R BT.601 luma calculation round(0.299 R + 0.587 G + 0.114 B), the value cv2.COLOR_BGR2GRAY produces.",
+   "sha1": "6132e41997e7dbc91cfd9b78f1d7372f5a8a2cba",
+   "request": "phr-histogram_stats-02",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a data engineer auditing pixel distributions, please generate the 256-bin gray-level histogram plus the mean, standard deviation and median of the gray levels, calculating each gray level as the ITU-R BT.601 luma via round(0.299 R + 0.114 B + 0.587 G), equivalent to the value from cv2.COLOR_BGR2GRAY.",
+   "sha1": "487ce0b9f42a49b98d8fb799259ae705480e750a",
+   "request": "phr-histogram_stats-03",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Obtain the gray level for each pixel by applying the ITU-R BT.601 luma definition, round(0.299 R + 0.587 G + 0.114 B), identical to cv2.COLOR_BGR2GRAY. (2) Compile the 256-bin gray-level histogram. (3) Provide the mean, standard deviation and median of the gray levels.",
+   "sha1": "80bb18f0cc6728636585c8f922a4c5842371d2e4",
+   "request": "phr-histogram_stats-04",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Provide the 256-bin gray-level histogram and the statistical measures (mean, standard deviation, and median) of the gray levels, utilizing the ITU-R BT.601 luma value round(0.299 R + 0.587 G + 0.114 B) for each pixel.",
+   "sha1": "c03749a624a5bc586d6ec1cb118539b8c8c74548",
+   "request": "phr-histogram_stats-05",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Calculate the mean, standard deviation and median of the gray levels, where the gray level is the rounded BT.601 luma, and also return the 256-bin gray-level histogram.",
+   "sha1": "4c789845a7e79c377ea5a60a988b8ce8941909a3",
+   "request": "phr-histogram_stats-06",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "First, map the image to a single channel where each pixel's value is the rounded ITU-R BT.601 luma. Next, derive the 256-bin gray-level histogram and the mean, standard deviation, and median from this set of gray levels.",
+   "sha1": "d5dcc43a8e7a1b4c7503406405465be06497d8ea",
+   "request": "phr-histogram_stats-06",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Provide the 256-bin gray-level histogram and the corresponding mean, standard deviation, and median for the image, defining the gray level as the ITU-R BT.601 luma of each pixel.",
+   "sha1": "fb82cf25d0bda9384807a5a18c3c1bac5e306ffa",
+   "request": "phr-histogram_stats-06",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Provide the 256-bin gray-level histogram, mean, standard deviation and median, using the rounded ITU-R BT.601 luma as the gray level for each pixel.",
+   "sha1": "27ea9597b8c91e82dedaad091a5898c0e76a4d4b",
+   "request": "phr-histogram_stats-00",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Would you compute the 256-bin histogram of the gray levels and report their mean, standard deviation, and median, treating the gray value of each pixel as the ITU-R BT.601 luma rounded to an integer?",
+   "sha1": "edde32596503aa64eb2cbbaa87c619d0278780fe",
+   "request": "phr-histogram_stats-01",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Report the 256-bin gray-level histogram, the mean, standard deviation and median of the gray levels, with the gray level calculated as the rounded BT.601 luma.",
+   "sha1": "186a10a870b3438cc7c60e493e368492deac62d7",
+   "request": "phr-histogram_stats-06",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Produce a 256-bin histogram of the image's gray levels, which are defined as the rounded ITU-R BT.601 luma of each pixel. Alongside the histogram, report the mean, standard deviation, and median of these computed gray values.",
+   "sha1": "7464bb7b0e289d50d45fad6a0853cdf756803cd0",
+   "request": "phr-histogram_stats-06",
+   "sample": 1,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Calculate the 256-bin histogram for the image's gray levels and compute their mean, standard deviation, and median, with the gray level taken as the ITU-R BT.601 luma of each pixel.",
+   "sha1": "cf45ebdf93d560de148f49a29d24516415985cfc",
+   "request": "phr-histogram_stats-06",
+   "sample": 2,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Construct the 256-bin gray-level histogram, derive the mean, determine the standard deviation, and find the median of the gray levels, based on the premise that the gray level of a pixel is its ITU-R BT.601 luma, explicitly round(0.299 R + 0.587 G + 0.114 B), which is the value that cv2.COLOR_BGR2GRAY produces.",
+   "sha1": "56380186502de7ee0accd11bd332664b0cda220a",
+   "request": "phr-histogram_stats-07",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "You are to derive the 256-bin gray-level histogram of the image, along with the mean, standard deviation, and median of its gray levels, where the gray level is explicitly the rounded ITU-R BT.601 luma value calculated as 0.299 R + 0.587 G + 0.114 B, identical to the value yielded by cv2.COLOR_BGR2GRAY.",
+   "sha1": "08f79084b7df92fae5b5f4e9fb9464cd74e62e03",
+   "request": "phr-histogram_stats-07",
+   "sample": 1,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How do we determine the 256-bin gray-level histogram and the mean, standard deviation, and median of those levels, given that the gray level for each pixel is the ITU-R BT.601 luma value rounded to the nearest integer?",
+   "sha1": "55b8a0366f4f7a3878bfe015784b46070ef32e41",
+   "request": "phr-histogram_stats-01",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify the gray level of each pixel via the formula round(0.299 R + 0.587 G + 0.114 B), corresponding to the ITU-R BT.601 luma produced by cv2.COLOR_BGR2GRAY. (2) Create the 256-bin gray-level histogram. (3) Determine the mean, standard deviation and median of the gray levels.",
+   "sha1": "2bead75613f151451ae7595234dda5a62847d7a7",
+   "request": "phr-histogram_stats-04",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Output the 256-bin histogram of gray levels and the corresponding mean, standard deviation, and median. (2) Derive gray levels from the ITU-R BT.601 luma, calculated as round(0.299 R + 0.587 G + 0.114 B), the specific value produced by cv2.COLOR_BGR2GRAY.",
+   "sha1": "137f831752551824503fd635af99208f49fc840a",
+   "request": "phr-histogram_stats-04",
+   "sample": 1,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Calculate the mean, standard deviation, and median of the gray levels obtained by converting the image via rounded ITU-R BT.601 luma. Also generate the corresponding 256-bin gray-level histogram for these values.",
+   "sha1": "5c0c8d339eaf72d4273337f37d8367cae1fbb7c0",
+   "request": "phr-histogram_stats-06",
+   "sample": 1,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Compute the 256-bin gray-level histogram of the specified image, and list the mean, standard deviation, and median of the gray levels, ensuring that each gray level is the rounded result of the linear combination 0.299 R + 0.587 G + 0.114 B, which represents the ITU-R BT.601 luma as computed by the cv2.COLOR_BGR2GRAY function.",
+   "sha1": "6b2e77ec0f6a84ef4c3af8db2b41233485badf5b",
+   "request": "phr-histogram_stats-07",
+   "sample": 1,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Report the mean, standard deviation, median, and 256-bin gray-level histogram. (2) Establish the gray level of each pixel as its ITU-R BT.601 luma, given by round(0.299 R + 0.587 G + 0.114 B), which corresponds to the value from cv2.COLOR_BGR2GRAY.",
+   "sha1": "72c5e9f77cf072b7e72547d0d4d55d4c3641c4fd",
+   "request": "phr-histogram_stats-04",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Apply the rounded ITU-R BT.601 luma transformation to the image to establish its gray levels. From this data, extract the 256-bin histogram and compute the mean, standard deviation, and median.",
+   "sha1": "e27eee4a082cb14ab41ae5bee6b6cef984e23807",
+   "request": "phr-histogram_stats-06",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract the 256-bin histogram of the image's gray levels and determine their mean, standard deviation, and median, based on the ITU-R BT.601 luma value of each pixel.",
+   "sha1": "202460ac3b4a7c91a24503d4e758e7e0a8af7695",
+   "request": "phr-histogram_stats-06",
+   "sample": 2,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Generate the 256-bin gray-level histogram for the image, and provide the mean, standard deviation, and median of the gray levels, where the gray level of each pixel is the rounded value of 0.299 times red plus 0.587 times green plus 0.114 times blue, consistent with the ITU-R BT.601 luma definition used in the cv2.COLOR_BGR2GRAY conversion.",
+   "sha1": "145bcf03903f714c91a8efff00985746911ffccd",
+   "request": "phr-histogram_stats-07",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  }
+ ]
+}

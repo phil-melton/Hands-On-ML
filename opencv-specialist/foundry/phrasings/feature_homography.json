@@ -1,0 +1,348 @@
+{
+ "family": "feature_homography",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "near-duplicate of a kept candidate": 6,
+   "overlaps a scored task": 2,
+   "quota": 96
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Derive the 3x3 homography H mapping img_a to img_b via local feature matches, normalized so H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "49dc36a40939bf6a23ee2de7d5ca423bc54fce06",
+   "request": "phr-feature_homography-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Derive the 3x3 homography H from img_a to img_b using matched local features on the flat textured surface, normalized such that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "bdd213d54771de2b2106f8d61c632786a9a544ba",
+   "request": "phr-feature_homography-00",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Match local features across img_a and img_b to estimate the 3x3 homography H, normalized so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "231db9d4531e2a30198a5c513474fc43a9ce445a",
+   "request": "phr-feature_homography-00",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you match local features between img_a and img_b, which depict the same flat textured surface from different angles, and determine the 3x3 homography H that transforms img_a pixel coordinates to img_b, ensuring H[2, 2] = 1? Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "75c50af78d6d2e9049378fa1bfb49a1751e20eca",
+   "request": "phr-feature_homography-01",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you determine the 3x3 homography H (with H[2, 2] = 1) that maps pixel coordinates from img_a to img_b, using local feature matches between these two views of the same flat textured surface? Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "a10b69515c297a8befae9965b32cc0b4e6ece84a",
+   "request": "phr-feature_homography-01",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have two images, img_a and img_b, which are different viewpoints of the same flat textured surface, and I need to estimate the 3x3 homography H that maps pixel coordinates from img_a to img_b by matching local features, ensuring H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "32b079955c7dc3c3d20dee267ad9942e9bc20dbf",
+   "request": "phr-feature_homography-02",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have two photos, img_a and img_b, captured from different angles of the same flat textured surface, and I need you to match local features between them to calculate the 3x3 homography H that transforms pixel coordinates from img_a to img_b, with H[2, 2] normalized to 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "b76a34223b3d13afc2aec07bb13f0fe5d406a588",
+   "request": "phr-feature_homography-02",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a cultural heritage digitizer, I need to align two photographs of a flat wall texture; please determine the 3x3 homography H that maps coordinates from img_a to img_b by matching local features and ensuring H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "63180d0cdac868532a35a2001dd4af5b9d7a9659",
+   "request": "phr-feature_homography-03",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a robotics engineer calibrating a camera on a flat shelf, determine the 3x3 homography H from img_a to img_b by matching local features between the two views of the textured surface, ensuring H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "b1ba452a3193d1a67bfe6106824fd1a7ae76c26c",
+   "request": "phr-feature_homography-03",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a document digitizer aligning two scans of a flat page, identify corresponding local features between img_a and img_b to derive the 3x3 homography H that transforms coordinates from img_a to img_b, ensuring the final matrix satisfies H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "82347fee29d6fb0eb676f7b7284acae02a376809",
+   "request": "phr-feature_homography-03",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Match local features between img_a and img_b, which depict the same flat textured surface from different viewpoints. (2) Estimate the 3x3 homography H mapping pixel coordinates (x, y) in img_a to img_b. (3) Normalize the matrix such that H[2, 2] = 1 and provide the result. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "82a12a7493434aa0278a4d0bd8a63b0c2c7e47b4",
+   "request": "phr-feature_homography-04",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify corresponding local features between img_a and img_b, which depict the same flat textured surface from distinct angles. (2) Compute the 3x3 homography H that projects pixel coordinates (x, y) from img_a to img_b. (3) Normalize the result such that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "0f4b70d20be60ea5f7050423c7b82b3293d7d66c",
+   "request": "phr-feature_homography-04",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: Two images, img_a and img_b, depicting the same flat textured surface from different viewpoints. Output: A 3x3 homography matrix H, normalized such that H[2, 2] = 1, which maps pixel coordinates (x, y) from img_a to the corresponding pixel coordinates in img_b, derived by matching local features. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "dbe2f22692e68aec611ca8515dcc6e11870aa6f8",
+   "request": "phr-feature_homography-05",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: img_a and img_b, two distinct viewpoints of a flat textured surface. Output: the 3x3 homography H that maps pixel coordinates (x, y) from img_a to img_b, derived by matching local features and normalized such that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "72f4966763c5599b4cb4afdbd7d1bcbeb8fa82e8",
+   "request": "phr-feature_homography-05",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Determine the 3x3 homography H that maps pixel coordinates (x, y) in img_a to corresponding pixel coordinates in img_b, given that both images depict the same flat textured surface from different viewpoints; ensure H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "be141096e0c74333a463b32ae6b83776c80f2958",
+   "request": "phr-feature_homography-05",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify corresponding local features in img_a and img_b, which show the same flat textured surface from different angles. Estimate the 3x3 homography H that maps pixel coordinates (x, y) from img_a to img_b. Normalize the result so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "969c063cfb8d6e736c7823f02910c497a9856123",
+   "request": "phr-feature_homography-06",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Match local features between img_a and img_b, two different views of a flat textured surface, to estimate the 3x3 homography H. Return H with the normalization H[2, 2] = 1, ensuring it maps pixel coordinates from img_a to img_b. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "2d67c686f7838749e9f4bc40fca8df653afbacac",
+   "request": "phr-feature_homography-06",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 3x3 homography H that maps pixel coordinates in img_a to img_b by matching local features between these views of the flat textured surface, ensuring H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "3db693178bf23aa6d19da9a1e8ac1bf377209a5c",
+   "request": "phr-feature_homography-06",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "The images img_a and img_b depict the same flat, textured surface observed from distinct viewpoints, so you must identify corresponding local features to derive the geometric relationship; return the 3x3 homography matrix H that transforms pixel coordinates (x, y) from img_a into the matching pixel coordinates in img_b, and ensure this matrix is normalized such that its element at index H[2, 2] equals 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "8ae6c27cd218b73f87325623affe0870f21d2dcb",
+   "request": "phr-feature_homography-07",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify corresponding local features in img_a and img_b, which depict the same flat textured surface from distinct viewpoints, then compute the 3x3 homography matrix H that transforms pixel coordinates (x, y) from img_a to the corresponding pixel coordinates in img_b, ensuring the matrix is normalized such that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "10c78dd41e6ba94a5891d07c72a72fd1ddac22e3",
+   "request": "phr-feature_homography-07",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Estimate H, the 3x3 homography mapping img_a to img_b, via local feature matching on the textured plane, with H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "5838fc361b2b9ee689bd2b2ba8f69002dd8181c5",
+   "request": "phr-feature_homography-00",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the 3x3 homography H (H[2, 2] = 1) that maps img_a pixel coordinates to img_b using matched local features. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "fc1f1517b04cd1c2be3c7344192e484c86ff5bf1",
+   "request": "phr-feature_homography-00",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How can I obtain the 3x3 homography H from img_a to img_b by matching local features on the shared flat textured surface, given that the matrix must be normalized such that H[2, 2] = 1? Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "4c0f4c2e0400344dc1b8647de03df9e8652d5173",
+   "request": "phr-feature_homography-01",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How might we estimate the 3x3 homography H, normalized so that H[2, 2] = 1, which transforms pixel coordinates in img_a to those in img_b, by matching local features between these two images of a flat textured surface? Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "951947064d260a7eca247006a514752dc5099a26",
+   "request": "phr-feature_homography-01",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How would you determine the 3x3 homography H, normalized such that H[2, 2] = 1, to transform pixel coordinates from img_a to img_b based on matched local features across the two views of the flat surface? Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "66ac148c444fd76f3e5d97d7cb7b7def7d3687e4",
+   "request": "phr-feature_homography-01",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to align img_a and img_b, two views of a flat textured surface, by matching local features to find the 3x3 homography H that transforms coordinates from img_a to img_b, normalized so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "98a096b8f151ec0ea0f6f7d5ca2d14535a579ba2",
+   "request": "phr-feature_homography-02",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a developer working on image alignment, I need to compute the 3x3 homography H from img_a to img_b for a flat textured surface, using matched local features to establish the mapping, and the result must be normalized so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "6f46ff51f33c7f4656886431a68f41f33bbfb0ab",
+   "request": "phr-feature_homography-02",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am working on aligning two views of a planar object, specifically img_a and img_b, and I require the 3x3 homography H estimated from matched local features that maps the pixel space of img_a to img_b, ensuring the final matrix has H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "8ec9d77d3e2c5a2224857858e6795dc8c09acbba",
+   "request": "phr-feature_homography-02",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a document scanner developer, I am working on a system to correct skew in flat pages; estimate the 3x3 homography H, normalized so that H[2, 2] = 1, that transforms img_a pixel coordinates to img_b based on matched local features. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "0fa8ada4e43eccfa45ed5a0fcbd034dbc41f114c",
+   "request": "phr-feature_homography-03",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a cartographer digitizing a flat map from multiple angles, calculate the 3x3 homography H that maps pixel coordinates in img_a to those in img_b based on matched local features, with the normalization H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "5c741c2e1f512464075bc2ad29e99349b3f5c64e",
+   "request": "phr-feature_homography-03",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a museum archivist restoring a flat artifact image, determine the geometric relationship between img_a and img_b by matching local features, then provide the normalized 3x3 homography H (with H[2, 2] = 1) that maps pixel locations from the first view to the second. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "7bf669c7d259ee3ad9164b78bbae757b42ea3959",
+   "request": "phr-feature_homography-03",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Establish correspondences between local features in img_a and img_b, two views of an identical flat textured plane. (2) Compute the 3x3 homography H that transforms img_a pixel coordinates to img_b pixel coordinates. (3) Ensure the final matrix is normalized with H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "3a777f80c824eb932372bb5305ef57f53614c67c",
+   "request": "phr-feature_homography-04",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify corresponding local features in img_a and img_b, two views of a flat, textured surface. (2) Compute the 3x3 homography H that transforms pixel coordinates (x, y) from img_a to img_b. (3) Ensure the matrix is normalized by setting H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "a622a20ac50a9b71d43391ce2a410d6ebb5f3d92",
+   "request": "phr-feature_homography-04",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Perform feature matching on the two views of the flat textured surface, img_a and img_b. (2) Derive the 3x3 homography H mapping coordinates from img_a to img_b. (3) Return H adjusted so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "0f97a7ecf5552a6c6aaf93be129e01a07087d2a9",
+   "request": "phr-feature_homography-04",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Determine the geometric relationship between img_a and img_b by matching local features on the flat textured surface to estimate the 3x3 homography H, which transforms img_a pixel coordinates to img_b pixel coordinates with H[2, 2] normalized to 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "f1a3db7f2d613182e11bce32251c56d65ec2ebad",
+   "request": "phr-feature_homography-05",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Using matched local features between the two views of the flat textured surface, determine the transformation from img_a to img_b. Compute the 3x3 homography H mapping pixel coordinates (x, y) in img_a to their counterparts in img_b. Ensure the final matrix satisfies H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "72f5c117c3e0a76f1d3bfff7c2ffdf55d1892c1f",
+   "request": "phr-feature_homography-06",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Compute the 3x3 homography H that transforms pixel coordinates in img_a to corresponding coordinates in img_b. Base this estimation on matched local features from the two views of the same flat textured surface and normalize so that H[2, 2] = 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "090558fbf2ed6725045f5923af164328e65e5d5f",
+   "request": "phr-feature_homography-06",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "For the two views of a flat, textured surface provided as img_a and img_b, perform a matching of local features to establish the correspondence between them; subsequently estimate the 3x3 homography H that maps the pixel coordinates (x, y) of img_a to the corresponding pixel coordinates in img_b, applying the constraint that the value at H[2, 2] must be exactly 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "4d6e0fd5376369b97937b16381a06299af1cce0c",
+   "request": "phr-feature_homography-07",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Derive the 3x3 homography H, normalized so that H[2, 2] = 1, which maps pixel coordinates (x, y) in img_a to their corresponding locations in img_b, by first matching local features between these two images that show the identical flat textured surface from different angles. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "269e7b749cf647ebef13b3b791629a3111591609",
+   "request": "phr-feature_homography-07",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "By analyzing the local feature matches between the two views of the same flat textured surface, specifically img_a and img_b, estimate the 3x3 homography H that maps the pixel coordinate system of img_a to that of img_b, and apply a normalization factor to the resulting matrix so that its bottom-right element, H[2, 2], is strictly equal to 1. Accuracy requirement: the four points of img_a that lie 32 px inside its corners must be mapped to within about 4 px of their true positions in img_b (3 px for scenes rich in features, up to 8 px for sparse ones).",
+   "sha1": "8a0e2108f3727dad6f7cbefabd63335fffd36c4f",
+   "request": "phr-feature_homography-07",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  }
+ ]
+}

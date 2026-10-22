@@ -1,0 +1,349 @@
+{
+ "family": "components_stats",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 156,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "content": 37,
+   "near-duplicate of a kept candidate": 1,
+   "length out of range": 1,
+   "quota": 77
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Identify foreground connected components via 4- or 8-connectivity, excluding background, and report area, bounding box, and centroid. Order by area descending, then bounding box y, then x.",
+   "sha1": "0b53350f25b885ea2221cfeeec8441d31cd86823",
+   "request": "phr-components_stats-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you identify the connected foreground groups in this boolean mask using the specified 4 or 8 pixel connectivity, providing the area, bounding box, and centroid for each while excluding the background and sorting by descending area with ties resolved by the bounding box top-left coordinates?",
+   "sha1": "a05b98d1b9bbc2d2d75503e502a9055e8ba55067",
+   "request": "phr-components_stats-01",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a boolean mask and need to identify the connected components of its True pixels using either 4-connectivity (edge sharing) or 8-connectivity (edge or corner sharing). Please report the area, bounding box, and centroid for each component, excluding the background, and sort the results by largest area first, breaking ties by the top-left corner of the bounding box (y coordinate, then x coordinate).",
+   "sha1": "344dc7b5c4657d44cbe445993dd39841074328c7",
+   "request": "phr-components_stats-02",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a medical imaging analyst, I need to segment the foreground True pixels of a boolean mask based on the specified pixel connectivity (4 for edge-sharing, 8 for edge or corner-sharing) to identify distinct connected components, excluding the background, and report each component's area, bounding box, and centroid, sorted by area in descending order with ties resolved by the bounding box's top-left coordinate (y then x).",
+   "sha1": "5d24234315531a2a6f9e1da9c777be5ea38ab2d7",
+   "request": "phr-components_stats-03",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a vision scientist, I need to extract the connected foreground regions from a boolean mask using the specified connectivity (4 for edge-sharing, 8 for edge or corner-sharing), excluding the background, and report each region's area, bounding box, and centroid, sorted by largest area first with ties resolved by bounding box top coordinate then left coordinate.",
+   "sha1": "186492404a7dee0fa68d84a5815bc2f286eecabb",
+   "request": "phr-components_stats-03",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Decompose the boolean mask into connected components consisting of True pixels using the specified connectivity where 4 indicates edge-sharing and 8 indicates edge or corner-sharing; (2) exclude the background from the analysis; (3) determine the area (pixel count), bounding box, and centroid for each component; (4) return the components sorted by largest area first, resolving ties by the top-left coordinate of the bounding box with y preceding x.",
+   "sha1": "a948c0784c480575d28b5aa15ea9670943a883a2",
+   "request": "phr-components_stats-04",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify connected groups of True pixels within the boolean mask based on the provided connectivity (4 for edge-sharing, 8 for edge or corner-sharing), excluding the background, and report the area, bounding box, and centroid for each group, sorted by descending area with ties resolved by ascending bounding box y-coordinate and then x-coordinate.",
+   "sha1": "1c485280fede648f215cc61bac5abbc66f5f1b96",
+   "request": "phr-components_stats-05",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Partition the boolean mask's True pixels into connected components based on the specified connectivity (4-connectivity for edge adjacency, 8-connectivity for edge or corner adjacency), excluding the background, and return for each component its area (pixel count), bounding box, and centroid, ordered by area in descending order, with ties resolved by the bounding box's top-left coordinate in y-then-x sequence.",
+   "sha1": "7c0eeadf1b874530b1f0a9ef656236dc3d86073c",
+   "request": "phr-components_stats-05",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the connected groups of True pixels in the boolean mask according to the specified connectivity parameter, where 4-connectivity implies edge-sharing and 8-connectivity implies edge or corner-sharing, excluding the background from consideration, and for each identified group provide the area (pixel count), bounding box, and centroid, sorting the results by area in descending order and resolving ties by the y-coordinate of the bounding box top-left corner followed by the x-coordinate.",
+   "sha1": "4009b9ff94da306749fa2fef53c2f2a6d7b2b4a5",
+   "request": "phr-components_stats-07",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Perform a connected-component analysis on the boolean mask by grouping all True pixels into distinct sets based on the specified connectivity mode, where 4-connectivity links pixels sharing an edge and 8-connectivity links pixels sharing an edge or a corner, while explicitly excluding the background from being considered a component, and for each identified component, calculate and report its area as the pixel count, its bounding box, and its centroid, then sort the final list of components in descending order of area, resolving any ties in area by ascending order of the bounding box's top-left corner y-coordinate followed by its x-coordinate.",
+   "sha1": "88c56fc4487ecde289a17b0aca90f73f6dc2999d",
+   "request": "phr-components_stats-07",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Perform a connected-component labeling on the foreground True pixels of the input boolean mask, strictly following the provided connectivity mode where 4 implies edge-only adjacency and 8 implies edge-or-corner adjacency, while explicitly excluding the background from consideration. For every identified component, compute and report the total area as a pixel count, the rectangular bounding box, and the centroid coordinates. Arrange the final list of components in descending order of their area, and for any components sharing the same area, sort them by the top-left corner of their respective bounding boxes, prioritizing the top-most y-coordinate first and then the left-most x-coordinate.",
+   "sha1": "1d40069a249f8f8f3c5e604196c2d454df316fab",
+   "request": "phr-components_stats-07",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How do we label the foreground connected components of a boolean mask at the given connectivity (4 for edges, 8 for edges and corners), reporting the area, bounding box, and centroid for each while ignoring the background? The list must be sorted by largest area first, with equal areas ordered by the top-left corner of the bounding box (y, then x).",
+   "sha1": "12459fafe33e81dfe43ae98e31e1e36e74b02246",
+   "request": "phr-components_stats-01",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How many connected components of True pixels exist in the mask at the given connectivity (4 or 8), and what are their respective areas, bounding boxes, and centroids, listed from largest to smallest area and then by the y and x coordinates of their bounding boxes' top-left corners, excluding the background?",
+   "sha1": "fd9f2f8453f9fe8e24ebe8802c714776d3eda620",
+   "request": "phr-components_stats-01",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to analyze a binary mask to find groups of True pixels connected under a specified connectivity mode where 4 means shared edges and 8 means shared edges or corners. For every distinct component, I require the area, bounding box, and centroid to be calculated, with the background ignored, and the final list ordered by descending area, then by the bounding box's top-left y and x coordinates for ties.",
+   "sha1": "b62ff32ef8c605714968689f4e34b1d7e0f3df6f",
+   "request": "phr-components_stats-02",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "In my image processing workflow, I require a connected-component analysis of the True pixels in a mask using either 4-connectivity (shared edges) or 8-connectivity (shared edges or corners), ignoring the background, where I must list each component's area, bounding box, and centroid, ordered from largest to smallest area with ties resolved by the top-left corner of the bounding box (y then x).",
+   "sha1": "5a332e9479f7cfda7978512644a36e4d8fdb665c",
+   "request": "phr-components_stats-02",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "In my image processing pipeline, I require a breakdown of the True pixel regions in a boolean mask at the given connectivity level (4 meaning edge-adjacent, 8 meaning edge-or-corner adjacent), excluding the background, where I must report the area, bounding box, and centroid for every connected component, sorted by descending area and then by the bounding box's top-left corner from top to bottom (y) and left to right (x).",
+   "sha1": "1c6398ec41be9e7e05b9fab121e484084cecc9f3",
+   "request": "phr-components_stats-02",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a robotics engineer, I am required to identify connected True pixel groups in a sensor mask based on specified 4- or 8-connectivity rules, excluding the background; for each group, report its area, bounding box, and centroid, arranging the results from largest to smallest area and breaking area ties by the bounding box's top-left corner coordinates (y first, then x).",
+   "sha1": "6ede816e75fd66301c711f0fdf66655405c9012f",
+   "request": "phr-components_stats-03",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Group the foreground True pixels of the mask into connected components according to the provided connectivity (4-connectivity links edges, 8-connectivity links edges and corners), ignoring the background. (2) Determine the area, bounding box, and centroid for every component. (3) Present the components ordered by largest area first, with ties broken by the top-left corner of the bounding box from top to bottom then left to right.",
+   "sha1": "358980d876f3f3edf5ab4ec39ffedf7c249e0da6",
+   "request": "phr-components_stats-04",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Partition the foreground True pixels of the input boolean mask into distinct components based on the provided connectivity setting, defining 4 as adjacent edges and 8 as adjacent edges or corners. (2) Calculate the area, bounding box, and centroid for every component, ignoring the background. (3) Order the final list with the largest area first, and for components of identical size, arrange them by the top-left position of their bounding box, prioritizing y then x.",
+   "sha1": "784eb43b3b9e3e28d47ce7bda39450279be5354f",
+   "request": "phr-components_stats-04",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A boolean mask and a connectivity parameter (4 or 8). Output: A sorted list of foreground components where connectivity 4 links pixels via shared edges and connectivity 8 links via shared edges or corners. Each entry must specify the component's area, bounding box, and centroid. The background is excluded from the results. Components are ranked by largest area first; ties are resolved by the bounding box top-left corner, prioritizing smaller y values, then smaller x values.",
+   "sha1": "3889eef2b4aa3b3baff17d6e093d3922695a1cc8",
+   "request": "phr-components_stats-05",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Process the boolean mask to find connected components of foreground pixels using the specified connectivity mode, where 4 means edge connection and 8 means edge or corner connection, and return the area, bounding box, and centroid for each component, ordered from largest to smallest area and then by top-to-bottom and left-to-right position of the bounding box top-left corner for equal areas, while ignoring the background.",
+   "sha1": "d88871a298a8a78ebad3966dcbd035a6d550e320",
+   "request": "phr-components_stats-05",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A boolean mask and a connectivity parameter (4 or 8). Output: A list of connected components formed by True pixels under the given connectivity, where each component entry specifies its area, bounding box, and centroid, sorted by area from largest to smallest, and for equal areas, by the bounding box's top-left y-coordinate followed by x-coordinate, omitting the background.",
+   "sha1": "4986a03904d4659528d1bdc7be5cf5c7344daf64",
+   "request": "phr-components_stats-05",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Process the boolean mask to find connected groups of True pixels using the given connectivity rule, with 4 meaning edge-only connections and 8 allowing corner connections. Report the area, bounding box, and centroid for every detected component, ensuring the background is not included. Sort the list in descending order of area, resolving equal areas by the vertical position of the box top, followed by its horizontal left position.",
+   "sha1": "5a14103e6f5f4dce0a94a3759211db744956a0b4",
+   "request": "phr-components_stats-06",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Segregate the foreground pixels of the input boolean mask into distinct components based on the provided connectivity level, defining connectivity 4 as edge-adjacent and connectivity 8 as edge or corner-adjacent, ensuring the background is not treated as a component, and output for each component its area (pixel count), bounding box, and centroid, arranged from the largest area to the smallest, with equal areas ordered by the vertical position (y) then horizontal position (x) of the bounding box's top-left corner.",
+   "sha1": "c04c5485bddbbda0889981fe2e16377c84dac956",
+   "request": "phr-components_stats-07",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify all distinct connected groups formed by True pixels within the boolean mask using the specified pixel connectivity, where a connectivity of 4 restricts connections to shared edges and a connectivity of 8 allows connections via shared edges or corners. Ensure that the background is not treated as a component during this process. For each resulting component, determine its area in terms of pixel count, its enclosing bounding box, and its centroid location. Order the output list such that components with the largest area appear first, and resolve ties in area by sorting based on the bounding box's top-left corner, moving from top to bottom on the y-axis and then left to right on the x-axis.",
+   "sha1": "0e40be8392a198020e8e5d1084dd83396c3e87b5",
+   "request": "phr-components_stats-07",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you analyze the mask to find groups of True pixels connected via the given connectivity (4: shared edges; 8: shared edges or corners), and list their area, bounding box, and centroid? The background should not be included as a component, and the output should be sorted by area in descending order, with ties resolved by bounding box y-then-x order.",
+   "sha1": "d763965242b94b8ee8f29f005f4e50284bdcdec9",
+   "request": "phr-components_stats-01",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Could you extract the connected regions of foreground pixels from the boolean mask according to the provided 4 or 8 connectivity, reporting the area, bounding box, and centroid for each component without including the background, sorted by area descending and then by box y and x?",
+   "sha1": "511467bea0236183ca9f89d994729951ff325ef8",
+   "request": "phr-components_stats-01",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Given a boolean mask, I want to extract the connected foreground regions defined by True pixels at 4-connectivity (edges) or 8-connectivity (edges and corners). Please provide the area, bounding box, and centroid for each region, ensuring the background is not included, and arrange the output from largest area to smallest, resolving equal areas by the bounding box top-left corner (y, then x).",
+   "sha1": "7b762e41feba04d5f65d3d864b44ddb6160410ac",
+   "request": "phr-components_stats-02",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am working with a binary mask and need to group the True foreground pixels into connected components according to the given connectivity parameter (4: edges, 8: edges/corners), ensuring the background is not included as a component, and I need the area, bounding box, and centroid for each group, ranked by area descending and then by bounding box y-coordinate and x-coordinate for equal areas.",
+   "sha1": "871042401c7eada6404b74f084849a12e88ec4bd",
+   "request": "phr-components_stats-02",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a GIS data processor, I must group the True pixels within a boolean mask into connected components using the provided connectivity setting (4: edge-only adjacency, 8: edge or corner adjacency), calculate the area, bounding box, and centroid for each identified object excluding the background, and list them from largest to smallest area, using the bounding box's top-left corner y-coordinate then x-coordinate to break any ties.",
+   "sha1": "0864f673c06865f7e064e30ce0689953a4e0f0cc",
+   "request": "phr-components_stats-03",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Segment the boolean mask's True pixels into connected components based on the given connectivity (4: adjacent edges, 8: adjacent edges or corners), treating the background as non-component. (2) Compute the area, bounding box, and centroid for each detected component. (3) List the components sorted by area descending, then by bounding box y ascending, and finally by bounding box x ascending for equal areas.",
+   "sha1": "744fe6dceadee5f7cf1188ccff2e47045934b301",
+   "request": "phr-components_stats-04",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Segment the foreground True pixels into distinct components according to the given connectivity mode where 4 means shared edges and 8 means shared edges or corners; (2) ignore the background pixels; (3) compute the area (pixel count), bounding box, and centroid for each segment; (4) list the segments sorted by area in descending order, with ties broken by the bounding box top-left corner y then x.",
+   "sha1": "b0128e1ebacdcf3ef9ea3374579f792edfcf9918",
+   "request": "phr-components_stats-04",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify all connected components composed of True pixels within the input mask using the provided connectivity mode, where 4 indicates edge connectivity and 8 indicates edge or corner connectivity. The False background is not considered a component. Provide the area, bounding box, and centroid for every detected component. Arrange the output so that the component with the maximum area appears first, followed by others in descending area order, with ties broken by the vertical position (y) and then horizontal position (x) of the bounding box's top-left corner.",
+   "sha1": "781f39693e0f560ddba255043fca0c0cd76e70b2",
+   "request": "phr-components_stats-05",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: Boolean mask and connectivity type. Output: A list of connected foreground components, each defined by its area, bounding box, and centroid, where connectivity 4 uses edges and connectivity 8 uses edges or corners, with the background excluded and items sorted by area in descending order, followed by bounding box y-position then x-position for ties.",
+   "sha1": "b1582bbc16cf3e50f7c42feb5a13907ff538dba5",
+   "request": "phr-components_stats-05",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify distinct groups of foreground (True) pixels in the mask using the provided connectivity rule (4: shared edges, 8: shared edges or corners), calculate the area, bounding box, and centroid for each group, and present them in a list where the primary sort key is area (descending) and the secondary sort key is the bounding box's top-left position (y then x), ignoring the background.",
+   "sha1": "1e71ae739528697917a1256e5cc63356d95a440c",
+   "request": "phr-components_stats-05",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Segment the True pixels of the boolean mask into individual connected components according to the given connectivity specification, interpreting 4-connectivity as edge-adjacent and 8-connectivity as edge-or-corner-adjacent, with the background excluded from the component set, and provide for each component the metrics of area (pixel count), bounding box, and centroid, arranging the output list so that components with the largest area appear first, followed by components of equal area ordered by their bounding box top-left corner from top to bottom (y) and then from left to right (x).",
+   "sha1": "97faf8adf9b033887bdae438c9e4bba4cad3d319",
+   "request": "phr-components_stats-07",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Analyze the boolean mask to find connected components of True pixels according to the given connectivity parameter, distinguishing between 4-connectivity (edge sharing) and 8-connectivity (edge or corner sharing), and strictly omit the background from the results. For each component, calculate the area by counting pixels, define the bounding box boundaries, and locate the centroid. The output must list these components with the largest area at the top, and any components of equal area must be sorted by the coordinates of their bounding box's top-left corner, specifically by y-coordinate in ascending order and then by x-coordinate in ascending order.",
+   "sha1": "1d1e488d91c12f9f16ca9f128e073a0acccfd40b",
+   "request": "phr-components_stats-07",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Where are the connected components of the True pixels in the mask located, using the specified connectivity (4 for edge neighbors, 8 for edge or corner neighbors)? Please report the area, bounding box, and centroid for each component, excluding the background, and arrange them by largest area first, with ties broken by the bounding box top-left coordinates (y, then x).",
+   "sha1": "ec943d23aeec7ace77e39ce7c7ad157b6a3b452c",
+   "request": "phr-components_stats-01",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you list the connected components formed by the True pixels of the boolean mask using the provided pixel connectivity (4 for shared edges, 8 for shared edges or corners), reporting the area, bounding box, and centroid for each component, ordered by largest area first and then by the top-left corner of the bounding box (y then x), while treating the background as non-component?",
+   "sha1": "10e8b1614f310e8cbf7db58035d0a8d073e6ee3a",
+   "request": "phr-components_stats-01",
+   "sample": 1,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am processing a segmentation mask and need to label the connected True-pixel components based on a given connectivity parameter (4 for edge adjacency, 8 for edge or corner adjacency). For each component, please output its area, bounding box, and centroid, exclude the background, and sort the entries by area in descending order, using the bounding box's top-left y then x position to break any ties.",
+   "sha1": "ada25818d09ead8f8ff2acb8c0bf812634052638",
+   "request": "phr-components_stats-02",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  }
+ ]
+}

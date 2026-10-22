@@ -1,0 +1,347 @@
+{
+ "family": "perspective_rectify",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "hint words": 5,
+   "quota": 99
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Locate the four corners of the flat card and rectify it into an upright out_w x out_h image. Report the corners and the rectified image.",
+   "sha1": "86b7da55601341dd54d9fe03ee04324577027cf8",
+   "request": "phr-perspective_rectify-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Locate the four corners of the rectangular card and generate its rectified representation as an upright out_w x out_h image.",
+   "sha1": "8b6bc5db7b9ded3d679f4bbe386c98cb2e5e58c4",
+   "request": "phr-perspective_rectify-00",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Detect the card's four corners and rectify it to an upright out_w x out_h image, returning both results.",
+   "sha1": "28de0a6fbc18f32a7c2280addaf398cb0a1df441",
+   "request": "phr-perspective_rectify-00",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Could you identify the four corners of the bright rectangular card on the dark surface and provide the rectified card as an upright out_w x out_h image?",
+   "sha1": "8bc518cade056b52c1471a27f6673c0798345b05",
+   "request": "phr-perspective_rectify-01",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you locate the four corners of the bright rectangular card resting on the darker surface and provide the corresponding upright rectified image of size out_w x out_h?",
+   "sha1": "823e90aaaebca774ba9a38af731a0973e35870b6",
+   "request": "phr-perspective_rectify-01",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you identify the four corners of the rectangular card on the dark background and provide the rectified image warped to out_w x out_h?",
+   "sha1": "915db1b1da87197b889d5cec8ff40cb8be32e1ae",
+   "request": "phr-perspective_rectify-01",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am digitizing a collection of paper cards and need you to locate the four corners of the flat rectangular card visible on the dark surface in this photo, then use those points to produce a rectified upright image of size out_w x out_h, providing both the corner coordinates and the resulting image.",
+   "sha1": "2f620ec85e68e260a1ed2443f2fa2703ea303eab",
+   "request": "phr-perspective_rectify-02",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am processing a photograph of a rectangular card resting on a dark background at an unknown angle, and I need you to determine its four corners and produce a rectified image with dimensions out_w x out_h that is upright.",
+   "sha1": "185e30b9a5cd1566ec78d3f2260a8d0df46a6007",
+   "request": "phr-perspective_rectify-02",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a photo of a printed card resting on a dark background taken from an odd angle, and I need you to identify its four corners and provide the warped upright image sized to out_w x out_h.",
+   "sha1": "63dd0df0c05b3a4f87b1b07bb2805decdd05b898",
+   "request": "phr-perspective_rectify-02",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a digital archivist scanning physical records, I need to identify the four corners of the flat card resting on the dark background and use them to warp the content into an upright out_w x out_h image, returning both the coordinates and the result.",
+   "sha1": "c0b70e023e36d0cd6eb218fa4266292f9408e4b4",
+   "request": "phr-perspective_rectify-03",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a digital archivist processing physical documents, I need to identify the four corners of the rectangular card on the dark surface and produce the rectified card image sized out_w x out_h.",
+   "sha1": "8d6b1404a529ad9c268ea5570d6195efd735a1a8",
+   "request": "phr-perspective_rectify-03",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a digital archivist, I need to extract the four corners of the rectangular card visible on the dark surface and produce an upright out_w x out_h image of the card, returning both the corner locations and the rectified result.",
+   "sha1": "7d5f152529da3fb0bc29d9b07ca45e85f3322e27",
+   "request": "phr-perspective_rectify-03",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify the four corners of the flat rectangular card on the darker surface. (2) Perform perspective correction to produce an upright out_w x out_h image. (3) Return the corner coordinates and the rectified result.",
+   "sha1": "c2013e44e8f8955100cad82ac99dc467bff60421",
+   "request": "phr-perspective_rectify-04",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify the four corners of the flat rectangular card resting on the darker surface. (2) Rectify the card to an upright out_w x out_h image using these corners. (3) Report the corners and the resulting image.",
+   "sha1": "476e2eb49f0e3d2ddbcaf4eca16cb6d2dac1541a",
+   "request": "phr-perspective_rectify-04",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify the four corners of the flat rectangular card on the dark surface. (2) Rectify the card into an upright out_w x out_h image. (3) Report the corners and the rectified image.",
+   "sha1": "8963a733b765571fda08ef73610feeb95bd0e861",
+   "request": "phr-perspective_rectify-04",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify the four corners of the rectangular card positioned on the darker surface and compute the geometric transformation needed to rectify it into an upright image of dimensions out_w x out_h, returning both the corner coordinates and the resulting warped image.",
+   "sha1": "a64732ee81c696efed035059bb7e8b666cd17575",
+   "request": "phr-perspective_rectify-05",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify the four corners of the rectangular card displayed on the darker surface and rectify the card into an upright out_w x out_h image, then report both the corners and the rectified image.",
+   "sha1": "fa6ea5473fd3fa96e615445919dede022ccf6142",
+   "request": "phr-perspective_rectify-05",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: An image of a rectangular card on a dark background. Output: The coordinates of the card's four corners and the rectified card image resized to dimensions out_w x out_h.",
+   "sha1": "f1f6b8b3d5cb1a9c7d389446209b02cf3569a414",
+   "request": "phr-perspective_rectify-05",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify the four corners of the rectangular card resting on the dark surface and compute the geometric transformation to straighten it. Return the corner coordinates and the resulting rectified image with dimensions out_w x out_h.",
+   "sha1": "7be8f185e13b1d18588bd3a055264fd6463ea9ed",
+   "request": "phr-perspective_rectify-06",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Detect the four corners of the rectangular card on the dark surface and apply a perspective transformation to produce an upright out_w x out_h image, returning both the coordinates and the rectified picture.",
+   "sha1": "ed0fdd46e13ea8a960cce1ed58821b00cf2753a7",
+   "request": "phr-perspective_rectify-06",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Given an image depicting a bright rectangular paper card with printed artwork placed on a darker background at an arbitrary orientation, identify the specific pixel coordinates corresponding to the card's four corners and generate a corrected, upright representation of the card resized to the dimensions out_w x out_h, returning both the corner coordinates and the rectified image.",
+   "sha1": "244bf06f56b7c0159efab15e79d0ba4f89a14b0d",
+   "request": "phr-perspective_rectify-07",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "The scene presents a single flat rectangular card featuring a printed image and bright paper material that is resting on a darker backdrop from an arbitrary viewpoint, and you must identify the four corners of this card and subsequently rectify it into an upright image with dimensions out_w x out_h, reporting both the detected corners and the resulting rectified image.",
+   "sha1": "6263ec23e58eb7cff052e3664d5d0a0aa8ac4ad3",
+   "request": "phr-perspective_rectify-07",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify the card's four corners and produce its upright out_w x out_h rectified view. Return both the corners and the image.",
+   "sha1": "ce130abeea4b1e434c7b83f36a9c3338ca9cb72e",
+   "request": "phr-perspective_rectify-00",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract the card's corner coordinates and warp the card to an upright out_w x out_h view.",
+   "sha1": "d561de7293e2dea2b01ff7b704bb59d61e901955",
+   "request": "phr-perspective_rectify-00",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Return the card's four corners and the warped upright out_w x out_h image.",
+   "sha1": "4bde5be7dfa8dab5c6544723bdbc9ec507b6f79f",
+   "request": "phr-perspective_rectify-00",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Where are the four corners of the printed card located, and can you return them alongside the card warped into an upright out_w x out_h image?",
+   "sha1": "af5653eaea125531835946e6b2155e4f4061b6d0",
+   "request": "phr-perspective_rectify-01",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How many corners define the flat card in this arbitrary angle photo, and can you list them along with the card warped into an upright out_w x out_h image?",
+   "sha1": "fd908aa2ab329e0c58e43bb889ccc55d11fe5bb7",
+   "request": "phr-perspective_rectify-01",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a photo of a single bright paper card lying on a darker background taken from an arbitrary angle, and I need you to identify its four corners and warp the card into an upright rectangle of dimensions out_w x out_h, returning the specific corner locations and the flattened image.",
+   "sha1": "4ec1a79635012d7c20a49717ae83b910a6b17501",
+   "request": "phr-perspective_rectify-02",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "In my snapshot of a flat rectangular card on a darker surface, I need the locations of its four corners and the resulting rectified image transformed to an upright out_w x out_h shape.",
+   "sha1": "55830499e8bbae63347260522fc43aff3000eaf1",
+   "request": "phr-perspective_rectify-02",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a retail inventory specialist photographing merchandise, please locate the four corners of the bright rectangular card on the darker surface and provide them alongside the rectified image warped to an upright out_w x out_h size.",
+   "sha1": "563dd271f7d6b4e75f5c85eab90fcad715e78ccf",
+   "request": "phr-perspective_rectify-03",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a document scanner developer, please identify the four corners of the flat paper card in the arbitrary-angle photo and warp it to create an upright out_w x out_h image, providing the corner coordinates and the final image as the output.",
+   "sha1": "9b54a257e99b98bd431d4508c72141b9fa155497",
+   "request": "phr-perspective_rectify-03",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Detect the four vertices of the bright paper card in the photo. (2) Compute the warp required to make the card upright at dimensions out_w x out_h. (3) Output the identified corners and the transformed card image.",
+   "sha1": "0fc0c27be2b691f9b5e081f62cee071058aee3c1",
+   "request": "phr-perspective_rectify-04",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Locate the card in the photo taken from an arbitrary angle. (2) Determine its four corner points. (3) Warp the card into an upright out_w x out_h format. (4) Return the detected corners and the rectified image.",
+   "sha1": "d60b2c16c5f9be25b1bb488e0a2970b7ae70a1e0",
+   "request": "phr-perspective_rectify-04",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Locate the card's four corners in the photo. (2) Warp the card to an upright out_w x out_h image. (3) Return the detected corners along with the rectified image.",
+   "sha1": "4ee592e3b0042e4f1ec6de0454b88b55b06bbd4c",
+   "request": "phr-perspective_rectify-04",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A photograph of a flat rectangular card on a dark background. Output: The four corner points of the card and the card content transformed into an upright perspective-corrected image of size out_w x out_h.",
+   "sha1": "ec05ab63b9d59a01c78efb989d7651aaf32900f7",
+   "request": "phr-perspective_rectify-05",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A photo of a flat rectangular card on a darker surface. Output: The card's four corners and the card warped to an upright out_w x out_h image.",
+   "sha1": "e55ac6a097dccf5a1ce6abb6dbe0205d86a1a66b",
+   "request": "phr-perspective_rectify-05",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Detect the four corner points of the rectangular card in the provided photo and generate a perspective-corrected view of the card that is upright and has dimensions out_w x out_h.",
+   "sha1": "a2ecd2157e59126e4ef942b37bfe0687bc6acc94",
+   "request": "phr-perspective_rectify-05",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract the locations of the card's four vertices from the photo and use them to transform the card into an upright image of size out_w x out_h. Return the list of corners alongside this rectified view.",
+   "sha1": "48d455aa5d3714b185c62f14197dd70a4f8b1c88",
+   "request": "phr-perspective_rectify-06",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the positions of the card's four vertices in the provided photo and use them to warp the card into a flat, upright orientation. The final output must include these corners and the processed image sized out_w x out_h.",
+   "sha1": "285d922d381cfc893bc9dc1f3a3df70c7d976dab",
+   "request": "phr-perspective_rectify-06",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify the corners of the flat card in the photo and use them to warp the region into a straightened out_w x out_h image, providing the corner locations and the flattened result.",
+   "sha1": "a548f63cf14ffd84444e0fae629d742ff05535e9",
+   "request": "phr-perspective_rectify-06",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  }
+ ]
+}

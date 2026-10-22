@@ -1,0 +1,109 @@
+{
+ "family": "text_layout",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 10,
+  "rejected": {
+   "content": 129,
+   "overlaps a scored task": 1,
+   "length out of range": 3,
+   "near-duplicate of a kept candidate": 1
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Draw `text` on a copy of `img` via cv2.putText, using Hershey `face`, `scale`, `thickness` and `color`, centred in `box` via the getTextSize bounds (width, height+baseline); shrink `scale` if necessary to fit, never altering pixels outside `box`; return the image, the final `scale`, and the getTextSize (width, height).",
+   "sha1": "cefe89c13d23035e39062b154e6773190d913260",
+   "request": "phr-text_layout-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Render `text` in the middle of `box` on a duplicated `img` using cv2.putText with `face`, `thickness` and `color`, ensuring horizontal and vertical centring based on the getTextSize box (including baseline); reduce `scale` to the maximum fitting value if the initial `scale` exceeds `box` dimensions; keep exterior pixels unchanged; output the image, used `scale`, and getTextSize (width, height).",
+   "sha1": "b39ead9889b1e199aac38b2f82458cd148a33d18",
+   "request": "phr-text_layout-00",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How can I place `text` in the middle of `box` on a duplicate of `img` using cv2.putText with Hershey font `face`, font scale `scale`, line `thickness` and BGR colour `color`? The centering must account for the full height reported by cv2.getTextSize (including the baseline), and if the text is too large for the box at the given `scale`, adjust the scale down to the largest fitting value; ensure no changes occur outside the box, and return the new image, the final scale used, and the (width, height) reported by cv2.getTextSize for that scale.",
+   "sha1": "a2d2a0bb768b464af8ca6f998dd56f1bb1d00597",
+   "request": "phr-text_layout-01",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have an image `img` and need to overlay `text` in the middle of `box` without affecting any pixels outside that region, using `cv2.putText` with the Hershey font `face`, `thickness` and BGR `color`; the centering must account for the baseline included in the `cv2.getTextSize` dimensions, and if the text exceeds the box size at the starting `scale`, adjust the scale down to the largest value that fits, then return the modified image, the scale used, and the width and height reported by `cv2.getTextSize`.",
+   "sha1": "65c537b164466d89c4ad2f4e305ffc44fe67f115",
+   "request": "phr-text_layout-02",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Execute cv2.putText on a copy of `img` to display `text` in `box`, utilising `face`, `thickness` and `color`; centre the text using the getTextSize box (width, height+baseline) and shrink `scale` to the largest value that fits if initial `scale` is too large; preserve pixels outside `box`; provide the image, the chosen `scale`, and the getTextSize (width, height).",
+   "sha1": "d72b2a8f65247d15f25306e23dff35793cc308b3",
+   "request": "phr-text_layout-00",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Centred placement of `text` in `box` on a copy of `img` via cv2.putText, applying `face`, `thickness` and `color`; use the getTextSize box (width, height plus baseline) for alignment and reduce `scale` if the text does not fit; prohibit modification of pixels outside `box`; return the resulting image, the final `scale`, and the getTextSize (width, height).",
+   "sha1": "0f1f54cadfc58a0f86a1d1b3171db11db4ecb480",
+   "request": "phr-text_layout-00",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a layout requirement to place `text` in the middle of `box` on a copy of `img`; could you draw it with cv2.putText using Hershey `face`, font scale `scale`, line `thickness` and BGR colour `color`, using the cv2.getTextSize box including the baseline for vertical and horizontal centering, reducing the scale to the largest that fits if the text is too big, and confirming that pixels outside the `box` are unchanged, then return the image, the scale used, and the (width, height) from cv2.getTextSize?",
+   "sha1": "ff77d5c6f9542402558bb664fbb4201f50fd385e",
+   "request": "phr-text_layout-02",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a layout editor, I need to insert `text` into the middle of `box` on a copy of `img` using cv2.putText with Hershey `face`, `scale`, `thickness` and `color`, centering the cv2.getTextSize box which includes the baseline; if the text exceeds the box size, reduce `scale` to the largest value that fits, leave all pixels outside `box` untouched, and return the resulting image, the scale, and the width and height from cv2.getTextSize.",
+   "sha1": "ffb43c342e109d8450d24c0132b7123917d704ed",
+   "request": "phr-text_layout-03",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: `img`, `text`, `box`, `face`, `scale`, `thickness`, `color`. Output: new image, final scale, (width, height) from cv2.getTextSize. Requirement: Draw `text` on a cloned `img` using cv2.putText with `face`, `thickness`, and `color`. Center the text in `box` by positioning it such that the middle of the cv2.getTextSize rectangle (including baseline) matches the middle of `box`. If the text does not fit at the provided `scale`, lower the scale to the largest value that fits within `box`, accepting any value within 10% of the optimal maximum. Ensure no modification occurs to pixels outside the `box` area.",
+   "sha1": "6753709f7258eb1d377603d688baef60fa7898dd",
+   "request": "phr-text_layout-05",
+   "sample": 2,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Create a new image from `img` with `text` drawn in `box` using cv2.putText, `face`, `thickness` and `color`, centred horizontally and vertically by the getTextSize bounds (width, height+baseline); if `scale` causes overflow, shrink it to the maximum fitting size; leave pixels outside `box` intact; return the image, the used `scale`, and the getTextSize (width, height).",
+   "sha1": "2177234a1e9a2cc2fe089dd9dc325ad780306435",
+   "request": "phr-text_layout-00",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  }
+ ]
+}

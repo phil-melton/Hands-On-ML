@@ -1,0 +1,349 @@
+{
+ "family": "hough_segments",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "content": 14,
+   "near-duplicate of a kept candidate": 1,
+   "length out of range": 1,
+   "quota": 88
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Output the two end points of each thin bright straight stroke on the dark background, one row per stroke.",
+   "sha1": "abc89f1b25463a7a5aa1bad918d87cecdf33f7cf",
+   "request": "phr-hough_segments-00",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you identify the two end points of every thin, straight, bright stroke visible against the dark background and format the results with one row per stroke?",
+   "sha1": "ba480509da422d2a06507d7901da167bb45e4675",
+   "request": "phr-hough_segments-01",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have an image containing thin bright strokes on a dark background and need to identify the two endpoints of each straight line segment, outputting one row per stroke.",
+   "sha1": "c06de544db4246823126a70593da2d611e49ef69",
+   "request": "phr-hough_segments-02",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a dark image containing thin bright straight line segments and I need to list the two end points for each stroke, formatted with one row per segment.",
+   "sha1": "c3fa08a4c83859ee2d0417c88b61125c1882367a",
+   "request": "phr-hough_segments-02",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a dark image containing thin bright straight strokes and need to identify the two end points for each one, providing the coordinates in a single row per stroke.",
+   "sha1": "28e97fdd8e1b595491617f83480fc4caad23a815",
+   "request": "phr-hough_segments-02",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a signal processing engineer, I need to parse the image's thin bright linear structures against the dark backdrop; please provide a list where every line segment is represented by a single row containing its two endpoint coordinates.",
+   "sha1": "e2c09b0301e00b9d4f531ec95963ceccd557f091",
+   "request": "phr-hough_segments-03",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a medical imaging analyst, I need to extract the geometric data for linear artifacts in my scans, so please identify all thin bright segments against the dark backdrop and list their two endpoint coordinates in separate rows.",
+   "sha1": "4afb039e401edc4a3e84e02e759af400b93e2066",
+   "request": "phr-hough_segments-03",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a medical imaging analyst, I need to identify the endpoints of every thin, straight, bright stroke against the dark background so I can log each segment with one row of coordinates per detected line.",
+   "sha1": "db981269cb7bb6046dea1157d35a41e09bf624a1",
+   "request": "phr-hough_segments-03",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify each straight, thin, bright stroke against the dark background. (2) Determine its two end points. (3) Provide one row per stroke listing these coordinates.",
+   "sha1": "c069ab43338c452fd631550e85ca28e44eb1ba6d",
+   "request": "phr-hough_segments-04",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Identify all thin, bright, straight line segments set against a dark background. (2) Determine the coordinates for the two end points of each segment. (3) Present the results with each line segment occupying a single row.",
+   "sha1": "90e364d43bfd7c98de03a69b0b715161ab49f68c",
+   "request": "phr-hough_segments-04",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify all thin bright strokes on the dark background and provide the two end points for each stroke, formatted with one row per stroke.",
+   "sha1": "c7d32db228746d7c7e80f75de50d851d11afe5e3",
+   "request": "phr-hough_segments-05",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify all straight line segments characterized by thin bright strokes against a dark background; report the two end points of each stroke, with one row per stroke.",
+   "sha1": "303390d7a1953e8f46a15e5f584e51cc240c7f1d",
+   "request": "phr-hough_segments-05",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Identify all thin bright straight segments against the dark background and provide the two endpoint coordinates for each segment, formatting the output with one row per segment.",
+   "sha1": "1676bf26bb94268686275a53930f1ab1c6993656",
+   "request": "phr-hough_segments-05",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Detect all thin bright straight line segments set against a dark background. For each identified stroke, output its two end points in a single row.",
+   "sha1": "2e33d776dd310d5422436957464671131248089b",
+   "request": "phr-hough_segments-06",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify all straight line segments that appear as thin bright strokes against a dark background and report the two end points for each individual stroke, ensuring that the output consists of exactly one row of coordinates per detected segment.",
+   "sha1": "f3eb685bf534e75de66a128c4b51175180a74919",
+   "request": "phr-hough_segments-07",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "For each and every straight line segment visible as a thin bright stroke on the dark background, determine its two distinct end points, ensuring that the complete set of these coordinate pairs is reported with exactly one row of data allocated for each individual stroke.",
+   "sha1": "bdf48e1a2b524ff36f71e916c5b2fa3bd279cfb9",
+   "request": "phr-hough_segments-07",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract coordinates for every straight bright stroke on the dark field. Provide the two endpoints per stroke, one row each.",
+   "sha1": "d9b47bd606b2cdadc6b82ff6843e12906cfdb42c",
+   "request": "phr-hough_segments-00",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract the endpoints of every straight bright stroke against the dark field; output one row per stroke.",
+   "sha1": "5c54b5bb8e76fbc956d1fc4b21f2703f3a644210",
+   "request": "phr-hough_segments-00",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify all straight bright strokes against the dark ground. Return their two end points, one row per stroke.",
+   "sha1": "eee18c4cafcba67bbef6e128fc8e8648c8c22c16",
+   "request": "phr-hough_segments-00",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Where are the endpoints for each straight bright line segment in the image, listed as a single row of coordinates per stroke?",
+   "sha1": "7c13a95188399d0709986d7760d914d395bef23e",
+   "request": "phr-hough_segments-01",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How can I extract the two endpoint coordinates for every straight, bright stroke visible in the dark image, ensuring each stroke is reported on its own row?",
+   "sha1": "de8b85ffa425df4fcd5831f86f306f252c2ea6be",
+   "request": "phr-hough_segments-01",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to process a dark image with thin bright strokes to extract the coordinates of the two endpoints for every straight line segment, providing one row per stroke in the result.",
+   "sha1": "2d3fd04bebd78e1631eeb310c25a8fc02de5d489",
+   "request": "phr-hough_segments-02",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to process a picture of thin bright strokes on a dark background to extract the two end points of every straight line, ensuring each stroke occupies exactly one row in the output.",
+   "sha1": "2a588d86ef975ac9598d9415a227d4b37494ee6e",
+   "request": "phr-hough_segments-02",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a scene detection engineer, my workflow requires mapping out the linear structures visible in the low-light capture; find each distinct bright stroke on the dark field and report the coordinates of its two ends, assigning one row to each detected line.",
+   "sha1": "a5233ba5a49b0081bf37d2bf1b7a750b38008226",
+   "request": "phr-hough_segments-03",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a data visualization engineer, please determine the two end points for each thin, straight, bright stroke visible in the dark image and format the result so that every stroke occupies a single row in the output.",
+   "sha1": "c1293501c04c50dff182ba4d98f7ecbfeb897e27",
+   "request": "phr-hough_segments-03",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Scan the dark image for straight, thin, bright strokes. (2) Record the start and end coordinates of every such segment. (3) Output the results with one row allocated to each stroke.",
+   "sha1": "fb006f7731565b89244cee7ac36da23b6003e73b",
+   "request": "phr-hough_segments-04",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Scan the dark image for all linear bright strokes. (2) Extract the coordinate pairs representing the start and end of each line. (3) Format the results with one entry per stroke per row.",
+   "sha1": "1f73ec068eee68b2f0f8b5789fa1415e67c01726",
+   "request": "phr-hough_segments-04",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Scan the image for straight, thin, bright strokes on a dark ground. (2) Retrieve the two end points associated with every stroke. (3) Format the output so that each stroke is listed on its own row.",
+   "sha1": "61e3459b9f527491961c0648628f6f16529c765c",
+   "request": "phr-hough_segments-04",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: An image containing thin bright strokes on a dark ground. Output: The two end points of every straight line segment, with one row dedicated to each stroke.",
+   "sha1": "d2c3cc53cce943f0ac156f3f79cc12d0d32e3371",
+   "request": "phr-hough_segments-05",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: An image containing thin bright strokes on a dark background. Output: The two end points for every straight line segment found, presented as one row per stroke.",
+   "sha1": "14b994f0c70cfda8726aedc00ea18247f2b4d810",
+   "request": "phr-hough_segments-05",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify the straight, thin, bright strokes present in the dark image. Provide the two end points for every such segment, with one row allocated per stroke.",
+   "sha1": "8611c4582250ca8fb2da902614e22d72ce78b118",
+   "request": "phr-hough_segments-06",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Extract the straight, thin, bright segments visible in the image. Determine the two endpoints for each of these strokes. List the coordinates for each segment on a separate row.",
+   "sha1": "c060c4fcdf540bf7e457710c65f7144efcf551a8",
+   "request": "phr-hough_segments-06",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "For every thin bright straight line segment visible on the dark image, determine its specific geometric boundaries and list the two end points, formatted such that each distinct stroke occupies a single dedicated row in the final report.",
+   "sha1": "d6359d5ea0e800ac5ef134714bad277b6e7efbf7",
+   "request": "phr-hough_segments-07",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify every thin, straight, bright stroke situated on the dark background within the image, extract the specific coordinates of the two end points for each of these strokes, and format the final report so that every stroke is assigned exactly one row containing its endpoint data.",
+   "sha1": "a6b56837f27950caa7c507f4db59657bad460f3d",
+   "request": "phr-hough_segments-07",
+   "sample": 1,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Map the two endpoints of each thin bright line in the image. Format as a single row per stroke.",
+   "sha1": "729b9a90209628125b27b1330e62bb517e7d0105",
+   "request": "phr-hough_segments-00",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Report the two end points for every thin bright straight line segment on the dark image, one row per stroke.",
+   "sha1": "93a61b0381091f93d2773008e3e8e7ef706d90fd",
+   "request": "phr-hough_segments-00",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you retrieve the coordinates of the two endpoints for all thin bright strokes on the dark surface, ensuring each stroke occupies exactly one row in the output?",
+   "sha1": "27656fcc3ea2b2eccbaf30d1d061df2603d6ce8d",
+   "request": "phr-hough_segments-01",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you pinpoint each straight line segment consisting of a thin bright stroke on the dark ground and report the two end points of each, one row per stroke?",
+   "sha1": "0bb212b9d294aa4a6304ec16a43c4d412ee82bc5",
+   "request": "phr-hough_segments-01",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am working with an image of thin bright strokes on a dark background and require a list of the two endpoints for each straight line segment, formatted with one row per stroke.",
+   "sha1": "b973f1789fbe45850eba3187aaee0108a0991e5a",
+   "request": "phr-hough_segments-02",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am working with an image of straight bright strokes against a dark backdrop and require the two end points of each stroke reported in a format where each stroke gets its own row.",
+   "sha1": "dd6663fbacdf6a816ffbb255bd3fc262692a0e1d",
+   "request": "phr-hough_segments-02",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  }
+ ]
+}

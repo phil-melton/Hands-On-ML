@@ -32,7 +32,39 @@ putText at a new size renders differently (1,755 of 36,000 values) - possible up
 INTER_NEAREST on only 75 of 1,890 size pairs.
 Next Colab test session (before full generation): on the 58 hard-family specs (hough_segments, text_layout), compare
 INT4 vs the official `Qwen/Qwen3.8-27B-FP8` (30.9 GB, fits an A100-40) and thinking on vs off; plus the phrasing
-generation. Whichever raises the Tier-A rate becomes the full-generation configuration. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+generation. Whichever raises the Tier-A rate becomes the full-generation configuration.
+Prediction (Rule 1; within Phil's 100 CU cap): session s1-20261022 on an A100 with Qwen3.8-27B-INT4 @ 91bd022d:
+56 phrasing prompts x 3 (70.6k tokens) + 80 think-test specs (8 per family, 12 for hough/text_layout, 16 drills) x 4
+non-thinking (212.8k tokens at 867 tok/s) and x 4 thinking (1.82 M tokens at an assumed 450 tok/s, 5,700 per sample:
+both unmeasured) -> 85 min, **7.6 CU** (range 5-11), kill at 170 min. Session s1fp8-20261022: the same 80 non-thinking
+rows on `Qwen/Qwen3.8-27B-FP8` @ 017b9c7a (Apache-2.0, 30.9 GB, checked on the HF API) at an assumed 540 tok/s
+(1.6x the INT4 bytes per token) -> 21 min, **1.9 CU**, kill at 42 min.
+Measured s1 (12:29-14:14): 808 completions; load 606 s, generation 5,618 s at 707 tok/s; `colab usage` 696.73 ->
+687.90 = **8.83 CU** (predicted 7.6; 105 min vs 85). Verified locally (4 workers):
+
+| mode | Tier A (Wilson 95 %) | reasoning cut off | tokens per sample | tokens per Tier-A sample |
+|---|---|---|---|---|
+| non-thinking | **60.3 %** [55, 66] of 320 | 0 | 698 | 1,157 |
+| thinking (12,288-token cap) | 10.6 % [8, 14] of 320 | 282 of 320 | 11,505 | 108,278 |
+
+Per family non-thinking: contour 93.8, perspective 96.9, histogram 93.8, components 84.4, drills 64.1, homography 59.4,
+hough 18.8, text_layout 12.5 %. Thinking reached an answer only on histogram (7/32 Tier A) and drills (27/64).
+**Decision 6 resolved: no thinking** - it does not raise accuracy at an affordable budget; the hard families' reasoning
+runs past 12k tokens on nearly every sample (Phil's condition was "if it increases accuracy").
+Phrasings: 56 x 3 replies screened -> kept 40 for each of six families, 10 for text_layout (129 rejected by its content
+checks); `foundry/phrasings/*.json` (250 new prompts).
+s1fp8 FAILED at engine start: CUDA OOM on the A100-40 (29.8 GiB of weights and buffers in use, then a 12.25 GiB
+allocation). The research's "fits with ~5 GiB spare" was wrong. The driver stopped the VM; cost 687.90 -> 687.01 =
+0.89 CU. Retry once on an H100 (80 GB, native FP8): same 80 rows; H100 CU/h unknown (assume ~10) -> ~15 min, ~2.7 CU,
+kill at 30 min. If it fails again, FP8 is dropped and full generation uses INT4 on the A100.
+H100 retry: refused at `colab new` ("Backend rejected accelerator 'H100' ... no quota or entitlement"); no VM, 0 CU.
+**FP8 dropped**; full generation = Qwen3.8-27B-INT4, non-thinking, A100. Stage 4 spend so far: 3.27 (pilot) + 8.83
+(s1) + 0.89 (failed FP8) = 12.99 CU; balance 687.01.
+Full generation `full1-20261022` prediction (Rule 1): 1,372 specs (7 families x 44 prompts, text_layout 14; 40
+drills x 3 = 120 prompts; 398 distinct prompts), 7,188 samples (k 8 for hough_segments and text_layout); per-family
+tokens per sample from s1's non-thinking run; 5.56 M output tokens at 707 tok/s (s1's measured rate) = 131 min + 10 min
+load + 2 min setup = **143 min, 12.9 CU** ($1.29), kill at 286 min. text_layout is 44 % of the tokens. Output is saved
+every 50 prompts and the stage is resumable. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed

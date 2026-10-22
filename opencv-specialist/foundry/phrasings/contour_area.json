@@ -1,0 +1,350 @@
+{
+ "family": "contour_area",
+ "teacher": {
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "license": "apache-2.0",
+  "revision": "91bd022d5b49442a868bc35008f6c21e1860edfa",
+  "quantization": null,
+  "gpu": "A100"
+ },
+ "created": "2026-10-22",
+ "run": "s1-20261022",
+ "screen": {
+  "dup_threshold": 0.25,
+  "run_limit": 17,
+  "ngram": 5,
+  "max_keep": 40,
+  "candidates": 144,
+  "replies": 24,
+  "new": 40,
+  "rejected": {
+   "content": 87,
+   "length out of range": 4,
+   "overlaps a scored task": 6,
+   "near-duplicate of a kept candidate": 1,
+   "quota": 6
+  }
+ },
+ "phrasings": [
+  {
+   "text": "Identify all bright shapes on the dark background. Output the area enclosed by each outer boundary without subtracting holes, plus the total shape count.",
+   "sha1": "2ded3598566718bad122fc85436784f633d28919",
+   "request": "phr-contour_area-00",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Locate all isolated bright regions against the dark background. Return the count and the area enclosed by each region's outer boundary, excluding hole subtraction.",
+   "sha1": "8a9b16c18c33dcc0ddbd94e600b579c2b09d23dc",
+   "request": "phr-contour_area-00",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a series of dark images containing distinct bright objects and need to determine the total area enclosed by the outer boundary of each separate shape, ensuring holes are not subtracted, along with the total number of shapes.",
+   "sha1": "a22d84db78e58940bd5edd380dbdb8368cc5af57",
+   "request": "phr-contour_area-02",
+   "sample": 0,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a quality control engineer inspecting illuminated components, identify each distinct bright region against the dark backdrop, then provide the area enclosed by the outer boundary of each (excluding hole subtraction) along with the total shape count.",
+   "sha1": "b762d504402be5c463bc305a011b6557203bdacd",
+   "request": "phr-contour_area-03",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a materials analyst, I need to isolate all distinct bright regions against the dark backdrop to determine the specific area enclosed by each shape's outer boundary (holes are not subtracted) and the total number of shapes.",
+   "sha1": "c04bb015aa324a305b9e515a759b055ba5415a8b",
+   "request": "phr-contour_area-03",
+   "sample": 2,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Identify all isolated bright shapes against the dark background. Calculate the area enclosed by the outer boundary of each shape, ensuring that any internal holes are included in the measurement. Return the list of these areas and the total count of shapes.",
+   "sha1": "7796b4a4adf9dcf132140db8fdc731c842da9cdf",
+   "request": "phr-contour_area-06",
+   "sample": 1,
+   "position": 0,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Locate distinct bright regions against the dark backdrop. Report the area inside each outer boundary (including holes) and the number of shapes.",
+   "sha1": "7e8c931ca4ea073ae6e4113ad05229e78af23008",
+   "request": "phr-contour_area-00",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to analyze my dark background images to locate every individual bright shape, calculate the area within each shape's outer boundary without excluding holes, and provide the count of these shapes.",
+   "sha1": "afa150ec834c48d6cc1b284794146a30230787f8",
+   "request": "phr-contour_area-02",
+   "sample": 0,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a medical imaging technician, I am tasked with identifying every individual bright form on the dark field to record the area enclosed by each shape's outer boundary (holes are not subtracted) along with the total count of shapes.",
+   "sha1": "cb2e7723206a1da00b9a06aa67db6507a434fcda",
+   "request": "phr-contour_area-03",
+   "sample": 2,
+   "position": 1,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Could you list the area inside the outer boundary of every individual bright shape found on the dark background, ensuring holes are not deducted, along with the total number of such shapes?",
+   "sha1": "12670127dca219796dd7c6b1e03077c21051befb",
+   "request": "phr-contour_area-01",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "In my current dataset, bright shapes appear on a dark background, so I require you to locate every separate instance, determine the surface area within its outer contour without subtracting holes, and state how many shapes are present.",
+   "sha1": "52dabdf3ef436ce36140bf4611b683eece187aeb",
+   "request": "phr-contour_area-02",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a manufacturing quality inspector, I require the measurement of the area enclosed by each shape's outer boundary (holes are not subtracted) for every separate bright object on the dark background, plus the total number of shapes.",
+   "sha1": "fbd9442ff2b7497b1f537ed7d5e9668c4db938e6",
+   "request": "phr-contour_area-03",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: Locate each separate bright shape on the dark background, determine the area enclosed by its outer boundary (holes are not subtracted), and provide the total number of shapes.",
+   "sha1": "f7ed1c43e3a938f32c1380a8e1ac62cc3eb81e84",
+   "request": "phr-contour_area-05",
+   "sample": 1,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Determine the set of separate bright figures visible against the dark background. Report the area inside the outer contour of each figure, counting enclosed holes as part of the area. State the total number of figures found.",
+   "sha1": "c1bb8470cb8db8c542c0ed669975e646dbbb8180",
+   "request": "phr-contour_area-06",
+   "sample": 0,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Detect every isolated bright entity on the dark surface. For each entity, quantify the spatial extent contained within its outermost boundary, including any holes within that boundary. Output the specific area values for each entity and the total number of entities present.",
+   "sha1": "ef16965118bcfc022853ee7feb6a6b0f8d8848cc",
+   "request": "phr-contour_area-06",
+   "sample": 2,
+   "position": 2,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Detect separate bright entities on dark background. List the area within each outer boundary (holes included) and the count of shapes.",
+   "sha1": "23a987bc7972cf7814845c280f61792f03afb110",
+   "request": "phr-contour_area-00",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "What is the total number of bright shapes on the dark field, and what is the area within the outer edge of each shape, where internal holes are not excluded from the measurement?",
+   "sha1": "0647aa88c2658bf2b783e639fc70b6d3b0c8c781",
+   "request": "phr-contour_area-01",
+   "sample": 0,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Where do the separate bright shapes appear on the dark background, and can you report the area within each shape's outer edge (with holes included in the area) plus the count of all detected shapes?",
+   "sha1": "6c3f2a67e7f975f968b5735b4a77bee9a8e0f6ae",
+   "request": "phr-contour_area-01",
+   "sample": 2,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "(1) Scan for all distinct bright forms on the dark background. (2) Compute the size of the area bounded by the outer contour of each form, without excluding any internal holes. (3) Output these sizes and the total number of forms found.",
+   "sha1": "134cfe78b7887ff4b2bfc5f0894cff7a798d9d44",
+   "request": "phr-contour_area-04",
+   "sample": 1,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A visual scene featuring bright objects on a dark base. Output: For every separate object, the area defined by its outer boundary (holes are not excluded), and the final count of objects.",
+   "sha1": "534230557a6e801a347ed1783887651c63e95516",
+   "request": "phr-contour_area-05",
+   "sample": 2,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Locate all separate bright entities on the dark field, measure the area enclosed by the outermost edge of each entity with the understanding that holes are not subtracted from this measurement, and output the total count of these entities.",
+   "sha1": "6546df933e3433a50bf11def8c96afc028fe869f",
+   "request": "phr-contour_area-07",
+   "sample": 2,
+   "position": 3,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Find each isolated bright shape on the dark background. State the area bounded by its outer contour (including holes) and the total count of shapes.",
+   "sha1": "71994582ed232c9424a746728027b145d36b7e7c",
+   "request": "phr-contour_area-00",
+   "sample": 2,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have images with bright shapes on a dark background and need to extract the area inside the outer boundary of every separate shape, treating holes as part of the area, and determine the total shape count.",
+   "sha1": "59da74083456020171c6c0d61bcb9bbaa51b5b32",
+   "request": "phr-contour_area-02",
+   "sample": 0,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Having an image with bright entities on a dark field, I ask you to detect each separate entity, measure the area bounded by its outer edge without removing hole areas, and output the total number of entities found.",
+   "sha1": "3e94575b724f957eb18bd56e2e0ac30dc2588eae",
+   "request": "phr-contour_area-02",
+   "sample": 1,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a space debris tracker, I need to catalog all separate bright shapes on the dark background by calculating the area enclosed by each shape's outer boundary (holes are not subtracted) and reporting the number of shapes.",
+   "sha1": "5914baf64c222c8ade2d8f65cb1b8ce7cc2e54db",
+   "request": "phr-contour_area-03",
+   "sample": 2,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Requirement: List the area spanned by the outer edge of every separate bright form on the dark background, ensuring that enclosed holes contribute to the area, and state the total number of such forms.",
+   "sha1": "b7b269d9781e993955291f8b02cc05b1fef4d100",
+   "request": "phr-contour_area-05",
+   "sample": 2,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Find all distinct bright shapes present on the dark background. Determine the area enclosed by the outer edge of each shape, specifically including the space occupied by any holes. Report the area value for each shape and the total number of shapes identified.",
+   "sha1": "c26cb52f3ff89afdc48b8f34ce445e195e6ba4fe",
+   "request": "phr-contour_area-06",
+   "sample": 1,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Scan the dark background to find each unique bright shape, calculate the area inside the outer boundary of each shape without removing the area of any holes, and provide the total number of shapes identified.",
+   "sha1": "26e23fed9c70b23fc291986272fc2d89cace2039",
+   "request": "phr-contour_area-07",
+   "sample": 2,
+   "position": 4,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Pinpoint bright shapes on dark background. Output the area inside each outer boundary (holes not removed) and the number of shapes.",
+   "sha1": "c12c2dd352359bfcc3cceae47ac1f8db94404ac3",
+   "request": "phr-contour_area-00",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Isolate all bright shapes on the dark background. Compute the area inside each shape's outer boundary (holes included) and the total number of shapes.",
+   "sha1": "5c706eb1ef661eae13010d08f29bf493cfd2cbb6",
+   "request": "phr-contour_area-00",
+   "sample": 2,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Can you tell me the number of individual bright shapes on the dark background and the area inside the outer contour of each shape, with any holes considered part of the enclosed area?",
+   "sha1": "6e079a83191b119e3d9a9d0ad2de1e47d124b28f",
+   "request": "phr-contour_area-01",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How many independent bright entities appear on the dark background, and what is the area inside the outer boundary of each entity, counting the space of any holes as included?",
+   "sha1": "a7328ed44462628f7ac218cd618090aba3bd7b04",
+   "request": "phr-contour_area-01",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "How many bright entities exist on the dark background, and for each entity, what is the area defined by its outer boundary (including any holes) and the total quantity of these entities?",
+   "sha1": "1d851c1d62eca1f0183aef828537b78fbe05cb39",
+   "request": "phr-contour_area-01",
+   "sample": 2,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I need to process my dark images to find all isolated bright entities, measure the area enclosed by each entity's outer boundary (holes not subtracted), and report the total number of entities.",
+   "sha1": "713380bd0a438abd596d5abe796649ec862cfc14",
+   "request": "phr-contour_area-02",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I am working with visual data showing bright objects on a dark background, and I need you to identify every distinct object, report the area inside its outer boundary (ignoring holes for the calculation), and provide the count of these objects.",
+   "sha1": "02991d7241242d447ccc26d7da0b78e1db4a7dc3",
+   "request": "phr-contour_area-02",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "I have a visual dataset featuring bright shapes against a dark background and need to count the total number of these shapes, while also reporting the area enclosed by the outer edge of each individual shape, ensuring the calculation includes the space occupied by any holes.",
+   "sha1": "bc6808df29057878a8b4451852bf2e5e351deab5",
+   "request": "phr-contour_area-02",
+   "sample": 2,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a data analyst, spot every separate bright shape on the dark surface to obtain the area defined by its outer edge, counting any interior holes as included, and to provide the final count of these shapes.",
+   "sha1": "b69cc8134fd595b77b0bc89ec79da4ffc0abbdc2",
+   "request": "phr-contour_area-03",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "As a materials scientist evaluating defect patterns, find all individual bright regions against the dark setting, compute the area inside the outer boundary (counting holes as part of the area), and output the total shape count.",
+   "sha1": "8973437e1a02bac33bf336a175bc82011207952b",
+   "request": "phr-contour_area-03",
+   "sample": 1,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: A visual field where bright objects stand out against a dark background. Output: The area occupied by the outer boundary of each object, with holes considered part of the area, and the total count of these objects.",
+   "sha1": "675d74e533650c6378912c60ec43d8caf2399423",
+   "request": "phr-contour_area-05",
+   "sample": 0,
+   "position": 5,
+   "run": "s1-20261022"
+  },
+  {
+   "text": "Input: Image data displaying bright shapes on a dark background. Output: The area inside the outer boundary for each distinct shape (including holes in the area) and the total number of shapes.",
+   "sha1": "5d0b4679cfda2391836e5e4c8e727ba45503f701",
+   "request": "phr-contour_area-05",
+   "sample": 2,
+   "position": 5,
+   "run": "s1-20261022"
+  }
+ ]
+}
