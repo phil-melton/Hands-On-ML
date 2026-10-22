@@ -5,6 +5,24 @@ checkpoints chosen by dev pass@1). Phil approved a **Stage 5 cap of 60 CU** on 2
 round); my rough prediction is ~17 CU (range 10-30). A Sonnet subagent is building the Colab training job and its
 `predict`; write its refined prediction here before the first session. Stage 4 is complete (data/train.jsonl, 23.15 CU).
 
+## 2026-10-22 Stage 5 built; prediction
+
+Built by a Sonnet subagent (no existing file changed): `train/colab_train_job.py` (standalone VM job: prefetch, check,
+train, gen), `train/stage5.py` (local CLI: predict, tokens, check, prepare, colab, grade, report),
+`train/requirements-stage5.txt` (the exact Stage 1 stack: torch 2.12.1, transformers 5.5.0, trl 0.24.0, peft 0.21.2,
+unsloth 2026.9.14), `tests/test_stage5.py` (44 tests; suite 1,082 passed + 1 skipped). Config: `unsloth/Qwen3.5-9B` @
+005429ce (Apache-2.0), 16-bit LoRA r 16 / alpha 16 on the language model (attention and linear-attention projections),
+lr 2e-4 cosine, warmup 0.05, batch 1 x GA 16, 2 epochs, MAX_LEN 4,608 (no row cut), loss on the final answer only
+(checked on every row with the real tokenizer: labelled tokens decode to exactly the answer + `<|im_end|>`). Nested
+stratified subsets 712 / 1,424 / 2,847 rows; checkpoints at 0.5, 1, 1.5, 2 epochs; each checkpoint generates one
+greedy answer per distinct dev prompt (36) on the VM; grading is local on CPU. Local smoke test (4B, 4-bit, 16 rows)
+ran end to end twice and found a real bug, fixed: without `prediction_loss_only=True` every eval kept the 248k-vocab
+logits on the host (~1.1 GB per dev row).
+Prediction (Rule 1; tokens/s derived, not measured: 312 TFLOP/s x 20 % / (6 x 9.65 B) = 1,078 tok/s; a measurement
+outside ~360-3,200 tok/s is a bug): study 282 min, **25.4 CU** within Phil's 60 CU cap. Two sessions so that the first
+measures throughput before the rest is paid: **session A = run r025: 76 min, 6.9 CU** (kill at 2x); session B = r050 +
+r100, 225 min, 20.3 CU, re-predicted from A's measurement.
+
 **Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
 foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0
 changes, disjoint from the gotcha suite (Agree); 3 repair pairs by pairing a failed answer + grader message with the
