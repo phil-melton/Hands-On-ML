@@ -1,8 +1,11 @@
 # opencv-expert logbook
 
-**Next step:** Stage 4 teacher pilot on Colab (approved by Phil, cap 12 CU; predictions in the 2026-10-22 entry):
-teacher B (Coder-30B AWQ) on an L4 first, then teacher A (Qwen3.8-27B INT4) on an A100; verify locally; one repair
-round; yield report; ⛔ Gate 4a. Gate 3 is applied and the baselines are frozen (2026-10-22 entry). Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+**Next step:** waiting at ⛔ Gate 4a. Phil reviews "opencv-expert: Gate 4a Teacher Pilot Review"
+(https://claude.ai/artifact/D8CfyV4jQmtMJ7YFa3gxJe): 8 decisions (teacher Qwen3.8-27B; widen tasks with ~40
+teacher-written phrasings per family + ~30 drill tasks; repair pairs by pairing failed and verified answers of a spec;
+Tier A only; fenced-code answer format; 8 samples on hough/text_layout + a thinking-mode test; ~3,000 examples;
+full generation ~12 CU, cap 24). Then build the drills and phrasings (CPU), full generation (Colab), data/train.jsonl.
+Pilot done (3.27 CU of 12, 2026-10-22 entry); Gate 3 applied and baselines frozen. Phil reviews the doc "opencv-expert: Gate 3 Bake-off
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed
