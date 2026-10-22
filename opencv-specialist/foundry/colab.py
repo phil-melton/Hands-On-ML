@@ -119,6 +119,7 @@ class JobConfig:
     k: int | None = None            # samples per prompt; None: 4 for generate, 1 for repair (repair "once")
     temperature: float = 0.8
     top_p: float = 0.95
+    top_k: int = 0                  # 0: off
     max_tokens: int = 2048
     seed: int = 0
     chunk: int = 50
@@ -181,6 +182,8 @@ def job_args(cfg: JobConfig) -> list[str]:
          "--temperature", str(cfg.temperature), "--top-p", str(cfg.top_p), "--max-tokens", str(cfg.max_tokens),
          "--seed", str(cfg.seed), "--chunk", str(cfg.chunk),
          "--chat-template-kwargs", json.dumps(cfg.chat_template_kwargs, sort_keys=True)]
+    if cfg.top_k:
+        a += ["--top-k", str(cfg.top_k)]
     if cfg.quantization:
         a += ["--quantization", cfg.quantization]
     if cfg.revision:
@@ -262,7 +265,7 @@ def plan(cfg: JobConfig) -> list[Step]:
 
 
 def missing_prompts(cfg: JobConfig) -> int:
-    """Prompts that do not yet have k samples in the local completions file."""
+    """Prompts that do not yet have their k samples in the local completions file (a prompt row may carry its own ``k``)."""
     st = cfg.run.stage(cfg.stage)
     prompts = read_jsonl(st.prompts)
     if cfg.limit:
@@ -270,8 +273,7 @@ def missing_prompts(cfg: JobConfig) -> int:
     have: dict[str, set[int]] = {}
     for r in read_jsonl(st.completions):
         have.setdefault(r["id"], set()).add(r["sample"])
-    want = set(range(cfg.samples))
-    return sum(1 for p in prompts if not want <= have.get(p["id"], set()))
+    return sum(1 for p in prompts if not set(range(int(p.get("k", cfg.samples)))) <= have.get(p["id"], set()))
 
 
 # ---------------------------------------------------------------- execution
@@ -350,6 +352,8 @@ def run_job(cfg: JobConfig, *, approved: bool = False, dry_run: bool = False, ru
     by_phase = {p: [s for s in steps if s.phase == p] for p in ("pre", "main", "finally")}
     record: dict = {"stage": cfg.stage, "session": cfg.session_name, "gpu": cfg.gpu, "model": cfg.model, "revision": cfg.revision,
                     "quantization": cfg.quantization, "k": cfg.samples, "n_prompts_missing": todo,
+                    "chat_template_kwargs": cfg.chat_template_kwargs, "max_tokens": cfg.max_tokens,
+                    "max_model_len": cfg.max_model_len, "temperature": cfg.temperature, "top_p": cfg.top_p, "top_k": cfg.top_k,
                     "predicted_minutes": cfg.predicted_minutes, "predicted_cu": cfg.predicted_cu,
                     "teacher_license": cfg.teacher_license, "exec_timeout_s": cfg.timeout_s, "install_via": cfg.install_via,
                     "packages": list(cfg.packages), "commands": [], "usage_before": None, "usage_after": None,

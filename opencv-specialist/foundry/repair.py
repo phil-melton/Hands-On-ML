@@ -1,4 +1,16 @@
-"""Repair: failed samples + the grader's message -> a second teacher job -> repair pairs (PLAN.md 4.1 "keep the scrap").
+"""Repair examples. Gate 4a decision 3: they come from PAIRING (``build_pairing_pairs``, below), not from teacher repair rounds.
+
+Pairing. A spec that has at least one Tier-A sample (a verified answer) and at least one failed sample with a grader message
+gives one repair example: the task prompt, the failed code as the assistant's first turn, the grader's message asking for a fix
+as the user's second turn, and the verified answer as the final turn. At most one per spec, so a spec that failed in five ways
+teaches one lesson once. Failures of class convention or api are preferred (the measured 5.0 lessons: shapes, removed or
+changed calls), then the earliest sample. Not used as the failed turn: an empty reply, one cut off by the token budget, a grader
+crash, a reply that is prose. No teacher call is made; the examples cost nothing beyond the generation that produced the
+samples. Both assistant turns are in the training answer format (foundry.answer.format_answer). Whoever trains on these must
+compute the loss on the last assistant turn only: the first one is a wrong answer.
+
+The older teacher repair round (a second GPU job that asks the teacher to fix its own failures) is kept below; the
+Gate 4a decision is not to use it.
 
 ``build_repair_prompts`` writes ``repair_prompts.jsonl`` in the format colab_job.py reads. For one failed sample the
 conversation is the teacher's original messages, then the failed code as the assistant turn, then a user turn:
@@ -23,11 +35,14 @@ from __future__ import annotations
 import json
 from collections import defaultdict
 
+from foundry.answer import format_answer, row_problems
 from foundry.store import FoundryRun, read_jsonl, teacher_info
 from foundry.verify import select_examples
 from train.config import SYSTEM
 
 FEEDBACK = "That failed: {message}\nReturn the corrected full function."
+PREFERRED_CLASSES = ("convention", "api")   # the 5.0 lessons: pair these failures first
+MAX_MESSAGE_CHARS = 800
 
 
 def fenced(code: str) -> str:
@@ -38,8 +53,70 @@ def feedback_text(message: str) -> str:
     return FEEDBACK.format(message=message)
 
 
+def _usable_failure(g: dict) -> bool:
+    """A failed grade row that can be the first assistant turn of a repair example."""
+    f = g.get("failure")
+    return bool(g["tier"] != "A" and f and f.get("repairable") and f.get("message") and g.get("code", "").strip()
+                and g.get("finish_reason") in (None, "stop") and g.get("extract") != "fence-unclosed" and not g.get("grader_error"))
+
+
+def build_pairing_pairs(run: FoundryRun, *, preferred: tuple = PREFERRED_CLASSES) -> list[dict]:
+    """One repair example per spec that has a verified answer and a usable failed sample (module docstring), ordered by spec id.
+
+    Each pair: ``messages`` (training SYSTEM, the task prompt, the failed code, the grader's message, the verified code; both
+    code turns fenced), the pieces to rebuild it, and the provenance of both samples."""
+    grades = read_jsonl(run.stage("generate").grades)
+    if not grades:
+        raise SystemExit(f"{run.stage('generate').grades} is missing or empty: run `verify` first")
+    specs = {r["id"]: r for r in read_jsonl(run.specs)}
+    teacher = teacher_info(run)
+    by_spec: dict[str, list[dict]] = defaultdict(list)
+    for g in grades:
+        by_spec[g["spec_id"]].append(g)
+    pairs = []
+    for spec_id in sorted(by_spec):
+        rows = sorted(by_spec[spec_id], key=lambda g: (g["sample"], g["id"]))
+        good = next((g for g in rows if g["tier"] == "A" and not row_problems(g)), None)
+        if good is None:
+            continue
+        fails = [g for g in rows if _usable_failure(g) and g["ast_sha1"] != good["ast_sha1"]]
+        if not fails:
+            continue
+        bad = min(fails, key=lambda g: (0 if g["failure"]["class"] in preferred else 1, g["sample"], g["id"]))
+        message = " ".join(bad["failure"]["message"].split())
+        if len(message) > MAX_MESSAGE_CHARS:
+            message = message[:MAX_MESSAGE_CHARS - 3] + "..."
+        fb = feedback_text(message)
+        spec = specs[spec_id]
+        pairs.append({
+            "id": f"{spec_id}/pair", "spec_id": spec_id, "family": bad["family"], "kind": "repair", "tier": "A",
+            "failure": {k: bad["failure"][k] for k in ("gate", "class", "rule", "message")}, "failed_code": bad["code"],
+            "failed_ast_sha1": bad["ast_sha1"], "failed_sample": bad["sample"], "feedback": fb, "fixed_code": good["code"],
+            "fixed_ast_sha1": good["ast_sha1"], "fixed_sample": good["sample"],
+            "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": spec["prompt"]},
+                         {"role": "assistant", "content": format_answer(bad["code"])}, {"role": "user", "content": fb},
+                         {"role": "assistant", "content": format_answer(good["code"])}],
+            "provenance": {"teacher": teacher, "gates": {k: v["passed"] for k, v in (good.get("gates") or {}).items()},
+                           "stage": good.get("stage"), "kind": good.get("kind"), "scene_seed": spec["seed"],
+                           "phrasing_index": spec["phrasing_index"], "prompt_sha1": spec.get("prompt_sha1"),
+                           "thinking": (good.get("thinking_tokens") or 0) > 0,
+                           "completion_tokens": good.get("completion_tokens")}})
+    return pairs
+
+
+def write_pairing_pairs(run: FoundryRun) -> int:
+    pairs = build_pairing_pairs(run)
+    with (run.path / "pairing_pairs.jsonl").open("w", encoding="utf-8", newline="\n") as fh:
+        for r in pairs:
+            fh.write(json.dumps(r, sort_keys=True) + "\n")
+    return len(pairs)
+
+
 def build_repair_prompts(run: FoundryRun, *, max_per_spec: int = 2, include_solved: bool = False, cap: int = 2) -> list[dict]:
-    original = {r["id"]: r for r in read_jsonl(run.stage("generate").prompts)}
+    original: dict[str, dict] = {}
+    for r in read_jsonl(run.stage("generate").prompts):
+        if r.get("kind", "generate") == "generate":
+            original.setdefault(r.get("spec_id", r["id"]), r)   # a spec asked in two modes keeps its first prompt row
     grades = read_jsonl(run.stage("generate").grades)
     if not grades:
         raise SystemExit(f"{run.stage('generate').grades} is missing or empty: run `verify` first")

@@ -20,6 +20,16 @@ tokens: answer median 189, p99 747. Caveats: competitive-programming style promp
 retention); attribute NVIDIA OpenCodeInstruct (arXiv:2504.04030, CC BY 4.0) if the adapter is published; check 13-gram
 overlap against the MBPP+ slice when Stage 6 builds it. Rejected the runner-up (BigCode OpenRAIL-M would pass use
 restrictions onto a model trained on its outputs).
+Drills (decision 2b, Sonnet subagent): `foundry/drills/`, 41 training-only tasks on `gotchas.core.Check` (24 tagged
+5.0, 17 timeless incl. 4 NumPy 2 drills), 122 wrong variants with pinned failure modes, 3 phrasings each; 208 tests;
+full suite 1,038 passed, 1 skipped. Overlap with gotcha / dev / test / foundry prompts: task line max 0.075 (word
+5-gram Jaccard; threshold 0.25), whole prompt max 0.280 (threshold 0.40). Chessboard (held out) banned from drills.
+Weak spots: `drill_capture_properties` needs lint=False so it can never be Tier A (repair pairs only);
+`drill_track_box` (TrackerMIL) may have low yield; `drill_bubble_count_mser` rests on the 5.0.0 MSER bug (#29652).
+New measurements on the pinned stack (not fixed): after any Hershey text call in a process, a later `cv2.FontFace`
+putText at a new size renders differently (1,755 of 36,000 values) - possible upstream issue; NumPy 2.4.6:
+`uint8 * 587` raises OverflowError (NEP 50), `np.in1d` / `np.trapz` / `np.round_` removed; INTER_NEAREST_EXACT equals
+INTER_NEAREST on only 75 of 1,890 size pairs.
 Next Colab test session (before full generation): on the 58 hard-family specs (hough_segments, text_layout), compare
 INT4 vs the official `Qwen/Qwen3.8-27B-FP8` (30.9 GB, fits an A100-40) and thinking on vs off; plus the phrasing
 generation. Whichever raises the Tier-A rate becomes the full-generation configuration. Phil reviews the doc "opencv-expert: Gate 3 Bake-off

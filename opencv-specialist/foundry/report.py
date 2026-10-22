@@ -39,8 +39,10 @@ import json
 from collections import Counter, defaultdict
 
 from cvbench.splits import FAMILIES
+from foundry.answer import answer_of, format_answer
+from foundry.specs import DRILLS_GROUP
 from foundry.store import FoundryRun, read_json, read_jsonl, teacher_info
-from foundry.verify import FOUR, select_examples
+from foundry.verify import FOUR, mode_table, render_mode_table, select_examples
 from train.config import SYSTEM
 
 DEFAULT_RATE = 1.7      # CU/h, L4 (COMPUTE.md)
@@ -100,6 +102,8 @@ def summarize_run(run: FoundryRun, *, gpu_rate: float = DEFAULT_RATE, usd_per_cu
         raise SystemExit(f"{gen.grades} is missing or empty: run `verify` first")
     prompt_hash = {s["id"]: _sha1(s["prompt"]) for s in specs}
     fams = [f for f, row in FAMILIES.items() if not row.held_out and any(s["family"] == f for s in specs)]
+    if any(s["family"] == DRILLS_GROUP for s in specs):
+        fams.append(DRILLS_GROUP)   # all drills together, one row
     planned = Counter(s["family"] for s in specs)
     by_family: dict[str, list[dict]] = defaultdict(list)
     for g in grades:
@@ -140,7 +144,7 @@ def summarize_run(run: FoundryRun, *, gpu_rate: float = DEFAULT_RATE, usd_per_cu
         r_prompts = prompts_by_family[f]
         r_ok = sum(1 for pid, ok in repaired.items() if ok and rprompts[pid]["family"] == f)
         rows[f] = {
-            "subset": FAMILIES[f].subset, "specs_planned": planned[f], "specs": n_specs, "samples": n,
+            "subset": FAMILIES[f].subset if f in FAMILIES else "drill", "specs_planned": planned[f], "specs": n_specs, "samples": n,
             "gate_pass": {g: sum(1 for x in gs if (x.get("gates") or {}).get(g, {}).get("passed")) for g in FOUR},
             "tier_A": tiers["A"], "tier_B": tiers["B"], "fail": tiers["fail"],
             "kept": kept_n, "kept_per_spec": _ratio(kept_n, n_specs), "kept_distinct": distinct_n,
@@ -148,6 +152,8 @@ def summarize_run(run: FoundryRun, *, gpu_rate: float = DEFAULT_RATE, usd_per_cu
             "no_code": sum(1 for x in gs if x.get("code_empty")), "truncated": sum(1 for x in gs if x.get("finish_reason") == "length"),
             "grader_errors": sum(1 for x in gs if x.get("grader_error")), "failure_classes": dict(fail_cls),
             "output_tokens": tokens[f], "mean_tokens": _ratio(tokens[f], n),
+            "thinking_tokens": sum(g.get("thinking_tokens") or 0 for g in gs),
+            "truncated_thinking": sum(1 for g in gs if g.get("think_status") == "truncated"),
             "gpu_s": gen_cost["by_family"][f]["gpu_s"], "cu": cu, "usd": None if cu is None else cu * usd_per_cu,
             "cu_per_A": _ratio(cu, kept_n), "usd_per_A": None if cu is None or not kept_n else cu * usd_per_cu / kept_n,
             "cu_per_distinct": _ratio(cu, distinct_n),
@@ -171,6 +177,7 @@ def summarize_run(run: FoundryRun, *, gpu_rate: float = DEFAULT_RATE, usd_per_cu
         "pass_rate_A": _pct(total("tier_A"), total("samples")),
         "no_code": total("no_code"), "truncated": total("truncated"), "grader_errors": total("grader_errors"),
         "output_tokens": total("output_tokens"), "mean_tokens": _ratio(total("output_tokens"), total("samples")),
+        "thinking_tokens": total("thinking_tokens"), "truncated_thinking": total("truncated_thinking"),
         "repair_prompts": total("repair_prompts"), "repair_samples": total("repair_samples"), "repair_to_A": total("repair_to_A"),
         "repair_rate": _pct(total("repair_to_A"), total("repair_prompts")), "repair_pairs_A": t_pairs,
         "gpu_s": gen_cost["gpu_s"], "cu": t_cu, "usd": gen_cost["usd"], "cu_per_A": _ratio(t_cu, t_kept),
@@ -186,7 +193,7 @@ def summarize_run(run: FoundryRun, *, gpu_rate: float = DEFAULT_RATE, usd_per_cu
         d["prompts"] += 1
         d["repaired_to_A"] += bool(repaired[pid])
     return {
-        "run": run.name, "families": fams, "rows": rows, "totals": totals,
+        "run": run.name, "families": fams, "rows": rows, "totals": totals, "modes": mode_table(grades),
         "selection": {**sel, "kept": len(kept), "cap": cap, "distinct_prompt_ast": len(distinct),
                       "distinct_prompts": len(set(prompt_hash[s["id"]] for s in specs)),
                       "kept_with_api_findings": sum(1 for r in kept if r.get("api_findings"))},
@@ -248,6 +255,10 @@ def render_markdown(s: dict) -> str:
         r = rows[f]
         L.append(f"| {f} | " + " | ".join(_f(_pct(r["gate_pass"][g], r["samples"])) for g in FOUR) + f" | {_f(r['pass_rate_A'])} |")
     L.append("| **all** | " + " | ".join(_f(_pct(tot["gate_pass"][g], tot["samples"])) for g in FOUR) + f" | {_f(tot['pass_rate_A'])} |")
+    if s.get("modes"):
+        L += ["", "## Thinking vs non-thinking", "",
+              "Tier-A rate per sample with its 95 % Wilson interval and sample count, per mode; the last columns repeat the rate on "
+              "the specs that were asked in every mode (the like-for-like comparison).", "", render_mode_table(s["modes"])]
     L += ["", "## Failure classes of the non-Tier-A samples", "", "| family | " + " | ".join(CLASSES) + " |", "|---|" + "---:|" * len(CLASSES)]
     for f in s["families"]:
         c = rows[f]["failure_classes"]
@@ -297,11 +308,14 @@ def render_markdown(s: dict) -> str:
 
 def build_examples(run: FoundryRun, *, answer_format: str = "code", include_tier_b: bool = True, cap: int = 2,
                    cross_spec_dedup: bool = True) -> list[dict]:
-    if answer_format not in ("code", "raw"):
-        raise ValueError("answer_format must be 'code' or 'raw'")
+    """``answer_format``: "code" (the extracted code as the assistant turn), "fenced" (the code in one fenced python block: the
+    Gate 4a training format) or "raw" (the answer part of the reply as the teacher wrote it). The reasoning of a thinking
+    teacher is never in an example: ``raw_reply`` is the answer only."""
+    if answer_format not in ("code", "fenced", "raw"):
+        raise ValueError("answer_format must be 'code', 'fenced' or 'raw'")
     grades = read_jsonl(run.stage("generate").grades)
     specs = {r["id"]: r for r in read_jsonl(run.specs)}
-    texts = {(r["id"], r["sample"]): r["text"] for r in read_jsonl(run.stage("generate").completions)}
+    texts = {(r["id"], r["sample"]): answer_of(r) for r in read_jsonl(run.stage("generate").completions)}
     teacher = teacher_info(run)
     chosen, _ = select_examples(grades, cap, "A")
     if include_tier_b:
@@ -316,10 +330,11 @@ def build_examples(run: FoundryRun, *, answer_format: str = "code", include_tier
             continue                                  # same prompt, same normalized code as an earlier example
         seen.add(key)
         raw = texts[(r["id"], r["sample"])]
+        answer = {"code": r["code"], "fenced": format_answer(r["code"]), "raw": raw}[answer_format]
         out.append({
             "id": f"{r['spec_id']}#{r['rank']}", "spec_id": r["spec_id"], "family": r["family"], "tier": r["tier"],
             "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": spec["prompt"]},
-                         {"role": "assistant", "content": r["code"] if answer_format == "code" else raw}],
+                         {"role": "assistant", "content": answer}],
             "answer_format": answer_format, "raw_reply": raw, "code": r["code"],
             "provenance": {"teacher": teacher, "run": run.name, "spec_id": r["spec_id"], "sample": r["sample"], "tier": r["tier"],
                            "gates": {k: v["passed"] for k, v in (r.get("gates") or {}).items()}, "ast_sha1": r["ast_sha1"],

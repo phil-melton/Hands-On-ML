@@ -65,5 +65,6 @@ def teacher_info(run: FoundryRun, stage: str = "generate") -> dict:
         rows = read_jsonl(st.completions)
         model = rows[0].get("model") if rows else None
     return {"model": model or "unknown", "license": session.get("teacher_license") or "unrecorded",
+            "revision": session.get("revision") or (timing.get("args") or {}).get("revision"),
             "quantization": session.get("quantization") or (timing.get("args") or {}).get("quantization"),
             "gpu": session.get("gpu") or (timing.get("env") or {}).get("gpu")}
