@@ -1,11 +1,22 @@
+import errno
+import os
+import socket
 import textwrap
 import time
+from pathlib import Path
 
 import numpy as np
 import pytest
 
+import sandbox.run as sandbox_run
 from sandbox.lint import lint
 from sandbox.run import run_solution
+
+# the child's own network namespace needs unprivileged `unshare`: no unshare off Linux, and containers or
+# AppArmor can deny user namespaces. Runs then fall back to the Python guards, which the other tests cover.
+needs_netns = pytest.mark.skipif(
+    sandbox_run._netns_prefix() is None,
+    reason="unprivileged `unshare` (user + network namespace) is unavailable here; runs fall back to the Python guards")
 
 GOOD = """\
 import cv2
@@ -214,3 +225,171 @@ def test_contract_violations_are_bad_output():
     code = "import cv2\n\ndef solve():\n    return {'kp': cv2.KeyPoint(1.0, 2.0, 3.0)}\n"
     r = run_solution(code, [{}])
     assert r.status == "bad_output" and "KeyPoint" in r.error
+
+
+# ---------------------------------------------------------------- network namespace
+
+NOOP = "def solve():\n    return {}\n"
+NET_NS = "import os\n\ndef solve():\n    return {'ns': os.readlink('/proc/self/ns/net')}\n"
+# _socket is the C type under the guarded socket.socket: connecting through it bypasses the Python guard
+BYPASS = """\
+import _socket
+
+def solve(port, name):
+    s = _socket.socket(_socket.AF_INET, _socket.SOCK_STREAM)
+    s.settimeout(2)
+    out = {"connect_errno": s.connect_ex(("127.0.0.1", port))}
+    if name:
+        try:
+            _socket.getaddrinfo(name, 80)
+            out["dns"] = "resolved"
+        except _socket.gaierror:
+            out["dns"] = "failed"
+    return out
+"""
+# forks a grandchild that outlives the parent unless the whole process group is killed; it closes its pipes so
+# a regression fails the assertion below instead of hanging communicate()
+FORKER = """\
+import os
+import time
+
+def solve():
+    pid = os.fork()
+    if pid == 0:
+        os.closerange(0, 3)
+        time.sleep(600)
+        os._exit(0)
+    print(pid, flush=True)
+    while True:
+        pass
+"""
+BOTH = [False, pytest.param(True, marks=needs_netns)]
+
+
+@pytest.fixture
+def fresh_probe():
+    """Forget the cached unshare probe before and after a test that fakes it (request before monkeypatch)."""
+    sandbox_run._netns_prefix.cache_clear()
+    yield
+    sandbox_run._netns_prefix.cache_clear()
+
+
+def _alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    try:  # a zombie waiting for its reaper is dead
+        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] != "Z"
+    except OSError:
+        return True
+
+
+@needs_netns
+def test_netns_cuts_the_network_even_when_the_python_guard_is_bypassed():
+    with socket.socket() as srv:  # reachable from this process: the control run shows the bypass really connects
+        srv.bind(("127.0.0.1", 0))
+        srv.listen()
+        port = srv.getsockname()[1]
+        control = run_solution(BYPASS, [{"port": port, "name": None}], lint=False, netns=False)
+        walled = run_solution(BYPASS, [{"port": port, "name": "example.com"}], lint=False, netns=True)
+    assert control.ok and not control.netns and control.outputs[0]["connect_errno"] == 0, control.summary()
+    assert walled.ok and walled.netns, walled.summary()
+    assert walled.outputs[0]["connect_errno"] == errno.ENETUNREACH
+    assert walled.outputs[0]["dns"] == "failed"
+
+
+@pytest.mark.parametrize("netns", BOTH)
+def test_python_network_guard_still_reports_its_violation(netns):
+    code = "import socket\n\ndef solve():\n    socket.create_connection(('example.com', 80), timeout=1)\n    return {}\n"
+    r = run_solution(code, [{}], lint=False, netns=netns)
+    assert r.status == "violation" and "network" in r.error
+    assert r.netns is netns
+
+
+@needs_netns
+def test_result_records_whether_the_namespace_was_used_and_it_can_be_forced_off(monkeypatch):
+    monkeypatch.delenv("SANDBOX_NETNS", raising=False)
+    here = os.readlink("/proc/self/ns/net")
+
+    def child(**kw):
+        r = run_solution(NET_NS, [{}], lint=False, **kw)
+        assert r.ok, r.summary()
+        return r, r.outputs[0]["ns"] != here  # did the child really get another namespace?
+
+    r, other = child()
+    assert r.netns and other  # default: used whenever available
+    r, other = child(netns=False)
+    assert not r.netns and not other
+    monkeypatch.setenv("SANDBOX_NETNS", "0")
+    r, other = child()
+    assert not r.netns and not other  # the environment variable forces it off ...
+    r, other = child(netns=True)
+    assert r.netns and other  # ... and the argument wins over it
+    assert not run_solution("def solve(:\n", [{}], netns=True).netns  # nothing ran: lint failure
+    r = run_solution("def solve():\n    while True:\n        pass\n", [{}], lint=False, timeout_s=1, netns=True)
+    assert r.status == "timeout" and r.netns
+    r = run_solution("import os\n\ndef solve():\n    os._exit(3)\n", [{}], lint=False, netns=True)
+    assert r.status == "killed" and r.netns
+
+
+@pytest.mark.parametrize("netns", BOTH)
+def test_timeout_kills_the_whole_process_group_with_and_without_netns(netns):
+    t0 = time.monotonic()
+    r = run_solution(FORKER, [{}], lint=False, timeout_s=2, netns=netns)
+    assert r.status == "timeout" and r.netns is netns
+    assert time.monotonic() - t0 < 8
+    grandchild = int(r.stdout.split()[0])
+    deadline = time.monotonic() + 3
+    while _alive(grandchild) and time.monotonic() < deadline:
+        time.sleep(0.05)
+    assert not _alive(grandchild), "the forked grandchild survived the process-group kill"
+
+
+@needs_netns
+def test_limits_guards_and_result_files_still_work_inside_the_namespace(tmp_path):
+    limits = ("import resource\n\ndef solve():\n"
+              "    return {'as': resource.getrlimit(resource.RLIMIT_AS), 'cpu': resource.getrlimit(resource.RLIMIT_CPU)}\n")
+    r = run_solution(limits, [{}], lint=False, mem_mb=1024, timeout_s=5, netns=True)
+    assert r.ok and r.netns, r.summary()
+    assert r.outputs[0]["as"] == (1024 << 20, 1024 << 20) and r.outputs[0]["cpu"] == (6, 6)
+    big = "import numpy as np\n\ndef solve():\n    return {'s': float(np.ones(10**9).sum())}\n"
+    r = run_solution(big, [{}], lint=False, mem_mb=1024, netns=True)
+    assert r.netns and r.status == "exception" and "MemoryError" in r.error_mro
+    r = run_solution(GOOD, [{"img": np.zeros((4, 5, 3), np.uint8)}], netns=True)  # lint, npz in, npz out
+    assert r.ok and r.netns and r.outputs[0]["gray"].shape == (4, 5), r.summary()
+    target = tmp_path / "escaped.txt"
+    r = run_solution(f"def solve():\n    open({str(target)!r}, 'w')\n    return {{}}\n", [{}], lint=False, netns=True)
+    assert r.status == "violation" and "outside the sandbox dir" in r.error
+    assert not target.exists()
+
+
+def test_without_unshare_runs_fall_back_to_the_guards_and_required_raises(fresh_probe, monkeypatch):
+    monkeypatch.delenv("SANDBOX_NETNS", raising=False)
+    monkeypatch.setattr(sandbox_run.shutil, "which", lambda name: None)
+    r = run_solution(NOOP, [{}], lint=False)
+    assert r.ok and not r.netns
+    with pytest.raises(RuntimeError, match="network namespace"):
+        run_solution(NOOP, [{}], lint=False, netns=True)
+    monkeypatch.setenv("SANDBOX_NETNS", "1")
+    with pytest.raises(RuntimeError, match="network namespace"):
+        run_solution(NOOP, [{}], lint=False)
+    assert not run_solution(NOOP, [{}], lint=False, netns=False).netns  # explicit off beats SANDBOX_NETNS=1
+
+
+def test_probe_rejects_a_failing_unshare_picks_the_first_working_form_and_caches(fresh_probe, monkeypatch, tmp_path):
+    fake = tmp_path / "unshare"
+    fake.write_text("#!/bin/sh\nexit 1\n")
+    fake.chmod(0o755)
+    monkeypatch.setattr(sandbox_run.shutil, "which", lambda name: str(fake))
+    assert sandbox_run._netns_prefix() is None  # unshare exists but the OS refuses
+
+    sandbox_run._netns_prefix.cache_clear()  # an older util-linux: only the -r form is understood
+    fake.write_text('#!/bin/sh\ncase "$*" in *map-current-user*) exit 1;; esac\nexit 0\n')
+    assert sandbox_run._netns_prefix() == (str(fake), "-rn")
+
+    sandbox_run._netns_prefix.cache_clear()  # a current one: the form without uid 0 and capabilities wins
+    fake.write_text("#!/bin/sh\nexit 0\n")
+    assert sandbox_run._netns_prefix() == (str(fake), "-Un", "--map-current-user")
+    fake.write_text("#!/bin/sh\nexit 1\n")
+    assert sandbox_run._netns_prefix() == (str(fake), "-Un", "--map-current-user")  # cached: not probed again

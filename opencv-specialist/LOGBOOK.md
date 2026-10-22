@@ -1,6 +1,8 @@
 # opencv-expert logbook
 
-**Next step:** waiting at ⛔ Gate 3 (2026-10-21 entry below). Phil reviews the doc "opencv-expert: Gate 3 Bake-off
+**Next step:** Stage 4 teacher pilot on Colab (approved by Phil, cap 12 CU; predictions in the 2026-10-22 entry):
+teacher B (Coder-30B AWQ) on an L4 first, then teacher A (Qwen3.8-27B INT4) on an A100; verify locally; one repair
+round; yield report; ⛔ Gate 4a. Gate 3 is applied and the baselines are frozen (2026-10-22 entry). Phil reviews the doc "opencv-expert: Gate 3 Bake-off
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed
@@ -50,6 +52,43 @@ Applied 2026-10-22 (3 Sonnet subagents + me; every report re-checked):
   small gauge triangles), so 0.80 is 1.16-1.26x depending on the sample; still 0 rejections anywhere.
 - 10: feature_homography mutants renamed `orb_norm_l2 (2x ORB's reject rate)`, `best_10_matches (fails 31 % of
   fresh gates)`, descriptions carry the measured rates.
+
+Baseline re-run `bakeoff-v2-20261022` (decisions 4-6), prediction (Rule 1): greedy only, test split + gotchas, 238
+tasks = 112 distinct prompts per rung (`--dedupe-greedy`), 5 rungs r1, r4, r2, r3, r5, num_predict 2048, num_ctx 8192,
+4 grading workers. s/reply from Stage 3's measured generation (wall / generated replies): r1 3.9, r4 3.8, r2 12.5,
+r3 20.1, r5 ~20.6 (r3 + the 1.7k-token notes prompt) -> 7 + 7 + 23 + 38 + 38 min + ~3 min of loads = **~2.0 h**,
+0 CU. pass@5 is not re-run (the frozen criteria use pass@1). Watchdog running.
+Incident 21:55: with the 9B loaded, 4 graders and two subagents running tests, free commit fell 5.4 -> 2.88 GB in 6
+min; the updated watchdog killed the bake-off and unloaded Ollama (commit back to 18.1 GB), as designed. r1, r4, r2
+were complete, r3 at 110/238. Resumed 21:56 with 2 graders and no concurrent agent jobs; the run skips done replies.
+Rule from now: while a 9B rung runs, no other multi-process CPU work in WSL.
+Result (done 22:54, 1,190 graded, 0 grader errors; `~/opencv-expert/bakeoff/bakeoff-v2-20261022/`, not yet copied
+to `bakeoff/results/`). pass@1, all 238 / 5.0 subset / held-out, SE by prompt for all: 7B 16.8 / 10.1 / 29.5 (3.5);
+4B 18.1 / 10.1 / 43.2 (3.7); 9B 32.8 / 13.4 / 43.2 (4.7); 7B + notes 21.4 / 13.4 / 38.6 (4.0);
+**9B + notes 38.7 / 20.1 / 43.2 (4.9)**. 9B + notes vs 9B: +5.9 (p per prompt 0.061).
+Copies in `bakeoff/results/bakeoff-v2-20261022/`.
+Sandbox network wall (Rule 4 without Docker): `sandbox/run.py` now runs each child under `unshare -Un
+--map-current-user` (fallback `-rn`) when the OS allows it: no IP network, no loopback, no abstract unix sockets; uid
+unchanged, no capabilities. Overhead +1.9 ms per run (~2.4 %); 800 stress runs, 0 failures. Path-based unix sockets
+remain reachable (only the Python guard stops them), so Docker `--network none` stays the stronger option.
+`SANDBOX_NETNS=0/1` forces it off / required; `RunResult.netns` records it. Verified by me: a child that bypasses the
+Python socket guard gets errno 101. Suite 769 passed.
+**Frozen baselines (comparator r5-9b-notes):** test pass@1 38.7 % -> target >= 48.7 %; 5.0 subset 20.1 % -> >= 45.1 %;
+held-out families 43.2 % (generalization criterion measured against this).
+
+Stage 4 teacher pilot, approved by Phil 2026-10-21 (local time): both teachers, **hard cap 12 CU** for the pilot.
+Tooling: `foundry/` (specs from the 7 trainable families' foundry phrasings and FOUNDRY seeds; offline vLLM job on the
+Colab VM; local verify into Tier A/B; one repair round; yield report). Teachers (licenses and sizes checked on the HF
+API by me, 2026-10-22):
+- A: `RedHatAI/Qwen3.8-27B-INT4` @ 91bd022d (Apache-2.0, 19.5 GB, W4A16; base `Qwen/Qwen3.8-27B` @ 1d4bf0f2,
+  Apache-2.0), non-thinking (`enable_thinking: false`), T 0.7, top_p 0.8, on an A100 (5.4 CU/h).
+- B: `QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ` @ c58857a7 (Apache-2.0, 16.8 GB, community AWQ; base
+  `Qwen/Qwen3-Coder-30B-A3B-Instruct`, Apache-2.0), T 0.8, top_p 0.95, on an L4 (1.7 CU/h).
+Prediction (Rule 1; throughput is the research agent's estimate, no published L4/A100 measurement exists): each Colab
+session pays ~18 min of setup (vLLM install, ~17-20 GB download, load). 200 specs x 4 samples x ~400 output tokens:
+B generate 18 + 28 = 46 min = 1.3 CU, B repair (~400 prompts x 1) ~28 min = 0.8 CU; A generate ~35 min = 3.2 CU,
+A repair ~25 min = 2.3 CU. **Total ~7.6 CU** (range ~5-12). Each session's exec timeout = 2x its predicted minutes
+(the driver enforces it), and `colab stop` runs in a `finally`. B goes first: the cheapest place to find setup faults.
 
 Colab: `google-colab-cli` 0.7.5 installed in `~/venvs/colab` (WSL); Phil completed the OAuth sign-in on 2026-10-22.
 `colab usage`: balance 700.00 CU (COMPUTE.md assumed 200/month), rate 0.00/h, 0 assignments. Nothing spent; every

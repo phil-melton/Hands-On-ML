@@ -8,6 +8,11 @@
 What it is: a seatbelt.
   * a separate process, so crashes and hangs cannot take the caller down
   * wall-clock timeout with a process-group kill; address-space and CPU rlimits
+  * its own network namespace when the OS allows it (Linux ``unshare``, no root needed): the
+    child has no route out whatever its code does, so a bypassed socket guard still cannot
+    connect. Probed once per process, falls back to the guards alone; ``RunResult.netns`` says
+    which happened. Off with ``netns=False`` or ``SANDBOX_NETNS=0``; ``netns=True`` or
+    ``SANDBOX_NETNS=1`` raises if it is unavailable instead of falling back
   * headless OpenCV with GUI calls stubbed to raise
   * best-effort Python-level guards on sockets and on writes outside the sandbox dir
   * a static lint gate (sandbox/lint.py) before anything runs
@@ -15,8 +20,11 @@ What it is: a seatbelt.
 
 What it is not: a vault. Python-level guards can be bypassed by determined code
 (the lint bans the obvious escape hatches such as ctypes, importlib and resource).
-For the data foundry, where thousands of untrusted snippets run, put this same
-runner inside a container with ``--network none`` and a read-only root filesystem.
+The namespace cuts IP traffic and abstract unix sockets only: the child still sees the host
+filesystem, including path-based unix sockets (a Docker socket, WSL interop), and shares its
+kernel. For the data foundry, where thousands of untrusted snippets run, Docker remains the
+stronger option: put this same runner inside a container with ``--network none`` and a
+read-only root filesystem (user namespaces are often denied there; the probe then falls back).
 
 Inputs are a list of keyword-argument dicts (a batch, run in one process); values are
 numpy arrays or JSON scalars. ``solve`` must return a dict of arrays, numbers,
@@ -24,6 +32,7 @@ strings, or lists/tuples/dicts of those.
 """
 from __future__ import annotations
 
+import functools
 import json
 import os
 import shutil
@@ -236,6 +245,7 @@ class RunResult:
     stdout: str = ""
     stderr: str = ""
     seconds: float = 0.0
+    netns: bool = False  # the child ran in its own network namespace
 
     @property
     def ok(self) -> bool:
@@ -278,10 +288,52 @@ def _unpack(x, arrays):
     return x
 
 
+# New user + network namespace, no root needed: the child sees a down loopback and nothing else,
+# so connect() fails with ENETUNREACH. Tried in order: --map-current-user keeps the child's uid and
+# leaves it no capabilities; -r (uid 0 inside, with capabilities) is for util-linux older than 2.38.
+_NETNS_FLAGS = (("-Un", "--map-current-user"), ("-rn",))
+
+
+@functools.lru_cache(maxsize=None)
+def _netns_prefix() -> tuple[str, ...] | None:
+    """argv that runs a command in its own network namespace, or None where the OS refuses it.
+
+    Probed once per process: there is no ``unshare`` off Linux, and containers, AppArmor or
+    sysctl limits can deny unprivileged user namespaces.
+    """
+    exe = shutil.which("unshare")
+    for flags in _NETNS_FLAGS if exe else ():
+        try:
+            if subprocess.run([exe, *flags, "true"], capture_output=True, timeout=5).returncode == 0:
+                return (exe, *flags)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    return None
+
+
+def _netns_argv(netns: bool | None) -> tuple[str, ...]:
+    """Command prefix for the child. None = use the namespace if available (SANDBOX_NETNS=0 or 1
+    overrides: off, or required); False = off; True = required (RuntimeError when unavailable)."""
+    if netns is None:
+        netns = {"0": False, "1": True}.get(os.environ.get("SANDBOX_NETNS", "").strip())
+    if netns is False:
+        return ()
+    prefix = _netns_prefix()
+    if prefix is None and netns:
+        raise RuntimeError("a network namespace was required (netns=True or SANDBOX_NETNS=1) "
+                           "but `unshare` cannot create one on this machine")
+    return prefix or ()
+
+
 def run_solution(code: str, inputs: list[dict[str, Any]], *, timeout_s: float = 10.0,
                  mem_mb: int = 2048, lint: bool = True, python: str | None = None,
-                 keep_dir: bool = False) -> RunResult:
-    """Lint, then run ``solve(**item)`` for every item in ``inputs`` inside one child process."""
+                 keep_dir: bool = False, netns: bool | None = None) -> RunResult:
+    """Lint, then run ``solve(**item)`` for every item in ``inputs`` inside one child process.
+
+    ``netns``: None runs the child in its own network namespace when the OS allows it, False never
+    does, True requires it (see the module docstring); ``RunResult.netns`` records what happened.
+    """
+    wall = _netns_argv(netns)
     if lint:
         findings = lint_code(code)
         if findings:
@@ -296,7 +348,7 @@ def run_solution(code: str, inputs: list[dict[str, Any]], *, timeout_s: float = 
                "OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "MKL_NUM_THREADS": "1",
                "OPENCV_LOG_LEVEL": "ERROR", "QT_QPA_PLATFORM": "offscreen"}
         proc = subprocess.Popen(
-            [python or sys.executable, "-I", "-B", "_harness.py", str(mem_mb), str(int(timeout_s) + 1)],
+            [*wall, python or sys.executable, "-I", "-B", "_harness.py", str(mem_mb), str(int(timeout_s) + 1)],
             cwd=tmp, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
         try:
             out, err = proc.communicate(timeout=timeout_s)
@@ -305,16 +357,16 @@ def run_solution(code: str, inputs: list[dict[str, Any]], *, timeout_s: float = 
             out, err = proc.communicate()
             return RunResult(status="timeout", error=f"no result after {timeout_s:g}s; process group killed",
                              stdout=out.decode(errors="replace")[-4000:], stderr=err.decode(errors="replace")[-4000:],
-                             seconds=time.monotonic() - t0)
+                             seconds=time.monotonic() - t0, netns=bool(wall))
         stdout, stderr = out.decode(errors="replace")[-4000:], err.decode(errors="replace")[-4000:]
         result_file = tmp / "result.json"
         if not result_file.exists():
             return RunResult(status="killed", error=f"child exited with code {proc.returncode} and no result",
-                             stdout=stdout, stderr=stderr, seconds=time.monotonic() - t0)
+                             stdout=stdout, stderr=stderr, seconds=time.monotonic() - t0, netns=bool(wall))
         res = json.loads(result_file.read_text())
         rr = RunResult(status=res["status"], error_type=res.get("error_type"), error=res.get("error"),
                        error_mro=res.get("error_mro", []), traceback=res.get("traceback"), item=res.get("item"),
-                       stdout=stdout, stderr=stderr, seconds=time.monotonic() - t0)
+                       stdout=stdout, stderr=stderr, seconds=time.monotonic() - t0, netns=bool(wall))
         if rr.ok:
             arrays = dict(np.load(tmp / "outputs.npz", allow_pickle=False))
             rr.outputs = [_unpack(o, arrays) for o in json.loads((tmp / "outputs.json").read_text())]

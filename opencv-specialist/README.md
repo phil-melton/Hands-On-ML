@@ -25,8 +25,9 @@ This project specializes an open code model as an **OpenCV 5.0 worker** for an o
 | `cvbench/demo_exec_vs_mms.py` | Why `exec()` isn't a verifier: it accepts 7 of 8 wrong solutions |
 | `train/`, `setup/` | Stage 1 tooling: QLoRA training, GGUF export, Ollama registration, the commit watchdog |
 | `bakeoff/` | Stage 3 baseline bake-off: Ollama generation, sandboxed grading, error taxonomy, pass@k and paired statistics; `notes_5_0.md` is the prompting rung's 5.0 notes |
+| `foundry/` | Stage 4 data foundry: specs from the foundry phrasings and seeds, the Colab vLLM batch job, local Tier A/B verification, repair round, yield report |
 | `upstream/` | Drafts and repros of OpenCV 5.0 issue reports (one recommended for filing), with duplicate searches |
-| `tests/` | 707 tests on OpenCV 5.0.0 (the original 33 also pass on 4.14.0) |
+| `tests/` | 769 tests on OpenCV 5.0.0 (the original 33 also pass on 4.14.0) |
 
 ## Quickstart
 
@@ -38,7 +39,7 @@ python3 -m venv .venv-cv5 && . .venv-cv5/bin/activate
 pip install -r requirements-cv5.txt
 
 python -m cvbench.demo_exec_vs_mms   # the gate matrix, about 5 s
-pytest                               # 707 tests, about 3 min
+pytest                               # 769 tests, about 3 min
 ```
 
 Reproduce the version diff with a second environment:
