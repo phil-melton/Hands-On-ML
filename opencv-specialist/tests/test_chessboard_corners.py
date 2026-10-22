@@ -293,9 +293,18 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img, squares_x, squares_y) -> dict" in p and "OpenCV: 5.0" in p
     assert "Row-major" in p and "(N, 2)" not in p and "Nx2" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(fam.PHRASINGS) == 16 and fam.PHRASINGS[0] == fam.SPEC.task
     scene = fam.make_scene(0)
     assert check_outputs(fam.SPEC, fam.reference_solve(**fam.inputs(scene))) == []
+
+
+def test_every_phrasing_states_the_task():
+    assert len(set(fam.PHRASINGS)) == len(fam.PHRASINGS) == 16
+    for ph in fam.PHRASINGS:  # a rewording must still ask for the inner corners, sub-pixel, in an order
+        low = ph.lower()
+        assert "corner" in low and ("inner" in low or "interior" in low), ph
+        assert "sub-pixel" in low, ph
+        assert "row" in low or "order" in low, ph
 
 
 def test_metamorphic_check_survives_empty_answers():

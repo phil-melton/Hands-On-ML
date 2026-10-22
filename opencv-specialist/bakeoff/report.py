@@ -10,8 +10,8 @@ What it computes (PLAN.md "Baseline bake-off", "Go/no-go", "Eval noise"):
     paired comparison       exact McNemar on pass@1 and the paired difference with its SE, for every rung pair
     throughput              decode tok/s (median, p10, p90; warm-up excluded), truncations, wall time
 
-Beside each standard SE it gives a cluster-aware one. Tasks of one family share prompts (37 distinct prompts in the
-198 test tasks), and at T=0 identical prompts get identical replies, so the plain binomial SE treats about five
+Beside each standard SE it gives a cluster-aware one. Tasks of one family share prompts (72 distinct prompts in the
+198 test tasks), and at T=0 identical prompts get identical replies, so the plain binomial SE treats about three
 copies of one outcome as independent draws. The cluster SE resamples whole prompts and is the one to read when the
 two disagree.
 

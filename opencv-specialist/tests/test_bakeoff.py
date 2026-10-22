@@ -193,11 +193,13 @@ def test_split_loading():
         ["dev-hough_segments-000", "shape_calchist"]
     with pytest.raises(ValueError):
         load_tasks(["train"])
-    # tasks that share a family and phrasing share the prompt, and therefore the cluster
+    # tasks that share a family and phrasing share the prompt, and therefore the cluster: 8 test phrasings x 9 families
     by_prompt = {}
     for t in load_tasks(["test"]):
         by_prompt.setdefault(t.prompt, set()).add(t.cluster)
-    assert all(len(c) == 1 for c in by_prompt.values()) and len(by_prompt) < 198
+    assert all(len(c) == 1 for c in by_prompt.values()) and len(by_prompt) == 72
+    dev_prompts = {t.prompt for t in load_tasks(["dev"])}
+    assert len(dev_prompts) == 36 and not dev_prompts & set(by_prompt)  # dev and test share no prompt
 
 
 # ================================================================ extraction

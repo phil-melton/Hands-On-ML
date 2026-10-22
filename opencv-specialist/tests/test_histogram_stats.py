@@ -339,6 +339,7 @@ def test_prompt_renders_the_contract():
 
 
 def test_phrasings_keep_the_contract():
-    assert 3 <= len(fam.PHRASINGS) <= 5 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
+    assert len(fam.PHRASINGS) == 16 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS) and fam.PHRASINGS[0] == fam.SPEC.task
     for p in fam.PHRASINGS:
         assert "BT.601" in p and "median" in p and "mean" in p, p
+        assert ("256" in p or "0..255" in p) and "standard deviation" in p, p

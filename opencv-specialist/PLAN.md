@@ -91,7 +91,9 @@ Everything below was measured in this repo on `opencv-python-headless` **4.14.0.
    - `contourArea`: [−0.589, +0.120]; the half-pixel inward shave on curved shapes, exactly 0
      where polygon vertices sit on pixel centres.
    - pixel counting: [−0.151, +0.598]; the half-pixel outward rim.
-   - Worst case 0.598, so `TOL_C = 0.75`.
+   - Worst case 0.598, so `TOL_C = 0.75`. (Updated 2026-10-22, Gate 3: pixel counting reaches 0.64-0.65 on
+     multi-shape scenes and 0.689 on small gauge triangles, so `TOL_C` is now 0.80. The gate matrix and 1,000
+     fresh gates are unchanged at 0.80; no shape of either correct method is rejected at either value.)
    - Under the task symmetries, the reference's areas moved by exactly **0.0** px².
 
 ---
@@ -444,7 +446,7 @@ TEMPLATE """{{- if .System }}<|im_start|>system
 PARAMETER stop "<|im_end|>"
 PARAMETER temperature 0
 PARAMETER num_ctx 8192
-SYSTEM """You are opencv-expert, an OpenCV 5.0 (Python cv2) worker. Given a task contract, return one Python function `solve(...) -> dict` that satisfies it. No file, GUI or network access; never catch exceptions to hide failures."""
+SYSTEM """You are opencv-expert, an OpenCV 5.0 (Python cv2) worker. Given a task contract, return one Python function `solve(...) -> dict`, with the imports it needs, that satisfies it. No file, GUI or network access; never catch exceptions to hide failures."""
 ```
 
 Then: `ollama create opencv-expert -f Modelfile`.
@@ -500,7 +502,8 @@ def opencv_solve(task: str, image_path: str, outputs: dict[str, str], max_repair
     contract = (f"Task: {task}\nOpenCV: 5.0 (Python cv2, headless)\nInputs:\n"
                 f"  - img: uint8, shape {img.shape}, BGR\nReturn a dict with:\n"
                 + "".join(f"  - {k!r}: {v}\n" for k, v in outputs.items())
-                + "Write one function, `def solve(img) -> dict`. No file, GUI or network access.")
+                + "Write one function, `def solve(img) -> dict`, with the imports it needs. No file, GUI or network access; "
+                  "do not catch exceptions to hide failures.")  # = cvbench.contract.TaskSpec.to_prompt (2026-10-22)
     messages, log, code = [{"role": "user", "content": contract}], [], ""
     for attempt in range(1, max_repairs + 2):
         reply = httpx.post(OLLAMA, timeout=180, json={

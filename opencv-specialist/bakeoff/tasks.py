@@ -7,9 +7,9 @@ from the manifest fails loudly here instead of silently changing what is measure
 
 A gotcha task is one row of data/splits/gotchas.jsonl: its prompt is ``Check.prompt()``.
 
-Note for reading the statistics: tasks of one family cycle through the family's phrasings, so many tasks share an
-identical prompt (37 distinct prompts across the 198 test tasks). ``cluster`` names the prompt; it is the unit
-that is really independent at T=0.
+Note for reading the statistics: tasks of one family cycle through the family's phrasings for that split, so several
+tasks share an identical prompt (72 distinct prompts across the 198 test tasks: 8 test phrasings per family; before
+2026-10-22 it was 37). ``cluster`` names the prompt; it is the unit that is really independent at T=0.
 """
 from __future__ import annotations
 

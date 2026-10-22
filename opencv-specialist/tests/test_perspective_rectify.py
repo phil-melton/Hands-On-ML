@@ -290,4 +290,12 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img, out_w, out_h) -> dict" in p and "OpenCV: 5.0" in p
     assert "TL, TR, BR, BL" in p and "smallest x+y" in p and "warped[0, 0]" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
+    assert len(fam.PHRASINGS) == 16 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS) and fam.PHRASINGS[0] == fam.SPEC.task
+
+
+def test_every_phrasing_states_the_task():
+    for ph in fam.PHRASINGS:  # a rewording must still name the card, its corners and the out_w x out_h target
+        low = ph.lower()
+        assert "card" in low or "sheet" in low, ph
+        assert "corner" in low and "out_w" in ph and "out_h" in ph, ph
+        assert any(word in low for word in ("warp", "rectif", "flat", "straighten", "upright")), ph

@@ -64,6 +64,33 @@ PHRASINGS = [
     "in descending order and how many objects there are.",
     "Segment the bright shapes from the dark background and report their outer-contour areas, biggest "
     "first, with the shape count. Holes inside a shape count towards its area.",
+    "Bright shapes on a dark background: report each shape's area inside its outer boundary (holes are not "
+    "subtracted) and how many shapes there are.",
+    "I have an image of some light-coloured shapes on a dark background. Tell me the area of each one, "
+    "counting everything inside its outer edge even where the shape has a hole, and how many shapes there "
+    "are.",
+    "As a parts inspector I need the footprint of every bright shape on the dark background: the area "
+    "enclosed by each shape's outer boundary, with holes counting as part of the area, plus the number of "
+    "shapes.",
+    "How many separate bright shapes are on the dark background, and what area does each one enclose within "
+    "its outer boundary? A hole in a shape does not reduce its area.",
+    "(1) Find every separate bright shape on the dark background. (2) For each one, work out the area "
+    "enclosed by its outer boundary; holes are not subtracted. (3) Report all the areas together with the "
+    "number of shapes.",
+    "Requirement: detect each distinct bright object against the dark background and output the area bounded "
+    "by its outermost boundary, without subtracting holes, together with the number of objects.",
+    "A sorting line photographs parts that show up as bright shapes on a dark belt. For every part in the "
+    "image, report the area bounded by its outer edge (holes are not subtracted), and the number of parts.",
+    "Given an image of separate bright shapes on a uniform dark background, produce the area of the region "
+    "inside each shape's outer boundary, hole pixels included, and a count of the shapes.",
+    "Measure every bright shape on the dark background: its area within the outer boundary (holes not "
+    "subtracted), largest first, and the shape count.",
+    "Can you tell me how many bright shapes the image contains, and how much area each one covers inside its "
+    "outer boundary, counting any holes as covered?",
+    "As a lab technician measuring specimens that appear bright on a dark field, I want the area enclosed by "
+    "each specimen's outer boundary (holes are not subtracted) and the number of specimens.",
+    "1) Find every separate bright shape on the dark background. 2) Measure the area inside each shape's "
+    "outer boundary, without subtracting holes. 3) Return those areas and the number of shapes.",
 ]
 
 KINDS = ("rect", "disk", "ellipse", "rotrect", "triangle", "ring", "annulus")
@@ -73,16 +100,34 @@ BORDER, GAP = 14, 5  # px kept clear at the image border and between shapes
 #   contourArea  in [-0.589, +0.120]  (disks/annuli -0.40..-0.59: the half-pixel inward shave;
 #                                     rect/ring/rotrect exactly 0: vertices sit on pixel centres)
 #   pixel count  in [-0.151, +0.598]  (rects +0.50..+0.53: the half-pixel outward rim)
-# Worst |error| / P = 0.598, so TOL_C = 0.75 carries ~25 % margin. TOL_C0 covers the corner
-# quantization of the smallest shapes. META_TOL: the reference's sorted areas moved by exactly
-# 0.0 px^2 under every transform in 300 scenes (the symmetries preserve the pixel set).
-# TOL_C0 check, 2026-10-20 (OpenCV 5.0.0): slack = |err| - TOL_C * P in px^2, shapes paired by position.
+# Worst |error| / P on the gauge blocks = 0.598 (TOL_C was first set to 0.75 = 1.25x that; multi-shape scenes
+# reach more, see 2026-10-22 below). TOL_C0 covers the corner quantization of the smallest shapes.
+# META_TOL: the reference's sorted areas moved by exactly 0.0 px^2 under every transform in 300 scenes
+# (the symmetries preserve the pixel set).
+# TOL_C0 check, 2026-10-20 (OpenCV 5.0.0): slack = |err| - TOL_C * P in px^2 at TOL_C = 0.75, paired by position.
 #   contourArea (reference), 2000 scenes, seeds 7400000-7401999: max -9.05, p99 -11.02; uses none of TOL_C0.
 #   Pixel count, 2000 scenes, seeds 7430000-7431999: max -4.43, p99 -11.92; 0 of 10016 shapes have slack > 0.
 #   Minimal-size gauges, 7 kinds: contourArea max -11.02, pixel count max -5.00 (rect 6x6). TOL_C0 unused.
-#   Open (for Phil): in those multi-shape scenes the pixel count reaches |error| / P = 0.643 (contourArea
-#   0.589), so TOL_C = 0.75 is 1.17x the worst case seen, under the 1.25x margin rule. No shape is rejected.
-TOL_C, TOL_C0 = 0.75, 2.0
+# TOL_C 0.75 -> 0.80, 2026-10-22 (OpenCV 5.0.0). Why: in those multi-shape scenes the pixel count, a correct
+#   method, reached |error| / P = 0.643 (contourArea 0.589), so 0.75 was only 1.17x the worst case seen, under
+#   the project's 1.25x margin rule (1.25 x 0.643 = 0.80). Nothing was rejected at 0.75. The project owner
+#   approved the change on one condition: no mutant slips through. Checked, and none does:
+#   * Worst |error| / P re-measured, shapes paired by position: 4000 fresh scenes (seeds 7700000-7703999, 20173
+#     shapes) pixel count 0.637 (triangle), contourArea 0.589 (disk). Tail checks: 40000 more scenes (seeds
+#     7740000-7779999, 200086 shapes) pixel count 0.649 (ellipse); 1.2M gauge ellipses and 1.2M gauge triangles
+#     (rng seeds 7780000-7780119) pixel count 0.656 and 0.689 (triangle, P = 53.7). So 0.80 is 1.26x, 1.23x and
+#     1.16x those worst cases: the worst case keeps growing slowly with sample size, so the 1.25x rule holds only
+#     against the first; against the larger samples the margin is 16-23 %, with no help from TOL_C0.
+#   * Slack at TOL_C = 0.80: max -11.25 (contourArea), -6.20 (pixel count, 40000 scenes), -5.62 (gauge tail);
+#     0 shapes rejected anywhere, TOL_C0 still unused.
+#   * Pinned gate matrix (20 scenes, seed 0): every gate verdict of the reference, the pixel-count estimator and
+#     the 9 mutants is identical at 0.75 and 0.80. 1000 fresh 20-scene gates (seeds 7720000-7739999): every
+#     mutant has the same manufactured-gate catch rate at both values (7 are caught in 1000/1000 gates, rgb2gray
+#     and fixed_threshold_127 in 0/1000 by design), 0 gates flipped; reference and pixel count fail 0/1000.
+#     Per scene only component_pixel_areas moves (it subtracts the hole, so a small hole hides inside the
+#     tolerance): 75.08 % of scenes fail at 0.75, 74.67 % at 0.80 (82 of 20000 flip); no gate has fewer than 9
+#     failing scenes of 20 at either value.
+TOL_C, TOL_C0 = 0.80, 2.0
 # META_TOL check, 2026-10-20 (OpenCV 5.0.0): reference drift under 4 transforms, 8000 checks in 2000
 #   scenes (seeds 7420000-7421999): max 0.0, p99 0.0 px^2, margin 1 - max/META_TOL = 100 %.
 META_TOL = 1.0

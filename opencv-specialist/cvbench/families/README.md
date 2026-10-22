@@ -8,7 +8,7 @@ grades any family through the four gates.
 | name | what it is |
 |---|---|
 | `SPEC` | `TaskSpec`: the contract the model sees (`SPEC.to_prompt()`) |
-| `PHRASINGS` | 3–5 rewordings of the task: prompt diversity, same contract |
+| `PHRASINGS` | exactly 16 rewordings of the task, same contract; index 0 is `SPEC.task`. Indices 0-3 are dev, 4-11 test, 12-15 foundry (Stage 4 training data), see `cvbench/splits.py` |
 | `make_scene(seed) -> Scene` | manufactures an input and its answer, deterministically |
 | `inputs(scene) -> dict` | keyword arguments for `solve()` |
 | `verify_manufactured(scene, out) -> Verdict` | recovers the manufactured answer within a *derived* tolerance |

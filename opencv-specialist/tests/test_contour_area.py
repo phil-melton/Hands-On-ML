@@ -79,6 +79,14 @@ def test_calibration_still_covers_fresh_gauge_blocks():
     assert summary["by_kind"]["rect/pixel_count"][0] > 0.45
 
 
+def test_tolerance_constants_are_the_approved_values():
+    """TOL_C went 0.75 -> 0.80 on 2026-10-22 with the project owner's approval, conditional on no mutant slipping
+    through (the evidence is in the comment above the constants). CLAUDE.md rule 3: a change here must be a decision."""
+    assert (fam.TOL_C, fam.TOL_C0) == (0.80, 2.0)
+    s = fam.Shape("rect", 400.0, 80.0, (0, 0, 0, 0))
+    assert fam.tolerance(s) == pytest.approx(0.80 * 80.0 + 2.0)  # 66 px^2 for a 20x20 rectangle
+
+
 def test_metamorphic_symmetries_are_exact_for_reference():
     assert fam.measure_metamorphic_drift(n=40, seed=7_000) == 0.0
 
@@ -108,3 +116,15 @@ def test_scene_generation_is_deterministic_and_well_posed():
 def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img) -> dict" in p and "OpenCV: 5.0" in p and "largest first" in p
+
+
+def test_every_phrasing_states_the_task():
+    assert len(fam.PHRASINGS) == 16 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
+    for i, ph in enumerate(fam.PHRASINGS):  # a rewording must still ask for the outer-boundary areas and the count
+        low = ph.lower()
+        assert "area" in low and "outer" in low and ("boundary" in low or "edge" in low or "contour" in low), ph
+        assert "bright" in low or "light" in low, ph
+        assert any(word in low for word in ("count", "number", "how many")), ph
+        if i != 2:  # index 2 predates this check and says only "outer contour"; the others state the hole rule
+            assert "hole" in low, ph

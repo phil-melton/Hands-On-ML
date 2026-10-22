@@ -14,8 +14,8 @@ OLLAMA = "http://127.0.0.1:11434"  # the Windows Ollama server, reached through 
 
 # Identical to the Modelfile SYSTEM in PLAN.md §8.3.
 SYSTEM = ("You are opencv-expert, an OpenCV 5.0 (Python cv2) worker. Given a task contract, return one Python "
-          "function `solve(...) -> dict` that satisfies it. No file, GUI or network access; never catch "
-          "exceptions to hide failures.")
+          "function `solve(...) -> dict`, with the imports it needs, that satisfies it. No file, GUI or "
+          "network access; never catch exceptions to hide failures.")
 
 # ChatML turn markers shared by the Qwen2.5 and Qwen3.5 families.
 USER_MARK = "<|im_start|>user\n"

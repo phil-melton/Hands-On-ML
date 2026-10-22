@@ -1,13 +1,19 @@
-"""The dev/test splits and the gotcha manifest: the files on disk, their seeds, counts, tags and prompt hashes."""
+"""The dev/test splits and the gotcha manifest: the files on disk, their seeds, counts, tags and prompt hashes.
+
+Also pins how prompts are shared out: 16 phrasings per family, disjoint between dev (0-3), test (4-11) and foundry
+(12-15), and the wording every prompt ends with.
+"""
 import dataclasses
 import hashlib
 import itertools
 import json
+import re
 from collections import Counter
 from importlib import import_module
 
 from cvbench import splits as sp
 from cvbench.gotchas import CHECKS
+from train.config import SYSTEM, modelfile
 
 # The family tags as specified, pinned here so that editing the table cannot silently change them.
 EXPECTED_SUBSET = {
@@ -23,6 +29,15 @@ GOTCHAS = sp.build_gotcha_manifest()
 
 def _family(name):
     return import_module(f"cvbench.families.{name}")
+
+
+def _prompt(name, index):
+    fam = _family(name)
+    return dataclasses.replace(fam.SPEC, task=fam.PHRASINGS[index]).to_prompt()
+
+
+def _sha1(text):
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()
 
 
 def _read_jsonl(path):
@@ -81,15 +96,15 @@ def test_counts_and_per_family_balance():
     assert set(sp.FAMILIES) == set(EXPECTED_SUBSET)
     assert len(DEV) == 9 * sp.DEV_PER_FAMILY == 99
     assert len(TEST) == 9 * sp.TEST_PER_FAMILY == 198
-    for split, rows, per in (("dev", DEV, sp.DEV_PER_FAMILY), ("test", TEST, sp.TEST_PER_FAMILY)):
+    for split, rows, per, phrasings in (("dev", DEV, sp.DEV_PER_FAMILY, range(0, 4)),
+                                        ("test", TEST, sp.TEST_PER_FAMILY, range(4, 12))):
         assert all(r["split"] == split for r in rows)
         assert len({r["id"] for r in rows}) == len(rows)
         for name in EXPECTED_SUBSET:
             mine = [r for r in rows if r["family"] == name]
             assert len(mine) == per
-            n_phrasings = len(_family(name).PHRASINGS)
             counts = Counter(r["phrasing_index"] for r in mine)
-            assert set(counts) == set(range(n_phrasings)), f"{name}: every phrasing should be used"
+            assert set(counts) == set(phrasings), f"{name}: every phrasing of the {split} split should be used, and only those"
             assert max(counts.values()) - min(counts.values()) <= 1
 
 
@@ -115,9 +130,119 @@ def test_every_task_scene_can_be_built():
 
 def test_prompt_sha1_matches_recomputation():
     for r in DEV + TEST:
-        fam = _family(r["family"])
-        prompt = dataclasses.replace(fam.SPEC, task=fam.PHRASINGS[r["phrasing_index"]]).to_prompt()
-        assert hashlib.sha1(prompt.encode("utf-8")).hexdigest() == r["prompt_sha1"]
+        assert _sha1(_prompt(r["family"], r["phrasing_index"])) == r["prompt_sha1"]
+
+
+# ---------------------------------------------------------------- phrasings: 16 per family, disjoint between splits
+
+def test_phrasing_ranges_are_pinned_and_tile_the_sixteen_phrasings():
+    assert (sp.PHRASINGS_PER_FAMILY, sp.DEV_PHRASINGS, sp.TEST_PHRASINGS, sp.FOUNDRY_PHRASINGS) == \
+        (16, range(0, 4), range(4, 12), range(12, 16))
+    assert sorted(itertools.chain(sp.DEV_PHRASINGS, sp.TEST_PHRASINGS, sp.FOUNDRY_PHRASINGS)) == list(range(16))
+
+
+def test_every_family_has_sixteen_distinct_phrasings_and_prompts():
+    for name in EXPECTED_SUBSET:
+        fam = _family(name)
+        assert len(fam.PHRASINGS) == sp.PHRASINGS_PER_FAMILY == 16, name
+        assert fam.PHRASINGS[0] == fam.SPEC.task, name
+        assert len(set(fam.PHRASINGS)) == 16, name
+        assert len({_sha1(_prompt(name, i)) for i in range(16)}) == 16, name
+
+
+def test_dev_and_test_cycle_their_own_phrasings():
+    # dev task j uses phrasing j % 4, test task j uses 4 + j % 8
+    for rows, offset, width in ((DEV, 0, 4), (TEST, 4, 8)):
+        for name in EXPECTED_SUBSET:
+            mine = [r for r in rows if r["family"] == name]
+            assert [r["phrasing_index"] for r in mine] == [offset + j % width for j in range(len(mine))], name
+
+
+def test_dev_and_test_share_no_prompt():
+    dev_hashes = {r["prompt_sha1"] for r in DEV}
+    test_hashes = {r["prompt_sha1"] for r in TEST}
+    assert not dev_hashes & test_hashes
+    for name in EXPECTED_SUBSET:  # also per family, so a shared prompt cannot hide behind a different family's
+        assert not {r["prompt_sha1"] for r in DEV if r["family"] == name} & \
+            {r["prompt_sha1"] for r in TEST if r["family"] == name}, name
+
+
+def test_distinct_prompt_counts_per_split():
+    for rows, per_family in ((DEV, 4), (TEST, 8)):
+        for name in EXPECTED_SUBSET:
+            assert len({r["prompt_sha1"] for r in rows if r["family"] == name}) == per_family, name
+    assert len({r["prompt_sha1"] for r in DEV}) == 36
+    assert len({r["prompt_sha1"] for r in TEST}) == 72
+
+
+def test_foundry_phrasings_are_reserved_and_never_scored():
+    scored = {r["prompt_sha1"] for r in DEV + TEST}
+    for name in EXPECTED_SUBSET:
+        fam = _family(name)
+        foundry = sp.foundry_phrasings(name)
+        assert foundry == fam.PHRASINGS[12:16] and len(foundry) == 4, name
+        for index in range(12, 16):
+            assert _sha1(_prompt(name, index)) not in scored, (name, index)
+        assert not {r["phrasing_index"] for r in DEV + TEST if r["family"] == name} & set(range(12, 16)), name
+
+
+def _words(text):
+    return set(re.findall(r"[a-z0-9_.\[\]]+", text.lower()))
+
+
+def test_phrasings_are_not_near_duplicates():
+    # Word-set Jaccard similarity of two phrasings, after removing the contract text that is shared on purpose.
+    # Measured over the 16 phrasings of each family when they were written: at most 0.62. Reworded copies score above 0.8.
+    for name in EXPECTED_SUBSET:
+        fam = _family(name)
+        shared = [getattr(fam, attr, "") for attr in ("ACCURACY", "_RANGES", "_BOUNDS")]
+        clean = []
+        for ph in fam.PHRASINGS:
+            for s in shared:
+                if s:
+                    ph = ph.replace(s, "")
+            clean.append(_words(ph))
+        for (i, a), (j, b) in itertools.combinations(enumerate(clean), 2):
+            assert len(a & b) / len(a | b) < 0.8, (name, i, j)
+
+
+# Names that would turn a task statement into a recipe, or leak how the task is graded. SPEC.task may mention the
+# cv2 constants and functions the contract is built on; no other phrasing may add one.
+HINT_WORDS = ("ransac", "sift", "orb", "akaze", "brisk", "hough", "houghlinesp", "findcontours", "contourarea", "inrange",
+              "calchist", "connectedcomponents", "warpperspective", "getperspectivetransform", "findhomography",
+              "approxpolydp", "cornersubpix", "findchessboardcorners", "tolerance", "gate", "seed", "benchmark",
+              "metamorphic", "version", "deprecated", "4.14", "countnonzero", "minarearect", "boundingrect")
+
+
+def test_phrasings_add_no_hints():
+    for name in EXPECTED_SUBSET:
+        fam = _family(name)
+        spec_api = set(re.findall(r"cv2\.\w+", fam.SPEC.task))
+        for i, ph in enumerate(fam.PHRASINGS):
+            assert set(re.findall(r"cv2\.\w+", ph)) <= spec_api, (name, i)
+            found = [w for w in HINT_WORDS if re.search(rf"\b{re.escape(w)}\b", ph.lower())]
+            assert not found, (name, i, found)
+
+
+# ---------------------------------------------------------------- the wording every prompt ends with
+
+CLOSING = ("Write one function, `{signature}`, with the imports it needs. No file, GUI or network access; "
+           "do not catch exceptions to hide failures.")
+
+
+def test_every_prompt_ends_by_asking_for_the_imports():
+    # Stage 3 finding: "Write one function" was taken literally and many replies left out `import cv2` / `import numpy as np`.
+    for name in EXPECTED_SUBSET:
+        fam = _family(name)
+        for i in range(sp.PHRASINGS_PER_FAMILY):
+            assert _prompt(name, i).splitlines()[-1] == CLOSING.format(signature=fam.SPEC.signature), (name, i)
+    for cid, c in CHECKS.items():  # the gotcha prompts render through the same method
+        assert c.prompt().splitlines()[-1] == CLOSING.format(signature=c.spec.signature), cid
+
+
+def test_system_prompt_asks_for_the_imports_and_is_the_modelfile_system():
+    assert "return one Python function `solve(...) -> dict`, with the imports it needs, that satisfies it." in SYSTEM
+    assert f'SYSTEM """{SYSTEM}"""' in modelfile("qwen2.5-coder-7b", "x.gguf")  # Rule 7: one source for both
 
 
 def test_gotcha_manifest_covers_every_check_once_in_test_only():

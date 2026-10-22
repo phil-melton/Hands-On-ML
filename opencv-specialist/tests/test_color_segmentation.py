@@ -417,10 +417,11 @@ def test_prompt_renders_the_contract():
 
 
 def test_every_phrasing_states_the_whole_contract():
-    assert 3 <= len(fam.PHRASINGS) <= 5 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(fam.PHRASINGS) == 16 and fam.PHRASINGS[0] == fam.SPEC.task
     assert len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
     for text in fam.PHRASINGS:
         for needle in ("0-10", "170-179", "20-35", "40-80", "100-130", f"S >= {fam.S_MIN}", f"V >= {fam.V_MIN}",
                        "0-179", "inclusive"):
             assert needle in text, (needle, text[:60])
         assert "BGR" in text
+        assert all(colour in text for colour in fam.COLOURS), text[:60]

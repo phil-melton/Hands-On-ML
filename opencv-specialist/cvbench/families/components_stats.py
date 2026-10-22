@@ -118,6 +118,49 @@ PHRASINGS = [
     "boolean mask at 4- or 8-connectivity, background excluded. Order: area descending, then box y, then "
     "box x. Boxes are (x, y, w, h) with w and h counted in pixels; centroids are (x, y) means of pixel "
     "coordinates.",
+    "Label the connected True regions of the mask (connectivity 4: edge neighbours only; 8: edge or corner "
+    "neighbours) and give each one's area, bounding box and centroid. Sort by area, largest first; equal "
+    "areas by the box's top-left corner, y then x. The background is not a component.",
+    "In this True/False mask, find the separate clumps of True pixels. With connectivity 4 only pixels "
+    "sharing an edge are linked; with 8, pixels sharing an edge or a corner are linked too. For each clump "
+    "return its area (pixel count), bounding box and centroid, biggest clump first; if two have the same area, the "
+    "one whose box starts higher (then further left) goes first. The background (False) is not a clump.",
+    "As a defect-analysis developer, I get a boolean mask of flagged pixels and a connectivity (4 = shared "
+    "edges, 8 = shared edges or corners). I need every connected group of flagged pixels with its area, "
+    "bounding box and centroid, ordered by area descending and then by bounding-box top-left (y, then x). The "
+    "unflagged background is not a group.",
+    "How many connected regions of True pixels does the mask have under the given connectivity (4: shared "
+    "edges; 8: shared edges or corners), and what are the area, bounding box and centroid of each? List them "
+    "largest area first, ties broken by the box's top-left corner (top to bottom, then left to right); the "
+    "background is not a region.",
+    "(1) Label the connected components of the True pixels, using the given connectivity (4: edge neighbours; "
+    "8: edge or corner neighbours), ignoring the background. (2) For each component report area, bounding box "
+    "and centroid. (3) Order them by area, largest first, equal areas by the box's top-left corner: y, then "
+    "x.",
+    "Requirement: for a boolean mask and a connectivity of 4 (edge-adjacent) or 8 (edge- or corner-adjacent), "
+    "output the number of foreground components and each component's pixel area, bounding box and centroid. "
+    "Components are listed by descending area, ties by the top-left corner of the box (y first, then x). The "
+    "background is excluded.",
+    "A particle counter thresholds a micrograph into a boolean mask. Using the given connectivity (4: shared "
+    "edge; 8: shared edge or corner), report every particle, i.e. every connected group of True pixels "
+    "(background excluded), with its area, bounding box and centroid, largest first and ties by the top-left "
+    "corner of the box, top to bottom then left to right.",
+    "Input: a boolean mask and a connectivity (4 or 8). Output: the count of connected True components "
+    "(background not included), and per component its area, bounding box and centroid, sorted by descending "
+    "area; equal areas by the box's top-left corner, y then x. Connectivity 4 links edge neighbours, 8 also "
+    "corner neighbours.",
+    "Connected-component analysis of a boolean mask at connectivity 4 or 8: area, bounding box and centroid "
+    "per component, background excluded, largest area first, ties by box top then left.",
+    "Could you analyse the connected foreground components of this mask? For each, I want the area, bounding "
+    "box and centroid, with 4-connectivity meaning shared edges and 8-connectivity meaning shared edges or "
+    "corners. Put the largest first, break ties by the box's top-left corner (y, then x), and leave the "
+    "background out.",
+    "As a developer measuring objects in a segmentation mask, I want to count the connected groups of True "
+    "pixels at 4- or 8-connectivity and get each group's area, bounding box and centroid, biggest area first "
+    "(equal areas ordered by box y, then x). The False background is not a group.",
+    "1. Group the True pixels of the mask into connected components at the given connectivity (4: edges only, "
+    "8: edges and corners); the background is not a component. 2. Measure each component's area, bounding box "
+    "and centroid. 3. Return them ordered by area descending, then box y, then box x.",
 ]
 
 SIZE = (240, 320)  # (H, W) of every manufactured mask; verify_metamorphic relies on it (it never sees the scene)

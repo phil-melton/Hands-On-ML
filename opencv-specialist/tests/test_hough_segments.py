@@ -28,7 +28,7 @@ REASON = {
     ("no_merge", "manufactured"): "duplicate or fragmentary",
     ("plain_union", "manufactured"): "has no row within",
     ("fixed_canny", "metamorphic"): "dim x0.45",
-    ("fixed_low_canny", "metamorphic"): "dim x0.25",  # and not x0.45: that dimming was the gap this one closes
+    ("fixed_low_canny", "metamorphic"): "dim x0.15",  # and not x0.45: that dimming was the gap this one closes
     ("fixed_threshold_127", "metamorphic"): "dim x0.45: 0 segments",
     ("unordered", "manufactured"): "smaller x",
 }
@@ -59,6 +59,32 @@ def otsu_canny_code() -> str:
     code = fam.MUTANTS["fixed_canny"][1]
     assert old in code
     return code.replace(old, new)
+
+
+FIXED_CANNY_MASK = "mask = cv2.morphologyEx(cv2.Canny(gray, 100, 200), cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))"
+
+
+def mask_code(mask_step: str) -> str:
+    """The fixed_canny mutant with its Canny(100, 200) mask line replaced (extra lines indented 4 spaces)."""
+    code = fam.MUTANTS["fixed_canny"][1]
+    assert FIXED_CANNY_MASK in code
+    return code.replace(FIXED_CANNY_MASK, mask_step)
+
+
+def adaptive_canny_code(prelude: str, thresholds: str) -> str:
+    """fixed_canny with its absolute Canny thresholds computed from the image: a correct alternative."""
+    return mask_code(f"{prelude}\n    mask = cv2.morphologyEx(cv2.Canny(gray, {thresholds}), cv2.MORPH_CLOSE, "
+                     "np.ones((7, 7), np.uint8))")
+
+
+def fixed_canny_code(lo: int, hi: int) -> str:
+    return mask_code(f"mask = cv2.morphologyEx(cv2.Canny(gray, {lo}, {hi}), cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))")
+
+
+MEDIAN_CANNY = ("med = float(np.median(gray))", "int(0.66 * med), int(1.33 * med)")
+MAX_CANNY = ("mx = float(gray.max())", "0.4 * mx, 0.9 * mx")
+OTSU_CLOSING = ("_, m0 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)\n"
+                "    mask = cv2.morphologyEx(m0, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))")
 
 
 def sandbox_drift(code: str, n: int, seed: int) -> dict[str, float]:
@@ -188,8 +214,8 @@ def test_constants_follow_from_the_recorded_measurement():
     assert all(tols[w] >= 1.25 * v for w, v in RECORDED_PANEL_WORST.items())
     assert all(tols[w] >= 1.25 * v for w, v in RECORDED_SCENE_WORST.items())
     assert fam.META_TOL[fam.T_DIM] == 1.0 and fam.META_TOL[fam.T_SHIFT] == fam.META_TOL[fam.T_ROT] == 5.0
-    assert fam.GAIN == 0.45 and fam.GAIN_STRONG == 0.25  # GAIN is shared with contour_area: not this family's to change
-    assert fam.META_TOL[fam.T_DIM_STRONG] == 1.0 and fam.T_DIM_STRONG == "dim x0.25"
+    assert fam.GAIN == 0.45 and fam.GAIN_STRONG == 0.15  # GAIN is shared with contour_area: not this family's to change
+    assert fam.META_TOL[fam.T_DIM_STRONG] == 1.0 and fam.T_DIM_STRONG == "dim x0.15"
     assert fam.T_DIM in fam.transforms(fam.make_scene(0)) and fam.T_DIM_STRONG in fam.transforms(fam.make_scene(0))
 
 
@@ -218,16 +244,24 @@ def test_adaptive_pipelines_are_invariant_to_dimming_and_fixed_thresholds_are_no
 
 
 def test_a_low_fixed_canny_survives_the_gentle_dimming_and_not_the_strong_one():
-    """Gate 2 review, decision 4. Canny(30, 100) is exactly invariant under x0.45 (the gap), while under x0.25
-    some strokes move more than the tolerance or vanish (107 of 600 scenes at seeds 7_100_000-7_100_599)."""
+    """Gate 2 review, decision 4. Canny(30, 100) is exactly invariant under x0.45 (the gap), while under x0.15
+    some strokes move more than the tolerance or vanish (1006 of 2000 scenes at seeds 7_610_000-7_611_999)."""
     low = sandbox_drift(fam.MUTANTS["fixed_low_canny"][1], n=40, seed=7_100_000)
     assert low[fam.T_DIM] == 0.0
     assert low[fam.T_DIM_STRONG] > fam.META_TOL[fam.T_DIM_STRONG], low
 
 
+def test_the_strong_dimming_reaches_canny_20_60_and_the_gentle_one_does_not():
+    """The step from x0.25 to x0.15 (2026-10-22): Canny(20, 60) fails 394 of 2000 scenes (19.7 %, seeds 7_610_000-
+    7_611_999) at x0.15 and 5 at x0.25, and none at x0.45. (Canny(10, 30) still passes: 0 of 2000.)"""
+    drift = sandbox_drift(fixed_canny_code(20, 60), n=40, seed=7_630_000)
+    assert drift[fam.T_DIM] == 0.0
+    assert drift[fam.T_DIM_STRONG] > fam.META_TOL[fam.T_DIM_STRONG], drift
+
+
 def test_strong_dimming_keeps_the_weakest_thin_stroke_the_generator_can_draw():
-    """1-px strokes of gray 150 on gray 50 are the least contrast make_scene can produce (100 gray levels); at x0.25
-    they are 38 on 12, and a correct pipeline still sees every one of them: the gate must not reject correct code."""
+    """1-px strokes of gray 150 on gray 50 are the least contrast make_scene can produce (100 gray levels); at x0.15
+    they are 22 on 8, and every correct pipeline still sees every one of them: the gate must not reject correct code."""
     img = np.full((fam.H, fam.W, 3), 50, np.uint8)
     segs = [fam.Segment((40, 40), (200, 40), 1), fam.Segment((60, 90), (60, 250), 1),
             fam.Segment((120, 100), (260, 220), 1), fam.Segment((300, 60), (420, 300), 1)]
@@ -236,23 +270,20 @@ def test_strong_dimming_keeps_the_weakest_thin_stroke_the_generator_can_draw():
     assert all(fam.segment_distance(a, b) >= fam.CLEAR for i, a in enumerate(segs) for b in segs[i + 1:])
     scene = fam.Scene(img, segs, 50, -1)
     dimmed = fam.transforms(scene)[fam.T_DIM_STRONG]["img"]
-    assert int(dimmed[40, 100, 0]) - int(dimmed[0, 0, 0]) == 38 - 12
-    for name, code in (("reference", fam.REFERENCE), ("Otsu-driven Canny", otsu_canny_code())):
+    assert int(dimmed[40, 100, 0]) - int(dimmed[0, 0, 0]) == 22 - 8
+    correct = {"reference": fam.REFERENCE, "Otsu-driven Canny": otsu_canny_code(),
+               "median-driven Canny": adaptive_canny_code(*MEDIAN_CANNY),
+               "max-relative Canny": adaptive_canny_code(*MAX_CANNY), "Otsu mask + 7x7 closing": mask_code(OTSU_CLOSING)}
+    for name, code in correct.items():
         r = run_solution(code, [{"img": img}, {"img": dimmed}], lint=False, timeout_s=60)
         assert r.ok, r.summary()
         assert fam.verify_manufactured(scene, r.outputs[0]), name
         assert np.array_equal(np.asarray(r.outputs[0]["segments"]), np.asarray(r.outputs[1]["segments"])), name
 
 
-@pytest.mark.parametrize("prelude, thresholds", [
-    ("med = float(np.median(gray))", "int(0.66 * med), int(1.33 * med)"),
-    ("mx = float(gray.max())", "0.4 * mx, 0.9 * mx"),
-], ids=["median-driven", "max-relative"])
+@pytest.mark.parametrize("prelude, thresholds", [MEDIAN_CANNY, MAX_CANNY], ids=["median-driven", "max-relative"])
 def test_other_adaptive_canny_pipelines_are_invariant_to_dimming(prelude, thresholds):
-    old = "mask = cv2.morphologyEx(cv2.Canny(gray, 100, 200), cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))"
-    new = (f"{prelude}\n    mask = cv2.morphologyEx(cv2.Canny(gray, {thresholds}), cv2.MORPH_CLOSE, "
-           "np.ones((7, 7), np.uint8))")
-    code = fam.MUTANTS["fixed_canny"][1].replace(old, new)
+    code = adaptive_canny_code(prelude, thresholds)
     assert code != fam.MUTANTS["fixed_canny"][1]
     drift = sandbox_drift(code, n=15, seed=9_000)
     assert drift[fam.T_DIM] == drift[fam.T_DIM_STRONG] == 0.0
@@ -386,4 +417,12 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img) -> dict" in p and "OpenCV: 5.0" in p and "'segments'" in p
     assert "smaller x" in p and "one row per stroke" in p and "sorted by x1" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
+    assert len(fam.PHRASINGS) == 16 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS) and fam.PHRASINGS[0] == fam.SPEC.task
+
+
+def test_every_phrasing_states_the_task():
+    for ph in fam.PHRASINGS:  # a rewording must still ask for the end points of each stroke, in rows
+        low = ph.lower()
+        assert "stroke" in low or "line" in low or "segment" in low, ph
+        assert "end" in low, ph
+        assert "row" in low or "N x 4" in ph, ph

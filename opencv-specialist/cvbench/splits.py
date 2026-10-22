@@ -11,6 +11,16 @@ Each family owns a block of SEED_BLOCK seeds inside its split's range, so seed =
 scene windows are pairwise disjoint within and across splits. 2026-10-20: the stride was 1 until then, so adjacent tasks
 shared 19 of their 20 scenes and a family's 22 test tasks covered only 41 distinct scenes; tasks are meant to be independent draws.
 
+Prompt phrasings (indices into each family's PHRASINGS, 16 per family, disjoint between splits):
+
+    DEV      [0, 4)    task j uses phrasing j % 4
+    TEST     [4, 12)   task j uses phrasing 4 + j % 8: 8 distinct test prompts per family, 72 in all
+    FOUNDRY  [12, 16)  reserved for Stage 4 training data, never scored; ``foundry_phrasings(family)``
+
+2026-10-22: until then dev and test cycled through the same 4 phrasings per family (5 for feature_homography), so the 198
+test tasks had only 37 distinct prompts and training data written from those phrasings would have contained test prompts.
+The three index ranges are now disjoint, so no dev, test or foundry prompt appears in another split.
+
 Seed audit, grepped over cvbench/ and tests/ when the ranges were fixed: exactly one literal falls in
 [3_000_000, 6_000_000), the default seed=3_000_000 (n=9_000, i.e. seeds 3_000_000..3_008_999) of
 feature_homography.measure_metamorphic_drift. It is a calibration seed and was left alone. It overlapped the
@@ -80,6 +90,15 @@ TEST_PER_FAMILY = 22  # 9 families -> 198 test tasks
 assert SCENE_STRIDE >= N_SCENES, "consecutive tasks would share scenes"
 assert SCENE_STRIDE * (TEST_PER_FAMILY - 1) + N_SCENES <= SEED_BLOCK, "a family's scene windows must fit inside its seed block"
 
+PHRASINGS_PER_FAMILY = 16  # len(PHRASINGS) of every family; tests pin it
+DEV_PHRASINGS = range(0, 4)
+TEST_PHRASINGS = range(4, 12)
+FOUNDRY_PHRASINGS = range(12, 16)  # Stage 4 training data; never scored
+
+assert (DEV_PHRASINGS.stop == TEST_PHRASINGS.start and TEST_PHRASINGS.stop == FOUNDRY_PHRASINGS.start
+        and DEV_PHRASINGS.start == 0 and FOUNDRY_PHRASINGS.stop == PHRASINGS_PER_FAMILY), \
+    "the dev, test and foundry phrasing ranges must tile 0..PHRASINGS_PER_FAMILY without overlap"
+
 SPLITS_DIR = Path(__file__).resolve().parent.parent / "data" / "splits"
 
 
@@ -95,13 +114,23 @@ def _sha1(text: str) -> str:
     return hashlib.sha1(text.encode("utf-8")).hexdigest()
 
 
-def _split_rows(split: str, start: int, per_family: int) -> list[dict]:
+def foundry_phrasings(family: str) -> list[str]:
+    """The family's task lines reserved for Stage 4 training data (phrasing indices 12-15); no scored task uses them."""
+    phrasings = _family(family).PHRASINGS
+    if len(phrasings) != PHRASINGS_PER_FAMILY:
+        raise ValueError(f"{family}: {len(phrasings)} phrasings, expected {PHRASINGS_PER_FAMILY}")
+    return [phrasings[i] for i in FOUNDRY_PHRASINGS]
+
+
+def _split_rows(split: str, start: int, per_family: int, phrasings: range) -> list[dict]:
     rows = []
     for f, name in enumerate(FAMILIES):
         fam = _family(name)
         row = FAMILIES[name]
+        if len(fam.PHRASINGS) != PHRASINGS_PER_FAMILY:
+            raise ValueError(f"{name}: {len(fam.PHRASINGS)} phrasings, expected {PHRASINGS_PER_FAMILY}")
         for j in range(per_family):
-            i = j % len(fam.PHRASINGS)
+            i = phrasings[j % len(phrasings)]
             rows.append({
                 "id": f"{split}-{name}-{j:03d}",
                 "split": split,
@@ -117,8 +146,8 @@ def _split_rows(split: str, start: int, per_family: int) -> list[dict]:
 
 def build_splits() -> tuple[list[dict], list[dict]]:
     """(dev, test): one row per task, families in FAMILIES order."""
-    dev = _split_rows("dev", DEV_RANGE[0], DEV_PER_FAMILY)
-    test = _split_rows("test", TEST_RANGE[0], TEST_PER_FAMILY)
+    dev = _split_rows("dev", DEV_RANGE[0], DEV_PER_FAMILY, DEV_PHRASINGS)
+    test = _split_rows("test", TEST_RANGE[0], TEST_PER_FAMILY, TEST_PHRASINGS)
     return dev, test
 
 

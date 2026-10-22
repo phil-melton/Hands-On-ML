@@ -15,10 +15,12 @@ import json
 from pathlib import Path
 
 from cvbench.families import contour_area as fam
+from cvbench.splits import DEV_PHRASINGS
 from train.config import SYSTEM
 
 OUT = Path(__file__).resolve().parents[1] / "data" / "hydrotest"
 N_TRAIN = 64
+PHRASINGS = [fam.PHRASINGS[i] for i in DEV_PHRASINGS]  # the four original wordings; the test phrasings stay unseen
 
 
 def example(phrasing: str) -> dict:
@@ -30,8 +32,8 @@ def example(phrasing: str) -> dict:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    splits = {"train": [example(fam.PHRASINGS[i % len(fam.PHRASINGS)]) for i in range(N_TRAIN)],
-              "dev": [example(p) for p in fam.PHRASINGS]}
+    splits = {"train": [example(PHRASINGS[i % len(PHRASINGS)]) for i in range(N_TRAIN)],
+              "dev": [example(p) for p in PHRASINGS]}
     for name, rows in splits.items():
         with open(OUT / f"{name}.jsonl", "w") as f:
             f.writelines(json.dumps(r) + "\n" for r in rows)

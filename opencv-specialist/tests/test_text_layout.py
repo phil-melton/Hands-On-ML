@@ -373,7 +373,11 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img, box, text, face, scale, thickness, color) -> dict" in p and "OpenCV: 5.0" in p
     assert "centred" in p and "getTextSize" in p and "Never change a pixel outside the box" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(fam.PHRASINGS) == 16 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
     for ph in fam.PHRASINGS:
         assert all(word in ph for word in ("scale", "thickness", "color", "getTextSize")), ph
         assert any(word in ph for word in ("box", "rectangle", "region")), ph
+        low = ph.lower()
+        assert "baseline" in low and ("centre" in low or "middle" in low), ph  # centre the box getTextSize reports
+        assert any(word in low for word in ("largest", "biggest", "shrink", "reduce", "lower")), ph  # shrink to fit

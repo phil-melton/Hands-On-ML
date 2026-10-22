@@ -36,6 +36,7 @@ RUNGS: dict[str, Rung] = {r.name: r for r in (
     Rung("r2-4b", "base-qwen3.5-4b", think=False),
     Rung("r3-9b", "base-qwen3.5-9b", think=False),
     Rung("r4-7b-notes", "base-qwen2.5-coder-7b", notes=True),
+    Rung("r5-9b-notes", "base-qwen3.5-9b", think=False, notes=True),  # Gate 3: the Stage 6 comparator for the 9B
 )}
 
 MODES: dict[str, dict] = {

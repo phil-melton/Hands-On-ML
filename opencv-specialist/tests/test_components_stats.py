@@ -310,7 +310,12 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(mask, connectivity) -> dict" in p and "OpenCV: 5.0" in p
     assert "float64" in p and "largest area first" in p and "no +0.5" in p and "w = x_max - x_min + 1" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(fam.PHRASINGS) == 16 and fam.PHRASINGS[0] == fam.SPEC.task
+    assert len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
     for ph in fam.PHRASINGS:  # a rewording must still carry the whole contract
         low = ph.lower()
         assert "connect" in low and "box" in low and "centroid" in low and "background" in low, ph
+        assert "4" in ph and "8" in ph and "area" in low, ph  # both connectivities, and the area to report
+        # the output notes say "in the order stated in the task": every wording must state it
+        assert any(word in low for word in ("largest", "biggest", "descending")), ph
+        assert any(word in low for word in ("top-left", "box top", "box y", "starts higher", "top to bottom")), ph

@@ -70,7 +70,7 @@ Symmetries (``transforms``): shift, rot90 and mirror move the end points with th
 (covariant: expected = the same map applied to the base end points); end points within a
 row and rows within the output are compared as sets, because the contract's canonical
 order (smaller x first) is not preserved by rot90 or mirror. Dimming, at x0.45 and again at
-x0.25, leaves the output unchanged (invariant); the second, stronger dimming is here because a
+x0.15, leaves the output unchanged (invariant); the second, stronger dimming is here because a
 low fixed Canny threshold survives the first (see the comment above ``META_TOL``).
 ``verify_metamorphic`` never sees the scene, so the maps use the
 fixed image size ``H`` x ``W`` and the fixed shift below. A segment's direction is an axis,
@@ -129,6 +129,30 @@ PHRASINGS = [
     "coordinates of its two ends as one row (x1, y1, x2, y2); a stroke must appear exactly once.",
     "Locate every bright line segment (none touch or cross) and output where each one begins and ends, as an "
     "N x 4 array of x1, y1, x2, y2 pixel coordinates.",
+    "Bright straight strokes on a dark background: return the two end points of every stroke, one row per "
+    "stroke.",
+    "There are a few thin, bright, straight lines drawn on a dark image. Tell me where each line starts and "
+    "where it ends, with a single row of coordinates per line.",
+    "As a quality engineer reading scans of a dark panel marked with thin bright straight strokes, I need the "
+    "two end points of every stroke, one row per stroke, none reported twice.",
+    "Where does each straight bright stroke in this dark image begin and end? Answer with the two end points "
+    "of every stroke, one row per stroke.",
+    "(1) Find the thin bright straight strokes on the dark background. (2) For each stroke, determine its two "
+    "end points. (3) Return one row per stroke.",
+    "Requirement: for every straight bright stroke visible against the dark background, output the "
+    "coordinates of its two end points in a single row, so that no stroke is reported twice.",
+    "A drawing has been scanned into a dark image that holds thin bright straight strokes. Report the two end "
+    "points of each stroke, one row per stroke.",
+    "Input: an image with thin bright straight strokes on a dark uniform background. Output: the end points "
+    "of each stroke, one row per stroke.",
+    "List the end points, two per stroke, of all the straight bright strokes in the dark image; each stroke "
+    "gets exactly one row.",
+    "Can you extract the two end points of every thin, straight, bright stroke in the image, giving each "
+    "stroke one row of coordinates?",
+    "As a robotics developer I want to turn a picture of straight bright strokes on a dark ground into "
+    "segment coordinates: the two end points of each stroke, one row per stroke.",
+    "1. Locate every straight bright stroke on the dark background. 2. Find the two end points of each one. "
+    "3. Output them, one row per stroke.",
 ]
 
 H, W = 360, 480  # fixed: the covariant checks of verify_metamorphic never see the scene
@@ -140,7 +164,7 @@ N_RANGE = (3, 6)
 AXIS_FRAC = 0.25  # share of strokes drawn exactly horizontal or vertical
 SHIFT = (7, -5)  # px, well inside BORDER
 GAIN = 0.45  # dim factor, shared with contour_area
-GAIN_STRONG = 0.25  # stronger dim factor, this family only (why: the comment above META_TOL)
+GAIN_STRONG = 0.15  # stronger dim factor, this family only (why: the comment above META_TOL)
 
 T_SHIFT = f"translate({SHIFT[0]:+d},{SHIFT[1]:+d})"
 T_ROT, T_MIRROR, T_DIM, T_DIM_STRONG = "rot90", "mirror", f"dim x{GAIN}", f"dim x{GAIN_STRONG}"
@@ -164,25 +188,37 @@ TOL_A, TOL_B = 1.9, 0.7
 #   median-driven Canny, max-relative Canny, Otsu mask + 7x7 closing (200 scenes): dimming exactly 0.0,
 #                        geometric max 3.0 / 4.0 / 4.0 px (the first two), 2.83 px (the third)
 #   fixed Canny(100,200) dimming: 9 % of strokes move more than 1 px, one scene changed its stroke count
-# Why a second, stronger dimming (GAIN_STRONG = 0.25; Gate 2 review, decision 4). GAIN = 0.45 does not make a
+# Why a second, stronger dimming (GAIN_STRONG = 0.15; Gate 2 review, decision 4). GAIN = 0.45 does not make a
 # low fixed Canny threshold move: Canny(30, 100) (the fixed_canny mutant with lower thresholds, now the mutant
 # fixed_low_canny) passed all four gates before this transform, both on the pinned scenes and on 10 of 10 fresh
 # gate seeds, and its dimming x0.45 drift was exactly 0.0 on 600 scenes (0 rejected; seeds 7_100_000-7_100_599).
-# Calibration of dimming x0.25 on the same 600 scenes (2669 strokes, via sandbox.run_solution; the reference through
-# measure_metamorphic_drift too), tolerance 1.0 px:
-#   reference, Otsu-driven Canny, median-driven Canny, max-relative Canny, Otsu mask + 7x7 closing:
-#                        mean = p99 = max = 0.0 px, 0 of 600 scenes rejected, no stroke count changed (also 0.0
-#                        at x0.2 and x0.15); on 200 scenes drawn at the weakest the generator allows (1 px, gray 150
-#                        on gray 50: contrast 100 -> 26 gray levels after the dimming) all five still find every
-#                        stroke and stay at 0.0 px; margin 1.0 >= 1.25 x 0.0 holds, with room to spare
-#   Canny(30, 100)       mean 0.19, p99 3.0, max inf (4 scenes changed the stroke count); 7 % of strokes move more
-#                        than 1 px, 107 of 600 scenes (17.8 %) fail the check, and 123 of 200 fresh gates (n_meta = 5)
-#                        reject it, all of them at x0.25 (before: 0 of 600 scenes, 0 of 10 gates)
-#   Canny(100, 200)      at x0.25: 425 of 600 scenes fail the check (at x0.45: 116 of 600)
-# What remains open: the stronger dimming is not a general detector of low fixed thresholds. Canny(20, 60) and
-# Canny(10, 30) still pass at x0.25 (0 of 300 scenes rejected; Canny(20, 60) starts to fail at x0.2, 11 of 300),
-# and Canny(30, 100) is rejected by 62 % of the gates (123 of 200), not by all: 17.8 % of the scenes fail, so
-# a gate of 5 scenes rejects it with probability 1 - 0.822**5 = 62 %.
+# The gain was 0.25 until 2026-10-22: it rejected Canny(30, 100) in 62 % of the 5-scene gates and Canny(20, 60) in
+# 1 %, and the same five correct pipelines showed 0.0 px drift at 0.25, 0.2 and 0.15, so the project owner moved it
+# to 0.15 on condition that no correct pipeline is rejected.
+# Calibration of dimming x0.15 (2026-10-22; through sandbox.run_solution and this module's make_scene, transforms
+# and verify_metamorphic; the reference through measure_metamorphic_drift too), tolerance 1.0 px:
+#   reference, Otsu-driven Canny, median-driven Canny, max-relative Canny, Otsu mask + 7x7 closing, each on
+#   (a) 1000 scenes (4477 strokes, seeds 7_600_000-7_600_999) and (b) 600 scenes drawn at the weakest the generator
+#   allows (the geometry of seeds 7_601_000-7_601_599 redrawn as 1 px, gray 150 on gray 50: contrast 100 -> 14 gray
+#   levels, 22 on 8, after the dimming; 2642 strokes):
+#                        mean = p99 = max = 0.0 px, and per pipeline 0 of 1600 scenes rejected (by the x0.15 check,
+#                        and by none of the five checks), no stroke count changed, every stroke found on the
+#                        undimmed image; margin 1.0 >= 1.25 x 0.0 holds, with room to spare. Also 0.0 px at x0.25
+#                        on the same scenes.
+# What the dimming catches: fixed Canny(lo, hi) as the fixed_canny mutant (7x7 closing), 2000 fresh scenes (seeds
+# 7_610_000-7_611_999) = 400 gates of 5 scenes; scenes failing the strong-dimming check, gates it rejects:
+#                        x0.15                                  x0.25 (same seeds)
+#   Canny(10, 30)        0.0 %   0 of 400 gates                 0.0 %   0 of 400
+#   Canny(20, 60)       19.7 %   268 of 400 gates (67.0 %)      0.2 %   5 of 400 (1.2 %)
+#   Canny(30, 100)      50.3 %   394 of 400 gates (98.5 %)     19.1 %   262 of 400 (65.5 %)
+#   Canny(50, 150)      95.7 %   400 of 400 gates               36.3 %   361 of 400 (90.2 %)
+#   Canny(100, 200)    100.0 %   400 of 400 gates               73.5 %   400 of 400
+#   (at x0.45 the same seeds fail: 0 / 0 / 0.1 / 9.0 / 21.4 % of the scenes, so Canny(30, 100) passed 398 of 400 gates)
+# What remains open: the stronger dimming is still not a general detector of low fixed thresholds. Canny(10, 30)
+# passes at x0.15 (0 of 2000 scenes; on 300 other scenes it first fails at x0.12: 4, x0.10: 18, x0.08: 65, x0.06:
+# 79 of 300, with no correct pipeline calibrated at those gains), and Canny(20, 60) is rejected by 67 % of the
+# gates (268 of 400), not by all: 19.7 % of the scenes fail, so a gate of 5 scenes rejects it with probability
+# 1 - 0.803**5 = 67 %.
 # A geometric symmetry re-samples the Hough accumulator / the Canny edge chains, so an end point can move by
 # the estimator's own tail error: 5.0 = 1.25 x the larger of the two pipelines (4.0). Dimming does not touch
 # the geometry, so every estimator that thresholds adaptively is exactly invariant: 1.0 px is one pixel of
@@ -506,7 +542,7 @@ MUTANTS: dict[str, tuple[str, str]] = {
                           "np.ones((7, 7), np.uint8))"))),
     "fixed_low_canny": (
         "As fixed_canny but with Canny(30, 100): low absolute thresholds that survive the x0.45 dimming and only "
-        "give way under the x0.25 one.",
+        "give way under the x0.15 one.",
         _mutate((_THRESH, "mask = cv2.morphologyEx(cv2.Canny(gray, 30, 100), cv2.MORPH_CLOSE, "
                           "np.ones((7, 7), np.uint8))"))),
     "fixed_threshold_127": (

@@ -39,8 +39,8 @@ class TaskSpec:
         lines.append("Return a dict with:")
         for name, s in self.outputs.items():
             lines.append(f"  - {name!r}: {s.dtype}, shape {s.shape}" + (f". {s.note}" if s.note else ""))
-        lines.append(f"Write one function, `{self.signature}`. No file, GUI or network access; "
-                     "do not catch exceptions to hide failures.")
+        lines.append(f"Write one function, `{self.signature}`, with the imports it needs. No file, GUI or "
+                     "network access; do not catch exceptions to hide failures.")
         return "\n".join(lines)
 
     def to_json(self) -> str:

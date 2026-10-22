@@ -107,6 +107,33 @@ PHRASINGS = [
     "cv2.COLOR_BGR2GRAY gives it), as integer counts that sum to the number of pixels. Then give the mean, "
     "the population standard deviation and the lower median (the first level whose cumulative count reaches "
     "half of the pixels) of the gray levels.",
+    "Gray-level statistics of the BGR image: a 256-bin histogram, plus the mean, standard deviation and "
+    "median of the gray levels (gray = BT.601 luma, rounded).",
+    "Turn the picture into gray using the standard BT.601 luma weights, rounded to whole levels, then tell me "
+    "how many pixels fall on each of the 256 levels and what the mean, standard deviation and median gray "
+    "level are.",
+    "As a photographer checking exposure, I want the 256-level histogram of an image's gray values (BT.601 "
+    "luma, rounded to an integer), along with their mean, standard deviation and median.",
+    "How are the gray levels of this BGR image distributed? Give the 256-bin histogram, and the mean, "
+    "standard deviation and median of the gray level, where gray means BT.601 luma rounded to an integer.",
+    "(1) Convert each pixel to its gray level, the BT.601 luma rounded to an integer. (2) Count the pixels at "
+    "each of the 256 levels. (3) Report the histogram with the mean, standard deviation and median of the "
+    "gray levels.",
+    "Requirement: derive the 256-bin gray-level histogram of the input image, where the gray level is the "
+    "rounded ITU-R BT.601 luma, and output the mean, standard deviation and median of the gray levels.",
+    "A camera-QA script wants a summary of how bright an image is. For the BGR image, return the 256-bin "
+    "histogram of its BT.601 luma gray levels (integers), together with their mean, standard deviation and "
+    "median.",
+    "Given a BGR image with arbitrary pixel values, output: the number of pixels at each gray level 0..255 "
+    "(gray is BT.601 luma rounded to an integer), the mean gray level, the standard deviation and the median.",
+    "Histogram (256 bins), mean, standard deviation and median of the image's gray values; gray is the BT.601 "
+    "luma, as cv2.COLOR_BGR2GRAY computes it.",
+    "Can you give me the gray-level histogram of this colour image (256 bins, gray as BT.601 luma rounded to "
+    "an integer), plus the mean, standard deviation and median of those gray levels?",
+    "As a data scientist profiling an image dataset, I want per-image gray-level statistics: the 256-bin "
+    "histogram of BT.601 luma and the mean, standard deviation and median of the gray levels.",
+    "1. Gray conversion: BT.601 luma, rounded to the nearest integer. 2. A 256-bin histogram of the gray "
+    "levels. 3. Their mean, standard deviation and median.",
 ]
 
 # ---------------------------------------------------------------- constants

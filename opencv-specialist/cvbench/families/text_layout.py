@@ -132,6 +132,63 @@ PHRASINGS = [
     "getTextSize box (including the baseline) is centred in the rectangle and stays inside it; shrink the scale to the "
     "largest one that fits if needed (up to 10 % less is accepted), and leave every pixel outside the rectangle alone. "
     "Return the image, the final font scale and the (width, height) that cv2.getTextSize gave.",
+    "Put `text` in the middle of `box` on a copy of `img` with cv2.putText (Hershey `face`, `thickness`, "
+    "`color`), centring the cv2.getTextSize box (baseline included) both ways. Start at `scale`; shrink to "
+    "the largest scale that fits if needed. Touch nothing outside `box`. Return the image, the scale used and "
+    "the getTextSize (width, height).",
+    "I need some text written inside a rectangle of an image, dead centre both across and down. Draw `text` "
+    "on a copy of `img` in the `box` using the Hershey `face`, `thickness` and `color`, beginning at `scale`. "
+    "Measure the text with cv2.getTextSize, baseline included; if it is too big for the box, use the biggest "
+    "scale that fits instead. Leave every pixel outside the box alone, and give back the image, the scale you "
+    "drew with and the width and height from getTextSize.",
+    "As a developer adding captions to thumbnails, I want `text` centred, horizontally and vertically, in the "
+    "target `box` of a copy of `img`. It is drawn with cv2.putText in Hershey `face` with `thickness` and "
+    "`color`; its size comes from cv2.getTextSize including the baseline. If it does not fit at `scale`, "
+    "shrink to the largest scale that does (a scale up to 10 % smaller is accepted). Pixels outside the box "
+    "must stay unchanged. Return the image, the final scale and the (width, height) from getTextSize.",
+    "Where should cv2.putText place `text` so that its cv2.getTextSize box (width, height plus baseline) is "
+    "centred in `box`, horizontally and vertically? Draw it there on a copy of `img` with the Hershey `face`, "
+    "`thickness` and `color`, starting from `scale` and shrinking to the largest scale that fits if the text "
+    "is too big. Nothing outside the box may change. Return the new image, the scale used and the getTextSize "
+    "(width, height).",
+    "(1) Measure `text` with cv2.getTextSize (Hershey `face`, `scale`, `thickness`); if its width, or its "
+    "height plus baseline, exceeds `box`, lower the scale to the largest one that fits (up to 10 % below it "
+    "is accepted). (2) Draw the text with cv2.putText in `color` on a copy of `img`, centred in the box both "
+    "ways. (3) Return the image, the scale used and the getTextSize (width, height). Pixels outside the box "
+    "must not change.",
+    "Requirement: render `text` onto a copy of `img` with cv2.putText (Hershey `face`, `thickness`, `color`) "
+    "such that the cv2.getTextSize box of the text, baseline included, is centred horizontally and vertically "
+    "in the rectangle `box`. If the text does not fit at `scale`, use the largest scale at which it fits (a "
+    "scale up to 10 % below that is accepted). No pixel outside the rectangle may change. Output the image, "
+    "the scale used and the getTextSize (width, height).",
+    "A dashboard generator labels a button: the button is the rectangle `box` in a copy of `img`. Write "
+    "`text` in its centre, horizontally and vertically, with cv2.putText, Hershey `face`, `thickness` and "
+    "`color`, centring the cv2.getTextSize box (including the baseline). A label that is too wide or too tall "
+    "at `scale` gets the largest scale that fits. Everything outside the box must stay untouched. Return the "
+    "image, the scale and the getTextSize (width, height).",
+    "Inputs: a canvas `img`, a target rectangle `box`, a string `text`, a Hershey `face`, a requested "
+    "`scale`, `thickness` and `color`. Output: a copy of the canvas with the string drawn by cv2.putText so "
+    "that its cv2.getTextSize box (with baseline) is centred in the rectangle, the scale actually used "
+    "(reduced to the largest scale that fits when the text would overflow the rectangle), and the getTextSize "
+    "(width, height) at that scale. Pixels outside the rectangle stay unchanged.",
+    "Centre `text` in `box` (both ways, getTextSize box including baseline) on a copy of `img`, cv2.putText "
+    "with Hershey `face`, `thickness`, `color`; shrink `scale` to the largest that fits when needed; leave "
+    "pixels outside the box alone; return image, scale used, getTextSize (width, height).",
+    "Can you write `text` into the middle of the rectangle `box` on a copy of `img`, centred horizontally and "
+    "vertically using the cv2.getTextSize box (baseline included), drawn by cv2.putText in Hershey `face` "
+    "with `thickness` and `color`? If it does not fit at `scale`, use the largest scale that does. Do not "
+    "touch pixels outside the box, and return the image, the scale used and the (width, height) from "
+    "getTextSize.",
+    "As a poster designer I want a caption centred in a given region of an image: the region is `box` (x, y, "
+    "w, h), the caption is `text`, drawn on a copy of `img` with cv2.putText using Hershey `face`, "
+    "`thickness` and `color`. Use the cv2.getTextSize box, baseline included, for centring, and shrink "
+    "`scale` to the largest value that fits if the caption is too big. Only pixels inside the region may "
+    "change. Return the image, the scale used and the getTextSize (width, height).",
+    "1. Take `scale`; if `text` at that scale (its cv2.getTextSize width, or height plus baseline) does not "
+    "fit in `box`, reduce it to the largest scale that does (10 % under it is also accepted). 2. Use "
+    "cv2.putText on a copy of `img`, with Hershey `face`, `thickness` and `color`, to centre the text in the "
+    "box horizontally and vertically, using the getTextSize box. 3. Return the image, the scale used and the "
+    "getTextSize (width, height); nothing outside the box may change.",
 ]
 
 FACES = (cv2.FONT_HERSHEY_SIMPLEX, cv2.FONT_HERSHEY_PLAIN, cv2.FONT_HERSHEY_DUPLEX, cv2.FONT_HERSHEY_COMPLEX,

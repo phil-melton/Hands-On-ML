@@ -105,6 +105,33 @@ PHRASINGS = [
     "Straighten the card: detect its quadrilateral outline, order the corners top-left, top-right, "
     "bottom-right, bottom-left by their position in the photo, and warp the quadrilateral onto an "
     "out_w x out_h rectangle.",
+    "Find the four corners of the bright card on the dark surface and warp the card to an upright out_w x "
+    "out_h image; return both.",
+    "A flat rectangular card is lying on a dark table, photographed at an angle and possibly turned. Work out "
+    "where its four corners are and give me a straightened, upright out_w x out_h picture of it.",
+    "As the user of a card-scanning app I photograph a rectangular card on a dark desk from an odd angle, in "
+    "any rotation. I need its four corners in the photo and a flat, upright out_w x out_h copy of the "
+    "card.",
+    "Where are the four corners of the rectangular card in this photo, and what does the card look like when "
+    "it is flattened to an upright out_w x out_h image? Return both.",
+    "(1) Locate the rectangular card on the darker surface and its four corners. (2) Warp the card to an "
+    "upright out_w x out_h image. (3) Return the corners and the warped image.",
+    "Requirement: given a photograph of a single flat rectangular card on a darker surface, in any "
+    "orientation, output its four corner positions and a perspective-corrected, upright out_w x out_h "
+    "rendering of it.",
+    "A mobile scanning app receives a phone photo of a bright rectangular card lying on a dark surface. "
+    "Report the card's four corners in the photo, and produce the card as an upright out_w x out_h image.",
+    "Input: a photo of one rectangular card, rotated and viewed at an angle, plus a target size out_w x "
+    "out_h. Output: the four card corners in the photo and the card rectified to that size.",
+    "Card corners plus flattened card: find the card's four corners and return them together with the card "
+    "warped upright to out_w x out_h.",
+    "Can you find the four corners of the card in this photo and unwarp the card into an upright out_w x "
+    "out_h image, returning both?",
+    "As a collector scanning trading cards with my phone, I want the card's four corners in the photo, listed "
+    "top-left, top-right, bottom-right, bottom-left by position in the image, and the card flattened to an "
+    "upright out_w x out_h image.",
+    "1. Spot the card on the dark surface. 2. Take its four corners. 3. Use them to rectify the card into an "
+    "upright out_w x out_h image. 4. Return the corners and that image.",
 ]
 
 IMG_H, IMG_W = 360, 480  # fixed photo size of every manufactured scene (the covariant checks rely on it)

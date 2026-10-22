@@ -15,20 +15,20 @@ EXPECTED = {
     "reference":                                   (True,     True,  True,        True),
     "akaze_removed":                               (False,    True,  False,       False),
     "swallowed_akaze_identity":                    (True,     False, False,       False),
-    "orb_norm_l2 (harmless here)":                 (True,     True,  True,        True),
+    "orb_norm_l2 (2x ORB's reject rate)":                 (True,     True,  True,        True),
     "no_ratio_test (harmless here)":               (True,     True,  True,        True),
     "no_ransac":                                   (True,     True,  False,       False),
     "perspective_transform_Nx2":                   (False,    True,  False,       False),
     "swapped_direction":                           (True,     True,  False,       False),
     "affine_instead_of_homography":                (True,     True,  False,       True),
-    "best_10_matches (within accepted accuracy)":  (True,     True,  True,        True),
+    "best_10_matches (fails 31 % of fresh gates)":  (True,     True,  True,        True),
     "orb_hamming (valid alternative)":             (True,     True,  True,        True),
     "rgb2gray (harmless here)":                    (True,     True,  True,        True),
 }
 # The same candidates that change under the strict profile (sift-only): accuracy becomes a gate.
 EXPECTED_STRICT = {
-    "orb_norm_l2 (harmless here)":                 (True,     True,  False,       True),
-    "best_10_matches (within accepted accuracy)":  (True,     True,  False,       True),
+    "orb_norm_l2 (2x ORB's reject rate)":                 (True,     True,  False,       True),
+    "best_10_matches (fails 31 % of fresh gates)":  (True,     True,  False,       True),
     "orb_hamming (valid alternative)":             (True,     True,  False,       False),
     "affine_instead_of_homography":                (True,     True,  False,       False),
     "reference":                                   (True,     True,  True,        True),
@@ -40,8 +40,8 @@ PASSES_BECAUSE = {
     "orb_hamming (valid alternative)": "a correct pipeline; its tail is what sets the active tolerance",
     "rgb2gray (harmless here)": "both images get the same grey conversion",
     "no_ratio_test (harmless here)": "RANSAC and the 1.5 px re-fit remove the extra bad matches again",
-    "orb_norm_l2 (harmless here)": "L2 on descriptor bytes still ranks neighbours; ratio test + RANSAC do the rest",
-    "best_10_matches (within accepted accuracy)": "10 SIFT matches are as accurate as ORB, the accepted class; "
+    "orb_norm_l2 (2x ORB's reject rate)": "passes this pinned gate; fails 0.40 % of scenes, 7.7 % of fresh 20-scene gates",
+    "best_10_matches (fails 31 % of fresh gates)": "passes this pinned gate; its heavy tail fails 1.8 % of scenes; "
                                                   "the sift-only profile rejects it",
 }
 
@@ -236,10 +236,11 @@ def test_prompt_renders_the_contract():
     p = fam.SPEC.to_prompt()
     assert "def solve(img_a, img_b) -> dict" in p and "OpenCV: 5.0" in p and "H[2, 2] = 1" in p
     assert "Accuracy requirement" in p and "32 px inside" in p
-    assert 3 <= len(fam.PHRASINGS) <= 5 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS)
+    assert len(fam.PHRASINGS) == 16 and len(set(fam.PHRASINGS)) == len(fam.PHRASINGS) and fam.PHRASINGS[0] == fam.SPEC.task
     for ph in fam.PHRASINGS:  # same contract in every wording
         assert ("H[2, 2]" in ph or "bottom-right entry is 1" in ph) and fam.ACCURACY in ph
         assert "img_a" in ph and "img_b" in ph
+        assert "3x3" in ph or "homography" in ph, ph
 
 
 # ---------------------------------------------------------------- calibration: the constants against fresh gauge blocks

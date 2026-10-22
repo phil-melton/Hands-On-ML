@@ -140,6 +140,45 @@ PHRASINGS = [
     f"definition (8-bit HSV of the BGR image, hue 0-179; all comparisons inclusive). Every class requires "
     f"{_BOUNDS}; the hue ranges are {_RANGES}. Return the counts for red, yellow, green and blue, with 0 for a "
     "colour that is absent. Do not blur, erode or drop small regions.",
+    "Count the red, yellow, green and blue pixels of this BGR image in OpenCV's 8-bit HSV (hue 0-179). A "
+    f"pixel counts for a colour when {_BOUNDS} and its hue is in that colour's range, every bound inclusive: "
+    f"{_RANGES}. Red wraps around hue 0. Count every pixel, with no filtering.",
+    "This BGR image has flat-coloured shapes, and I want to know how many pixels are red, yellow, green and "
+    f"blue. Work in HSV on OpenCV's 8-bit scale (hue 0-179): a pixel is a colour when {_BOUNDS} and its hue is "
+    f"within that colour's range, bounds inclusive: {_RANGES}. Red wraps around hue 0. Everything else counts "
+    "for nothing, and no pixel is skipped or smoothed away.",
+    "As a print-QA engineer, I need the exact pixel count of each ink colour in a BGR image. Colours are "
+    f"defined in 8-bit HSV (hue 0-179): {_BOUNDS} and hue in range, all bounds inclusive: {_RANGES}; red wraps "
+    "around hue 0. Count every pixel, with no smoothing, resizing or minimum blob size.",
+    "How many pixels of this BGR image are red, yellow, green and blue? Define a colour in 8-bit HSV (hue "
+    f"0-179) by {_BOUNDS} and a hue range, inclusive at both ends: {_RANGES}. Red's hue range wraps around 0. "
+    "Grey, pastel, dark and other-hue pixels are none of the four, and every pixel counts.",
+    "(1) Read the BGR image in 8-bit HSV (hue 0-179, S and V 0-255). (2) Assign a pixel to a colour when "
+    f"{_BOUNDS} and its hue is in the colour's range, bounds inclusive: {_RANGES}; red wraps around hue 0. (3) "
+    "Return how many pixels belong to red, yellow, green and blue, counting every pixel.",
+    "Requirement: for the BGR input, output the number of pixels classified as red, yellow, green and blue "
+    f"under these 8-bit HSV definitions (hue 0-179), every bound inclusive: {_BOUNDS}, and hue {_RANGES} (red "
+    "wraps around hue 0). Pixels in no class are not counted. No smoothing, resizing or minimum blob size is "
+    "applied.",
+    "A sorting machine classifies coloured pieces from a BGR camera frame. Report the pixel count of each of "
+    f"red, yellow, green and blue, using 8-bit HSV (hue 0-179): a pixel qualifies when {_BOUNDS} and its hue "
+    f"lies in the colour's inclusive range: {_RANGES}; red wraps around 0. Count every pixel of the frame "
+    "exactly.",
+    "Input: a BGR image of flat-coloured shapes. Output: four pixel counts (red, yellow, green, blue). Colour "
+    f"membership is defined in 8-bit HSV with hue 0-179: {_BOUNDS}, and hue inside the inclusive range, "
+    f"{_RANGES}. Red wraps around hue 0. Count all pixels, filter nothing.",
+    f"Pixel counts per colour (red, yellow, green, blue) for a BGR image, via 8-bit HSV (hue 0-179): {_BOUNDS} "
+    f"and hue in range, all inclusive: {_RANGES}. Red wraps. Exact counts, no filtering, no resizing.",
+    "Can you tell me how many red, yellow, green and blue pixels this BGR image contains? A pixel has a "
+    f"colour when, in 8-bit HSV (hue 0-179), {_BOUNDS} and its hue is in the inclusive range: {_RANGES}. Red "
+    "wraps around 0. Count every single pixel, even isolated ones.",
+    "As a designer checking a palette, I want the pixel count of each of red, yellow, green and blue in a BGR "
+    f"image: pixels whose 8-bit HSV values (hue 0-179) satisfy {_BOUNDS} with hue in the inclusive range "
+    f"{_RANGES}, red wrapping around hue 0. Smoothing, resizing or dropping small regions would change the "
+    "counts, so do none of them.",
+    "1. Convert the BGR image to 8-bit HSV (hue 0-179). 2. A pixel is red, yellow, green or blue when "
+    f"{_BOUNDS} and its hue is in the matching range, inclusive: {_RANGES} (red wraps around hue 0). 3. Return "
+    "the four pixel totals; do not blur, resize or discard small regions.",
 ]
 
 KINDS = ("rect", "disk", "ellipse", "rotrect", "triangle", "ring", "speckle", "line")

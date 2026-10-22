@@ -162,6 +162,36 @@ PHRASINGS = [
     + ACCURACY,
     "Recover the planar homography that relates two images of the same textured scene. Return H with "
     "H[2, 2] = 1 so that the point (x, y) in img_a lands on the corresponding point in img_b. " + ACCURACY,
+    "Find H, the 3x3 homography with H[2, 2] = 1 that maps pixel coordinates in img_a to pixel coordinates in "
+    "img_b, using matched local features. Both images show the same flat textured surface. " + ACCURACY,
+    "I have two pictures of the same flat, textured surface taken from different viewpoints, img_a and img_b. "
+    "Match features between them and give me the 3x3 matrix H (scaled so that H[2, 2] = 1) that turns a pixel "
+    "position in img_a into the matching pixel position in img_b. " + ACCURACY,
+    "As an AR developer I want to know how a flat, textured surface moves between two views. Using local "
+    "feature matches between img_a and img_b, return the 3x3 homography H, normalized so that H[2, 2] = 1, "
+    "that maps img_a pixels to img_b pixels. " + ACCURACY,
+    "Which 3x3 homography H, with H[2, 2] = 1, sends a pixel (x, y) of img_a to the corresponding pixel of "
+    "img_b? Both images show the same flat textured surface from different viewpoints; find H by matching "
+    "local features. " + ACCURACY,
+    "(1) Match local features between img_a and img_b, which show one flat textured surface from two "
+    "viewpoints. (2) Estimate the 3x3 homography H taking img_a pixel coordinates (x, y) to img_b pixel "
+    "coordinates. (3) Return H normalized so that H[2, 2] = 1. " + ACCURACY,
+    "Requirement: given two images of the same planar textured surface from different viewpoints (img_a and "
+    "img_b), output the 3x3 homography H with H[2, 2] = 1 that relates pixel coordinates in img_a to the "
+    "corresponding pixel coordinates in img_b. " + ACCURACY,
+    "Inputs: img_a, a reference picture of a flat textured surface, and img_b, a different view of that "
+    "surface. Output: H, the 3x3 matrix with H[2, 2] = 1 that maps each pixel (x, y) of img_a to its "
+    "counterpart in img_b, estimated from matched local features. " + ACCURACY,
+    "Planar registration: return the 3x3 homography H (H[2, 2] = 1) from img_a to img_b, found by matching "
+    "local features between the two views of the textured surface. " + ACCURACY,
+    "Could you compute the homography between two views of a flat textured surface? I need the 3x3 matrix H, "
+    "with H[2, 2] = 1, that maps pixel coordinates in img_a to pixel coordinates in img_b, based on matched "
+    "local features. " + ACCURACY,
+    "As a photographer aligning two shots of a flat poster, I need the transform between them: the 3x3 "
+    "homography H, normalized to H[2, 2] = 1, from img_a pixel coordinates to img_b pixel coordinates, "
+    "estimated by matching local features. " + ACCURACY,
+    "1. Compare img_a and img_b, two views of one flat textured surface, by matching local features. 2. "
+    "Estimate the 3x3 homography H from img_a to img_b. 3. Scale it so that H[2, 2] = 1 and return it. " + ACCURACY,
 ]
 
 A_H, A_W = 216, 288  # img_a: a reference picture of the flat object
@@ -527,9 +557,9 @@ MUTANTS: dict[str, tuple[str, str]] = {
     "swallowed_akaze_identity": (
         "The same bug wrapped in try/except, falling back to the identity homography. Exec-only keeps it.",
         _swallow(_AKAZE)),
-    "orb_norm_l2 (harmless here)": (
+    "orb_norm_l2 (2x ORB's reject rate)": (
         "ORB's binary descriptors matched with NORM_L2 instead of NORM_HAMMING. L2 on the descriptor bytes ranks "
-        "neighbours almost as well, and the ratio test and RANSAC do the rest: inside the ORB accuracy class.",
+        "neighbours almost as well, but it fails 0.40 % of scenes (7.7 % of 20-scene gates; 2026-10-20 re-check), twice ORB's budget.",
         _mutate(ORB_ALTERNATIVE, ("cv2.NORM_HAMMING", "cv2.NORM_L2"))),
     "no_ratio_test (harmless here)": (
         "Nearest-neighbour matches with no Lowe ratio test: more wrong matches reach RANSAC, and RANSAC with the "
@@ -550,9 +580,9 @@ MUTANTS: dict[str, tuple[str, str]] = {
     "affine_instead_of_homography": (
         "estimateAffine2D (6 degrees of freedom) padded to 3x3: no perspective terms.",
         _mutate(REFERENCE, (_FIT, "    M, _ = cv2.estimateAffine2D(src, dst)\n    H = np.vstack([M, [0.0, 0.0, 1.0]])\n"))),
-    "best_10_matches (within accepted accuracy)": (
+    "best_10_matches (fails 31 % of fresh gates)": (
         "Keeps only the 10 best matches: right idea, but 10 points cannot average the keypoint noise down. Its "
-        "error is ORB-sized, so it passes the active tolerance and fails the sift-only one.",
+        "error has a heavy tail: 1.8 % of scenes fail the active tolerance (31 % of fresh 20-scene gates; 2026-10-20 re-check).",
         _mutate(REFERENCE, (_SRC, "    good = sorted(good, key=lambda m: m.distance)[:10]\n" + _SRC))),
     "orb_hamming (valid alternative)": (
         "ORB + Hamming + ratio test + RANSAC: a different, correct pipeline, about 4x noisier than SIFT's. Must "

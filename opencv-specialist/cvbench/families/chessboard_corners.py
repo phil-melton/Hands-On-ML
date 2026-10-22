@@ -136,6 +136,30 @@ PHRASINGS = [
     "row of corners, then each row below.",
     "Find where the squares of the chessboard meet. Report all (squares_x - 1) * (squares_y - 1) interior "
     "corners as sub-pixel (x, y) positions in the board's reading order, top row first.",
+    "Chessboard calibration image: return all inner corners (where four squares meet) at sub-pixel accuracy, "
+    "in row-major order.",
+    "I photographed a chessboard for camera calibration. Find the inner corners of the board, the points where "
+    "four squares touch, as precisely as possible (sub-pixel), and list them row by row.",
+    "As a calibration engineer I need the position of every inner corner of the chessboard in this image, to "
+    "sub-pixel accuracy, listed in row-major order starting from the board's top-left.",
+    "Where are the inner corners of the chessboard, the points at which four squares meet? Give each one to "
+    "sub-pixel accuracy, in row-major order.",
+    "(1) Find the chessboard in the image. (2) Locate every inner corner, each point where four squares meet, "
+    "with sub-pixel accuracy. (3) Return the corners in row-major order.",
+    "Requirement: for the single chessboard target in the image, output every inner corner (a point shared by "
+    "four squares) with sub-pixel accuracy, ordered row-major.",
+    "A camera-calibration rig photographs a chessboard. Report the sub-pixel image position of each inner "
+    "corner, meaning each junction of four squares, in row-major order.",
+    "Given a photo of one chessboard (squares_x by squares_y squares), produce its (squares_x - 1) * "
+    "(squares_y - 1) inner corners as sub-pixel image coordinates in row-major order.",
+    "Inner chessboard corners (points where four squares meet), sub-pixel, row-major: return them all for the "
+    "board in the image.",
+    "Can you find all the inner corners where four chessboard squares meet in this image and return them row "
+    "by row, with sub-pixel accuracy?",
+    "As a vision developer calibrating a lens, I want the inner corners of the chessboard in the picture, "
+    "each located with sub-pixel accuracy and returned in row-major order.",
+    "Step 1: take the chessboard in the picture. Step 2: pin down every inner corner, the spot where four "
+    "squares meet, to sub-pixel accuracy. Step 3: return the corners in row-major order.",
 ]
 
 # ---------------------------------------------------------------------------------- tolerance law

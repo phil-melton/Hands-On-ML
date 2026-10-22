@@ -4,7 +4,9 @@
 Review" (https://claude.ai/artifact/X42uctjF9iunnWJTngcXBs): 12 decisions (fine-tune yes, base Qwen3.5-9B, Colab for
 its training, imports in the contract, disjoint dev/test prompts, a 9B + notes rung, hough gain, contour TOL_C,
 homography labels, the upstream issue, freezing PLAN.md §6). Apply them, re-run the greedy baselines on the fixed
-prompts, record the frozen criteria here, then Stage 4. Open audit: are the hough "strokes were missed" failures the
+prompts, record the frozen criteria here, then Stage 4. Phil, 2026-10-22 (doc comment on decision 3): train the 9B on
+Colab via the Colab CLI (COMPUTE.md Path B, not installed yet; first run needs his Google sign-in in a browser); CU
+prediction for his OK at Gate 4a, before any spend. Open audit: are the hough "strokes were missed" failures the
 1 px strokes? For any GPU job: run `setup/commit_watchdog.ps1`, keep Ollama idle while training, and
 discard the first Ollama request after a model is created before timing decode. Working method since 2026-10-17: I
 orchestrate Sonnet 5.5 / Haiku 4.5 subagents (one brief and one set of files each, no git), verify every report by
@@ -12,6 +14,46 @@ re-running its tests, and integrate, log and commit myself.
 
 Working copy of record: the WSL clone `~/Hands-On-ML` (Ubuntu-24.04). The Windows clone at
 `C:\Users\ptmel\Documents\GitHub\Hands-On-ML` only syncs through GitHub.
+
+## 2026-10-22 Gate 3 decisions (Phil: Agree on all 12; Colab for the 9B by doc comment)
+
+Go: fine-tune Qwen3.5-9B, trained on Colab (CU prediction at Gate 4a before any spend). Before baselines freeze: the
+contract asks for imports (4), ~16 phrasings per family disjoint across dev / test / foundry (5), a 9B + notes rung (6);
+no thinking rung (7); hough gain 0.15 if calibration clean (8); contour TOL_C 0.80 only if no mutant slips (9);
+homography mutant labels to their measured rates (10); Phil files `upstream/02` (11).
+
+**Success criteria, frozen 2026-10-22 (PLAN.md §6, decision 12).** Measured paired on the shipped Q4_K_M GGUF against
+the same base with the same notes prompt (r5: Qwen3.5-9B + notes), on the test split as rebuilt by decisions 4-5,
+each judged by the exact paired sign test over distinct prompts (p < 0.05) as well as the point threshold:
+1. specialization: >= +10 pts pass@1 on the test set; >= +25 pts on its 5.0 subset;
+2. generalization: held-out-family gain >= half the in-family gain (underpowered: 16 held-out prompts; report its CI);
+3. forgetting: <= 3-pt drop on a general Python slice (MBPP+, a few hundred problems, built at Stage 6);
+4. integration: orchestrator + specialist >= orchestrator alone on the Stage 7 E2E set, with fewer orchestrator tokens.
+The baseline values these are measured against come from the re-run after decisions 4-6 (entry to follow).
+
+Applied 2026-10-22 (3 Sonnet subagents + me; every report re-checked):
+- 4, 5 prompts: `to_prompt` ends "Write one function, `<sig>`, with the imports it needs. ..."; SYSTEM (train/config.py,
+  PLAN.md §8.3/§8.4 templates) says the same. 16 phrasings per family: dev 0-3, test 4-11, foundry 12-15
+  (`splits.foundry_phrasings`); test now has 72 distinct family prompts (+40 gotchas = 112), dev 36, none shared;
+  tests pin disjointness, no near-duplicates (word-set similarity < 0.8) and no added cv2 names. `make_format_set`
+  keeps to the dev phrasings. Manifests changed only in phrasing_index and prompt_sha1.
+- 6: rung `r5-9b-notes` added to `bakeoff/rungs.py`.
+- 8: hough `GAIN_STRONG` 0.25 -> 0.15. The five correct pipelines drift 0.0 px on 1,000 random and 600 weakest-contrast
+  scenes (1 px, grey 150 on 50 -> 22 on 8). Fixed Canny caught by a 5-scene x0.15 check: (30,100) 98.5 % of gates
+  (was 65.5 % at 0.25), (20,60) 67 % (1.2 %), (10,30) 0 % (fails only below ~x0.1; not calibrated). Matrix unchanged.
+- Gate 2 decision 3 closed: the hough "strokes were missed" failures are not the 1 px strokes (24.6 % of 1,237 missed
+  strokes vs 25.7 % of strokes; Mantel-Haenszel odds ratio 0.94 within length bins). Length predicts a miss (85 %
+  missed at <= 75 px vs 37 % > 134 px): 30 of 35 replies keep only contours that approxPolyDP reduces to 2 vertices.
+- 9: contour_area TOL_C 0.75 -> 0.80. Nothing slips through: pinned matrix identical; 1,000 fresh 20-scene gates, no
+  mutant caught less (exact McNemar, 0 discordant); reference and pixel count 0 of 20,000 scenes rejected. Caveat:
+  pixel counting's worst |err|/P creeps with sample size (0.637 at 4k scenes, 0.649 at 200k shapes, 0.689 on 1.2 M
+  small gauge triangles), so 0.80 is 1.16-1.26x depending on the sample; still 0 rejections anywhere.
+- 10: feature_homography mutants renamed `orb_norm_l2 (2x ORB's reject rate)`, `best_10_matches (fails 31 % of
+  fresh gates)`, descriptions carry the measured rates.
+
+Colab: `google-colab-cli` 0.7.5 installed in `~/venvs/colab` (WSL); Phil completed the OAuth sign-in on 2026-10-22.
+`colab usage`: balance 700.00 CU (COMPUTE.md assumed 200/month), rate 0.00/h, 0 assignments. Nothing spent; every
+Colab job still needs a written prediction and Phil's OK for its stage (Rule 2).
 
 ## 2026-10-21 Stage 3 complete: baseline bake-off (local GPU, 0 CU)
 
