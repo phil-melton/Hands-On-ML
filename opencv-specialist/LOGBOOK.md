@@ -1,7 +1,9 @@
 # opencv-expert logbook
 
-**Next step:** Stage 4 build after Gate 4a (2026-10-22, entry below): drills, teacher-written phrasings, a
-thinking-mode test, then full generation on Colab within Phil's 100 CU cap, then data/train.jsonl and data/dev.jsonl.
+**Next step:** Stage 5 (train Qwen3.5-9B on Colab, 16-bit LoRA on an A100; convergence study 25/50/100 %;
+checkpoints chosen by dev pass@1). Phil approved a **Stage 5 cap of 60 CU** on 2026-10-22 (room for a second training
+round); my rough prediction is ~17 CU (range 10-30). A Sonnet subagent is building the Colab training job and its
+`predict`; write its refined prediction here before the first session. Stage 4 is complete (data/train.jsonl, 23.15 CU).
 
 **Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
 foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0
