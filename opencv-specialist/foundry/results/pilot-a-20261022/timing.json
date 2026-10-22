@@ -1,0 +1,66 @@
+{
+ "args": {
+  "chat_template_kwargs": {
+   "enable_thinking": false
+  },
+  "chunk": 50,
+  "dtype": "auto",
+  "enforce_eager": false,
+  "gpu_memory_utilization": 0.9,
+  "limit": 0,
+  "max_model_len": 8192,
+  "max_tokens": 2048,
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "prompts": "/content/generate_prompts.jsonl",
+  "quantization": null,
+  "samples": 4,
+  "seed": 0,
+  "temperature": 0.7,
+  "top_p": 0.8
+ },
+ "chunks": [
+  {
+   "gen_s": 123.245,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 98714
+  },
+  {
+   "gen_s": 154.406,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 134795
+  },
+  {
+   "gen_s": 143.153,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 124672
+  },
+  {
+   "gen_s": 239.698,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 214194
+  }
+ ],
+ "complete": true,
+ "env": {
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "python": "3.13.15",
+  "torch": "2.13.0+cu130",
+  "transformers": "5.17.0",
+  "vllm": "0.31.0"
+ },
+ "finished_at": "2026-10-22T07:01:34+00:00",
+ "gen_s": 660.502,
+ "load_s": 605.806,
+ "model": "RedHatAI/Qwen3.8-27B-INT4",
+ "n_invocations": 1,
+ "n_prompts": 200,
+ "n_samples": 800,
+ "output_tokens": 572375,
+ "output_tokens_per_s": 866.5757257358797,
+ "prompt_tokens": 372937,
+ "wall_s": 1267.145
+}

@@ -1,0 +1,154 @@
+{
+ "commands": [
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-before",
+   "returncode": 0,
+   "seconds": 0.73
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "new",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "--gpu",
+    "L4"
+   ],
+   "name": "new",
+   "returncode": 0,
+   "seconds": 3.22
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "/home/ptmel/Hands-On-ML/opencv-specialist/foundry/colab_job.py",
+    "/content/colab_job.py"
+   ],
+   "name": "upload-job",
+   "returncode": 0,
+   "seconds": 0.82
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/repair_prompts.jsonl",
+    "/content/repair_prompts.jsonl"
+   ],
+   "name": "upload-prompts",
+   "returncode": 0,
+   "seconds": 1.37
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "exec",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "-f",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/launch_repair.py",
+    "--timeout",
+    "1800"
+   ],
+   "name": "exec",
+   "returncode": 0,
+   "seconds": 905.34
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "/content/repair_completions.jsonl",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/repair_completions.jsonl"
+   ],
+   "name": "download-completions",
+   "returncode": 0,
+   "seconds": 4.06
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "foundry-pilot-b-20261022-repair",
+    "/content/repair_timing.json",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/repair_timing.json"
+   ],
+   "name": "download-timing",
+   "returncode": 0,
+   "seconds": 0.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "stop",
+    "-s",
+    "foundry-pilot-b-20261022-repair"
+   ],
+   "name": "stop",
+   "returncode": 0,
+   "seconds": 1.07
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-after",
+   "returncode": 0,
+   "seconds": 0.62
+  }
+ ],
+ "error": null,
+ "exec_timeout_s": 1800.0,
+ "gpu": "L4",
+ "install_via": "pip",
+ "k": 1,
+ "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+ "n_prompts_missing": 316,
+ "packages": [
+  "vllm==0.31.0"
+ ],
+ "predicted_cu": 0.4,
+ "predicted_minutes": 15.0,
+ "quantization": "awq",
+ "revision": "c58857a7f41c0920f73d1b56678640f9c02017d7",
+ "session": "foundry-pilot-b-20261022-repair",
+ "stage": "repair",
+ "started_at": "2026-10-22T07:02:19+00:00",
+ "state": "ok",
+ "stop_ok": true,
+ "teacher_license": "apache-2.0",
+ "usage_after": "Current balance: 697.67 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "usage_before": "Current balance: 697.96 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "wall_s": 917.8
+}

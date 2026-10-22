@@ -1,0 +1,64 @@
+{
+ "args": {
+  "chat_template_kwargs": {},
+  "chunk": 50,
+  "dtype": "auto",
+  "enforce_eager": false,
+  "gpu_memory_utilization": 0.9,
+  "limit": 0,
+  "max_model_len": 8192,
+  "max_tokens": 2048,
+  "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+  "prompts": "/content/generate_prompts.jsonl",
+  "quantization": "awq",
+  "samples": 4,
+  "seed": 0,
+  "temperature": 0.8,
+  "top_p": 0.95
+ },
+ "chunks": [
+  {
+   "gen_s": 115.524,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 86170
+  },
+  {
+   "gen_s": 227.213,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 145971
+  },
+  {
+   "gen_s": 83.631,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 66824
+  },
+  {
+   "gen_s": 106.667,
+   "n_prompts": 50,
+   "n_samples": 200,
+   "output_tokens": 84521
+  }
+ ],
+ "complete": true,
+ "env": {
+  "gpu": "NVIDIA L4",
+  "python": "3.13.15",
+  "torch": "2.13.0+cu130",
+  "transformers": "5.17.0",
+  "vllm": "0.31.0"
+ },
+ "finished_at": "2026-10-22T06:38:57+00:00",
+ "gen_s": 533.035,
+ "load_s": 345.037,
+ "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+ "n_invocations": 1,
+ "n_prompts": 200,
+ "n_samples": 800,
+ "output_tokens": 383486,
+ "output_tokens_per_s": 719.4386860149897,
+ "prompt_tokens": 365195,
+ "wall_s": 878.852
+}

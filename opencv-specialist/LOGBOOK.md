@@ -89,6 +89,32 @@ session pays ~18 min of setup (vLLM install, ~17-20 GB download, load). 200 spec
 B generate 18 + 28 = 46 min = 1.3 CU, B repair (~400 prompts x 1) ~28 min = 0.8 CU; A generate ~35 min = 3.2 CU,
 A repair ~25 min = 2.3 CU. **Total ~7.6 CU** (range ~5-12). Each session's exec timeout = 2x its predicted minutes
 (the driver enforces it), and `colab stop` runs in a `finally`. B goes first: the cheapest place to find setup faults.
+Measured, B generate (2026-10-22 01:23-01:39 local, run `~/opencv-expert/foundry/pilot-b-20261022/`): L4 (torch
+2.13.0+cu130, vLLM 0.31.0, Python 3.13); 800 completions; setup + load 345 s, generation 533 s, exec 951 s;
+383,486 output tokens (479 per answer) at 719 tok/s (predicted 250); KV cache 25,536 tokens. `colab usage`:
+700.00 -> 699.62 = **0.38 CU** (predicted 1.3). A 3.4x miss, in the cheap direction: the throughput estimate was
+scaled from other cards, and the MoE's 3.3 B active parameters decode far faster on the L4 than the bandwidth model
+assumed; setup took 6 min, not 18. VM stopped, 0 active assignments.
+B verify (local, 6 workers, 5.7 min, network namespace on): Tier A 140/800 (17.5 %), 101 kept (cap 2 per spec),
+94 distinct. By family, all four gates: homography 70.7 %, histogram 34.8 %, components 8.0 %, contour 6.0 %,
+perspective 1.7 %, text_layout 0.9 %, hough 0 %. Audited: contour_area's 104 failures are one teacher habit
+(`threshold(gray, 1, ...)` on a background that is dark, not 0: one blob, "count 1 of 7 shapes"; consistent, so
+metamorphic passes); components_stats' 67 are the stated order ignored; hough's are the (N,4) unpacking and missed
+strokes. Teacher errors, not prompt ambiguity. 316 repair prompts.
+Measured, A generate (01:40-02:02): A100-SXM4-40GB; 800 completions, 0 `<think>` leaks, 11 cut at 2,048; load 606 s,
+generation 661 s; 572,375 output tokens (715 per answer) at 867 tok/s. `colab usage` 699.62 -> 697.96 =
+**1.66 CU** (predicted 3.2). Pilot total so far 2.04 CU of the 12 approved.
+A verify: Tier A 536/800 (67 %), 327 kept, 85.5 % of specs solved (100 % in contour, perspective, homography,
+histogram, components; hough 58.6 %, text_layout 39.3 %); 0 kept examples with api findings. Hough dimming audit:
+all 34 dimming failures are fixed `threshold(gray, 50/100/127)` (17 of them pass the manufactured gate), i.e. the
+x0.45 / x0.15 checks are keeping fixed-threshold code out of Tier A, as designed.
+Repair rounds (one sample per failed answer, T 0.6): B 316 prompts, 0.29 CU (697.96 -> 697.67), 31 to Tier A (9.8 %;
+histogram 28/34, contour 0/48); A 88 prompts (only hough and text_layout failures), 0.94 CU (697.67 -> 696.73),
+6 to Tier A (6.8 %). 89 of A's specs have both a failed and a Tier-A sample: 148 failed samples could pair with the
+same spec's verified solution as repair examples, without a repair round.
+**Pilot total: 3.27 CU** (0.38 + 1.66 + 0.29 + 0.94) of the 12 approved; predicted 7.6. Balance 696.73 CU.
+Diversity: 200 specs carry 28 distinct prompts (7 families x 4 foundry phrasings), so scaling these specs mostly
+resamples the same 28 tasks. ⛔ Gate 4a.
 
 Colab: `google-colab-cli` 0.7.5 installed in `~/venvs/colab` (WSL); Phil completed the OAuth sign-in on 2026-10-22.
 `colab usage`: balance 700.00 CU (COMPUTE.md assumed 200/month), rate 0.00/h, 0 assignments. Nothing spent; every

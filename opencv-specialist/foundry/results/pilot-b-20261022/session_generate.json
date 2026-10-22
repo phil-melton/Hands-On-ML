@@ -1,0 +1,154 @@
+{
+ "commands": [
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-before",
+   "returncode": 0,
+   "seconds": 1.17
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "new",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "--gpu",
+    "L4"
+   ],
+   "name": "new",
+   "returncode": 0,
+   "seconds": 3.34
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "/home/ptmel/Hands-On-ML/opencv-specialist/foundry/colab_job.py",
+    "/content/colab_job.py"
+   ],
+   "name": "upload-job",
+   "returncode": 0,
+   "seconds": 1.62
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/prompts.jsonl",
+    "/content/generate_prompts.jsonl"
+   ],
+   "name": "upload-prompts",
+   "returncode": 0,
+   "seconds": 2.27
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "exec",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "-f",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/launch_generate.py",
+    "--timeout",
+    "5520"
+   ],
+   "name": "exec",
+   "returncode": 0,
+   "seconds": 950.7
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "/content/generate_completions.jsonl",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/completions.jsonl"
+   ],
+   "name": "download-completions",
+   "returncode": 0,
+   "seconds": 2.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "foundry-pilot-b-20261022-generate",
+    "/content/generate_timing.json",
+    "/home/ptmel/opencv-expert/foundry/pilot-b-20261022/timing.json"
+   ],
+   "name": "download-timing",
+   "returncode": 0,
+   "seconds": 0.67
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "stop",
+    "-s",
+    "foundry-pilot-b-20261022-generate"
+   ],
+   "name": "stop",
+   "returncode": 0,
+   "seconds": 0.87
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-after",
+   "returncode": 0,
+   "seconds": 0.62
+  }
+ ],
+ "error": null,
+ "exec_timeout_s": 5520.0,
+ "gpu": "L4",
+ "install_via": "pip",
+ "k": 4,
+ "model": "QuantTrio/Qwen3-Coder-30B-A3B-Instruct-AWQ",
+ "n_prompts_missing": 200,
+ "packages": [
+  "vllm==0.31.0"
+ ],
+ "predicted_cu": 1.3,
+ "predicted_minutes": 46.0,
+ "quantization": "awq",
+ "revision": "c58857a7f41c0920f73d1b56678640f9c02017d7",
+ "session": "foundry-pilot-b-20261022-generate",
+ "stage": "generate",
+ "started_at": "2026-10-22T06:23:06+00:00",
+ "state": "ok",
+ "stop_ok": true,
+ "teacher_license": "apache-2.0",
+ "usage_after": "Current balance: 699.62 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "usage_before": "Current balance: 700.00 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "wall_s": 963.9
+}
