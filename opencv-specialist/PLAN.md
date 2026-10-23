@@ -453,6 +453,11 @@ Then: `ollama create opencv-expert -f Modelfile`.
 
 ### 8.4 MCP server (`serve/server.py`)
 
+Implemented 2026-10-23 in [`serve/server.py`](serve/server.py), which supersedes this template: the signature is
+`opencv_solve(task, images, outputs, params=None, max_repairs=3, metamorphic=True)`, replies are free text with a fenced
+block as in training (no JSON-schema decoding), repairs use the training repair-pair format, and registration from
+Windows goes through `wsl.exe` (see [`serve/README.md`](serve/README.md)). The template below is kept as first written.
+
 ```python
 # UNTESTED TEMPLATE. Register with:
 #   claude mcp add opencv-expert -- python /abs/path/opencv-specialist/serve/server.py

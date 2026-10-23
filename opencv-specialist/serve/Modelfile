@@ -1,0 +1,20 @@
+# Shipped model (Stage 6, 2026-10-23): Q5_K_M of r100 @ e1, the smallest quant within noise of the best on the test set.
+# Written by train.ollama_create from train.config (Rule 7). GGUF sha256 e1626a67b8ccb78039c1b35def4490e67a3f3159d27cf30f3366026d62debf50
+# (~/opencv-expert/stage6/gguf/opencv-expert-r100e1.Q5_K_M.gguf, 6.19 GiB). Build: ollama create opencv-expert -f Modelfile
+FROM ./opencv-expert-r100e1.Q5_K_M.gguf
+TEMPLATE """{{- if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}{{- range .Messages }}<|im_start|>{{ .Role }}
+{{ .Content }}<|im_end|>
+{{ end }}<|im_start|>assistant
+<think>
+
+</think>
+
+"""
+PARAMETER stop "<|im_end|>"
+PARAMETER temperature 0
+PARAMETER num_ctx 8192
+PARAMETER repeat_penalty 1.0
+PARAMETER num_predict 2048
+SYSTEM """You are opencv-expert, an OpenCV 5.0 (Python cv2) worker. Given a task contract, return one Python function `solve(...) -> dict`, with the imports it needs, that satisfies it. No file, GUI or network access; never catch exceptions to hide failures."""

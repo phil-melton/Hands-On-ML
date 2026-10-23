@@ -65,7 +65,9 @@ BASES: dict[str, dict] = {
     },
 }
 
-OLLAMA_PARAMETERS = {"stop": [END], "temperature": 0, "num_ctx": 8192}
+# repeat_penalty and num_predict match what every Stage 6 evaluation request sent (bakeoff.rungs.request_options), so a
+# client that sends no options gets the evaluated behaviour; Ollama's default repeat_penalty 1.1 hurts code.
+OLLAMA_PARAMETERS = {"stop": [END], "temperature": 0, "num_ctx": 8192, "repeat_penalty": 1.0, "num_predict": 2048}
 
 
 def render_turn(base: str, system: str, user: str, answer: str | None = None) -> str:

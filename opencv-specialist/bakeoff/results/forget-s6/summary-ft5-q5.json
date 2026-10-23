@@ -1,0 +1,419 @@
+{
+ "arm_a": "base",
+ "arm_b": "ft5",
+ "arms": {
+  "base": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.7739944271643041,
+   "ci_lo": 0.6736074258805683,
+   "classes": {
+    "pass": 218,
+    "runtime": 17,
+    "syntax": 10,
+    "wrong": 55
+   },
+   "code_path": {
+    "fence": 288,
+    "fence-unclosed": 12
+   },
+   "decode_tps": {
+    "max": 54.047014146430634,
+    "mean": 53.470273911213944,
+    "median": 53.47504155785583,
+    "p90": 53.72443699152546
+   },
+   "extract": {
+    "fence": 288,
+    "fence-unclosed": 12
+   },
+   "gen_wall_s": {
+    "max": 39.035,
+    "mean": 5.9434233333333335,
+    "median": 4.102,
+    "p90": 8.237100000000002
+   },
+   "gen_wall_total_min": 29.717116666666666,
+   "grader_errors": 0,
+   "lint_flagged": 11,
+   "lint_rules": {
+    "import": 1,
+    "syntax": 10
+   },
+   "model": "base-qwen3.5-9b",
+   "n": 300,
+   "pass1": 0.7266666666666667,
+   "pass_if_lint_enforced": 217,
+   "passed": 218,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.025730800105594736,
+   "think": false,
+   "tokens": {
+    "max": 2048,
+    "mean": 304.24333333333334,
+    "median": 206.0,
+    "p90": 429.1
+   },
+   "truncated": 12
+  },
+  "ft5": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.749060336215123,
+   "ci_lo": 0.6458824752950584,
+   "classes": {
+    "pass": 210,
+    "runtime": 17,
+    "timeout": 3,
+    "wrong": 70
+   },
+   "code_path": {
+    "fence": 300
+   },
+   "decode_tps": {
+    "max": 48.78754941738868,
+    "mean": 48.26742314859796,
+    "median": 48.266858826647336,
+    "p90": 48.57465135025826
+   },
+   "extract": {
+    "fence": 300
+   },
+   "gen_wall_s": {
+    "max": 25.533,
+    "mean": 3.268273333333333,
+    "median": 2.9610000000000003,
+    "p90": 4.714800000000005
+   },
+   "gen_wall_total_min": 16.341366666666666,
+   "grader_errors": 0,
+   "lint_flagged": 1,
+   "lint_rules": {
+    "import": 1
+   },
+   "model": "opencv-expert-q5",
+   "n": 300,
+   "pass1": 0.7,
+   "pass_if_lint_enforced": 209,
+   "passed": 210,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.026457513110645908,
+   "think": false,
+   "tokens": {
+    "max": 1210,
+    "mean": 147.19333333333333,
+    "median": 133.0,
+    "p90": 215.60000000000014
+   },
+   "truncated": 0
+  }
+ },
+ "decoding": {
+  "num_ctx": 4096,
+  "num_predict": 2048,
+  "repeat_penalty": 1.0,
+  "temperature": 0.0
+ },
+ "discordant": [
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/125"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "base",
+   "task_id": "Mbpp/126"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/129"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft5",
+   "task_id": "Mbpp/135"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft5",
+   "task_id": "Mbpp/142"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "ft5",
+   "task_id": "Mbpp/161"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/166"
+  },
+  {
+   "other_cls": "timeout",
+   "other_error": null,
+   "passed": "base",
+   "task_id": "Mbpp/20"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/245"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/251"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "base",
+   "task_id": "Mbpp/259"
+  },
+  {
+   "other_cls": "syntax",
+   "other_error": "SyntaxError",
+   "passed": "ft5",
+   "task_id": "Mbpp/264"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/265"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/290"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/293"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "AttributeError",
+   "passed": "base",
+   "task_id": "Mbpp/301"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/392"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/426"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/432"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/435"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/437"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/446"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/473"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/475"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/564"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "base",
+   "task_id": "Mbpp/579"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/600"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/63"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/631"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft5",
+   "task_id": "Mbpp/641"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/643"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/721"
+  },
+  {
+   "other_cls": "syntax",
+   "other_error": "SyntaxError",
+   "passed": "ft5",
+   "task_id": "Mbpp/734"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/741"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/745"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "AttributeError",
+   "passed": "base",
+   "task_id": "Mbpp/763"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/772"
+  },
+  {
+   "other_cls": "timeout",
+   "other_error": null,
+   "passed": "base",
+   "task_id": "Mbpp/781"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/79"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft5",
+   "task_id": "Mbpp/80"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/84"
+  },
+  {
+   "other_cls": "syntax",
+   "other_error": "SyntaxError",
+   "passed": "ft5",
+   "task_id": "Mbpp/9"
+  }
+ ],
+ "n": 300,
+ "ollama_version": "0.40.4",
+ "paired": {
+  "a_only": 25,
+  "b_only": 17,
+  "both": 193,
+  "ci_hi": 0.06947708176973799,
+  "ci_lo": -0.01613298171949004,
+  "diff": 0.02666666666666667,
+  "drop": 0.02666666666666667,
+  "n": 300,
+  "neither": 65,
+  "p": 0.27995623852893914,
+  "p_mcnemar": 0.27995623852893914,
+  "se": 0.021583538327130048
+ },
+ "run": "/home/ptmel/opencv-expert/forgetting-runs/forget-s6",
+ "sandbox_s": {
+  "max": 90.092,
+  "mean": 0.6420650263620387,
+  "median": 0.08,
+  "p90": 0.087
+ },
+ "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+ "system": "You are a helpful Python programmer. Write the requested function.",
+ "warmup_prompt_tokens": {
+  "base": 67,
+  "ft": 67,
+  "ft5": 67
+ }
+}

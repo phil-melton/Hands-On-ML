@@ -1,9 +1,135 @@
 # opencv-expert logbook
 
-**Next step:** Stage 5 (train Qwen3.5-9B on Colab, 16-bit LoRA on an A100; convergence study 25/50/100 %;
-checkpoints chosen by dev pass@1). Phil approved a **Stage 5 cap of 60 CU** on 2026-10-22 (room for a second training
-round); my rough prediction is ~17 CU (range 10-30). A Sonnet subagent is building the Colab training job and its
-`predict`; write its refined prediction here before the first session. Stage 4 is complete (data/train.jsonl, 23.15 CU).
+**Next step:** Stage 7 (MCP server `serve/server.py` with runtime metamorphic checks, `claude mcp add`, 5-task smoke
+test, the 20-task E2E set for criterion 4), then the final report (⛔). Stage 6 ships `opencv-expert` = Q5_K_M
+(`serve/Modelfile`); its test-set and MBPP+ results are below, with the like-for-like Q5 base comparator `r6-9b-notes-q5`.
+Colab spend so far 39.44 CU (Stage 4 23.15, Stage 5 16.29); Stages 6-7 run locally (0 CU).
+
+## 2026-10-23 Stage 7 built: MCP server, runtime metamorphic checks, E2E set; prediction
+
+Built by two Sonnet subagents, re-checked by me. `serve/server.py` (mcp 2.3.0, MIT; venv `~/venvs/serve`,
+`serve/requirements-serve.txt`): one tool, `opencv_solve(task, images, outputs, params, max_repairs=3, metamorphic=True)`.
+The user message is `TaskSpec.to_prompt()`; the request is the Stage 6 evaluation's (SYSTEM, `think: false`, greedy
+options, no JSON-schema decoding); code via the bake-off's extractor; `sandbox.run_solution`; repairs in the training
+repair-pair shape (system, user, assistant ```` ```python ```` block, user "That failed: ...", 4 messages; only the latest
+failure is replayed). Earlier assistant turns render plain in both the training template and the Ollama TEMPLATE.
+`serve/metamorphic.py`: reruns verified code on rot90 / mirror / dim (x0.6) copies and classifies each output as
+invariant / covariant / changed / error (tolerances from pixel-grid arguments: 1 % permute, 5 % dim, 2 px coordinates);
+a confidence signal, not a gate. Registered with `claude mcp add opencv-expert --scope local` (this project only; `claude mcp
+get` -> Connected). Live: 2 calls, both verified at attempt 1 (51.7 s incl. the model load, then 15.7 s), metamorphic
+stable (counts and areas invariant, segments covariant).
+`serve/e2e/`: 20 multi-step tasks (3-4 steps, all 9 families, 6 with held-out families; seeds 6.01M-6.21M, disjoint
+from the splits), images and exact truths manufactured from the family generators; tolerances imported from the
+family verifiers or propagated by worst-case bounds (wide: task 2 centroid ~19 px, task 19 angle ~7 deg); every task's
+reference pipeline (the families' REFERENCE solutions through the sandbox) passes; perturbed answers fail. Runner: one
+`claude.exe -p` session per task and arm, the same prompt in both arms; both get Bash / Read / Write (Python via
+`wsl.exe ... ~/venvs/cv5/bin/python`); the specialist arm adds the MCP server through `--mcp-config`;
+`--strict-mcp-config --setting-sources '' --disable-slash-commands`, auto-memory and CLAUDE.md off, `dontAsk`.
+Tests: 46 (serve) + 98 (e2e); full suite 1,270 passed, 4 skipped.
+Orchestrator: Sonnet 5.5 (`--model sonnet`), signed in through Phil's subscription (no API key: plan usage, $0 API).
+Prediction (Rule 1): alone 20 x ~400k tokens (the `total` counter, mostly cache reads) and ~3 min per task; specialist
+20 x ~250k and ~2.5 min: ~13M tokens, ~1.8 h sequential. First one task per arm to check the plumbing.
+
+## 2026-10-23 Stage 6 evaluation: test set, quant ladder, forgetting; ship Q5_K_M (local GPU, 0 CU)
+
+Ran (predicted above): `s6-q4/q5/q8` in run `bakeoff-v2-20261022` (238 test tasks, 112 distinct prompts, greedy,
+num_predict 2048, num_ctx 8192, same system prompt as r5 but no notes), paired with r5 (base + notes, Q4_K_M); MBPP+
+for the fine-tuned Q4 and Q5 against the base. Measured generation: Q4 23.3 min, Q5 22.7, Q8 30.6 (predicted 26 / 30 /
+41); MBPP+ base 29.7 min, Q4 13.7, Q5 16.3 (predicted 40-95 / 15-40). The watchdog fired once (02:31, commit 2.99 GB): it
+killed the last Q8 chunk, whose 3 missing replies were re-run. 0 grader errors. Results in `bakeoff/results/`.
+
+pass@1 on the test set, % (binomial SE ~3; SE by prompt 4-5 for `all`):
+
+| group | n / prompts | r5 base+notes Q4 | ft Q4_K_M | ft Q5_K_M | ft Q8_0 | r6 base+notes Q5 |
+|---|---|---|---|---|---|---|
+| all | 238 / 112 | 38.7 | 61.3 | **76.9** | 71.4 | 35.3 |
+| 5.0 subset | 149 / 65 | 20.1 | 48.3 | **71.1** | 63.8 | 13.4 |
+| families, 5.0 | 132 / 48 | 16.7 | 48.5 | 74.2 | 64.4 | 9.8 |
+| families, timeless | 66 / 24 | 68.2 | 90.9 | 92.4 | 92.4 | 71.2 |
+| trained families | 154 / 56 | 31.2 | 70.1 | 92.2 | 83.8 | 26.0 |
+| held-out families | 44 / 16 | 43.2 | 36.4 | 38.6 | 38.6 | 45.5 |
+| gotchas | 40 / 40 | 62.5 | 55.0 | 60.0 | 60.0 | 60.0 |
+
+The like-for-like comparator `r6-9b-notes-q5` (quantize 246 s, test set 36.0 min; predicted ~5 and ~40) scores no
+better than r5: 35.3 vs 38.7 % (p by prompt 0.71). Its per-family scores swing by up to 35 pts between the two quants
+(contour 81.8 -> 50.0, perspective 36.4 -> 72.7, homography 36.4 -> 9.1, components 45.5 -> 13.6), so the base's
+per-family numbers on 8 prompts are mostly greedy-trajectory noise; the fine-tune's sit at the ceiling in 6 of 7
+trained families. So the dev gap base Ollama-Q4 vs HF-bf16 (-11.2) is not specific to Q4_K_M; whether it is
+quantization in general or the llama.cpp path is not measured (no base Q8 or bf16 rung on the test set).
+Per family (Q5): contour 100, hough 100 (r5 4.5), perspective 100 (36.4), homography 100 (36.4), histogram 100 (13.6),
+components 100 (45.5), text_layout 45.5 (0.0); held out: chessboard 0 (0), color_segmentation 77.3 (86.4).
+
+**Quant ladder, paired (exact sign test over prompts):** Q4 - Q5 = -15.5 pts (9 vs 46 discordant tasks, p 0.006); Q5 - Q8
+= +5.5 (p 0.27); Q4 - Q8 = -10.1 (p 0.076). **Decision: ship Q5_K_M** (6.19 GiB, 47.8 tok/s, fits the 12 GB GPU with
+room): AGENT_PROMPT's rule is the smallest quant within noise of the best, and Q4 is not. `serve/Modelfile`, Ollama tag
+`opencv-expert` (same blob as `opencv-expert-q5`, sha256 e1626a67...). `train.config.OLLAMA_PARAMETERS` now also sets
+repeat_penalty 1.0 and num_predict 2048, the values every evaluation request sent, so a client sending no options gets
+the evaluated behaviour. Deviation from the frozen wording ("measured on the shipped Q4_K_M"): the criteria below are
+reported for both Q4 (as frozen) and Q5 (as shipped), and Q5 also against the Q5 base (like-for-like quantization).
+
+**Audit of Q4 vs Q5.** Q4's extra failures are not 5.0-API errors (class `api`: Q4 12, Q5 15, Q8 7). They are ordinary
+bugs in the families the fine-tune changed most: hough 50 vs 100 % (8 tasks unpack `cv2.minAreaRect`'s 3-tuple into two
+names, a timeless bug), components 50 vs 100 % (9 tasks build stats by hand from `connectedComponents` instead of
+calling `connectedComponentsWithStats`), text_layout 22.7 vs 45.5, homography 77.3 vs 100. Dev validation had shown only
+-4.0 (36 prompts, underpowered). Q8 below Q5 (-5.5, n.s.) matches dev too; its extra failures are hough `algorithm` (9)
+and text_layout; unexplained, within noise.
+**PLAN §7 Q5 evidence (Rule 10; the answer is Phil's).** Prediction: "the 5.0-specific behaviours break first".
+Q4 - Q5: families/5.0 -25.7 pts, families/timeless -1.5. But the api-error count did not rise at Q4, and
+perspective_rectify (timeless, +63.6 from fine-tuning) kept 100 % at Q4 while hough (5.0, +95.5) fell to 50 %.
+bf16 on the test set was not run (needs a gen-only Colab path, ~2 CU); on dev, bf16 82.8 vs Q5 79.8 (-3.0).
+
+MBPP+ forgetting (300 problems, neutral system prompt, greedy): base Q4 72.7 %; ft Q4 72.0 (drop +0.7, 95 % CI
+[-3.5, +4.9], McNemar p 0.875); ft Q5 70.0 (drop +2.7, CI [-1.6, +6.9], p 0.28: 25 lost, 17 gained; `wrong` 55 -> 70,
+syntax 10 -> 0 because the base runs past num_predict 12 times); base Q5 74.0 (32.5 min; predicted ~33), so like-for-like the
+ft Q5 drop is +4.0 (CI [-0.4, +8.4], McNemar p 0.096; 28 lost, 16 gained). Quantization alone moves MBPP+ by 1-2 pts
+either way (base Q5 - Q4 +1.3, p 0.59; ft Q5 - Q4 -2.0, p 0.33). The watchdog fired once more (04:01, commit 2.83 GB)
+because I ran the full test suite on the CPU during generation; it cost the reply in flight. Never again during Ollama runs.
+
+**Success criteria (frozen 2026-10-22), target vs measured:**
+
+| criterion | target | ft Q4 vs r5 (as frozen) | ft Q5 vs r5 | ft Q5 vs r6 (like-for-like) |
+|---|---|---|---|---|
+| 1a specialization, test | >= +10, p < 0.05 | +22.7, p 0.006: met | +38.2, p 1e-7: met | +41.6, p 8e-9: met |
+| 1b specialization, 5.0 subset | >= +25, p < 0.05 | +28.2, p 0.003: met | +51.0, p 3e-8: met | +57.7, p 6e-11: met |
+| 2 generalization | held-out gain >= half in-family | -6.8 vs +19.5 needed: **not met** | -4.5 (CI [-13.5, +4.5]) vs +30.5: **not met** | -6.8 (CI [-20.1, +6.5]) vs +33.1: **not met** |
+| 3 forgetting (MBPP+) | drop <= 3 | +0.7: met (CI to +4.9) | +2.7: met (CI to +6.9) | +4.0 (CI [-0.4, +8.4], p 0.096): **not met** |
+| 4 integration | Stage 7 | - | - | - |
+
+Generalization fails outright, not for lack of power: the upper CI end is below the target. Chessboard stays 0 % for
+every model (r5 too), and color_segmentation loses 2 prompts (86.4 -> 77.3). The fine-tune learned the trained
+families, not a transferable "OpenCV 5.0 skill". Forgetting passes on the point estimate in every comparison, but no
+comparison shows non-inferiority (every CI's upper end exceeds 3 points),
+and like-for-like the shipped Q5 misses the point threshold too (+4.0, not significant). Q4 would pass criterion 3
+like-for-like (+0.7) but loses 15.5 pts on the test set (p 0.006); the two fine-tunes differ by 2.0 pts on MBPP+ (p 0.33).
+I keep Q5 and flag it in the final report.
+
+## 2026-10-23 Stage 6: merge, GGUF ladder, validation (local, 0 CU)
+
+Built by two Sonnet subagents. `train/merge_lora.py`: streaming merge of r100 @ e1 into the bf16 base, numpy only,
+1.5 GiB peak RSS, 335 s; all 248 LoRA pairs (24 linear-attention x 5, 32 MLP x 3, 8 full-attention x 4) used once,
+scale 1.0; the 527 untouched tensors and the headers byte-identical; every merged element within half a bf16 ulp plus
+a float32 allowance. GGUF ladder through the Stage 3 converter: Q8_0 9.11 GiB, Q5_K_M 6.19, Q4_K_M 5.38 GiB (tensor-type
+mix equal to the base's); Ollama `opencv-expert-q4/q5/q8`; Q8 fits the 12 GB GPU fully (8.26 GiB at num_ctx 8192).
+Explicit system message replaces the Modelfile SYSTEM (prompt tokens 85 either way, = `render_turn`); `think: false`
+gives no thinking. GGUF metadata lacks the license / base-model keys (no README in the merged folder; cosmetic).
+Dev validation (36 prompts / 99 tasks, greedy): Q4 75.8, Q5 79.8, Q8 66.7 % vs Colab HF bf16 82.8; Q4 vs Colab -7.0
+(sign test p 0.25), Q8 -16.2 (p 0.031). Control: the untrained base scores 34.3 % through Ollama Q4 vs 45.5 % through
+HF bf16 (-11.2 with no LoRA), so the serving path accounts for most of the gap; the fine-tune gain survives (+41.5
+through Ollama vs +37.3 on Colab). Q8 lowest is unexplained (36 prompts, SE ~8). MBPP+ forgetting slice:
+`evalplus/mbppplus` @ b2d74c91 (Apache-2.0; MBPP CC-BY-4.0), 300 problems, 3 dropped for 13-gram overlap with the
+training / replay solutions; harness `bakeoff/forgetting.py` (neutral system prompt, same for both arms; EvalPlus
+tests run in the sandbox). Suite 1,172 passed, 3 skipped.
+**Memory finding:** while an Ollama model serves sustained generation, free Windows commit falls ~0.6-0.85 GB per
+minute until the model unloads (Q8 validation: watchdog fired at 2.94 GB and unloaded it). This explains the
+2026-10-20 / -21 incidents. From now on, long Ollama runs go in chunks with an unload between them.
+Evaluation prediction (Rule 1, local GPU, 0 CU): test set (238 tasks, 112 distinct prompts, greedy, num_predict 2048,
+num_ctx 8192, added to run `bakeoff-v2-20261022` so it pairs with r5): Q4 ~26 min (760 tokens at 53 tok/s), Q5 ~30,
+Q8 ~41; forgetting (300 x 2 arms, num_predict 2048): base 40-95 min, fine-tuned 15-40; in chunks of one family / 50
+problems. About 3-4 h in all.
+Prediction (Rule 1, local GPU, 0 CU), like-for-like comparator for the shipped Q5 (rung `r6-9b-notes-q5`, the base BF16
+GGUF quantized to Q5_K_M with the same llama.cpp build): quantize ~5 min (the fine-tune's took 302 s); test set ~40 min
+(r5 took 35.7 min at 52.9 tok/s, 992 tokens/answer; Q5 decodes ~0.90x as fast, 47.8 vs 53.2 tok/s for the fine-tune);
+MBPP+ base arm ~33 min (Q4 base 29.7 min). ~80 min in all, chunked with an unload per chunk.
 
 ## 2026-10-22 Stage 5 built; prediction
 

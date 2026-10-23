@@ -1,0 +1,397 @@
+{
+ "created": "2026-10-23T05:42:05+00:00",
+ "decoding": {
+  "greedy": {
+   "num_ctx": 4096,
+   "num_predict": 2048,
+   "repeat_penalty": 1.0,
+   "temperature": 0.0
+  },
+  "keep_alive": "30m",
+  "sample": {
+   "num_ctx": 4096,
+   "num_predict": 2048,
+   "repeat_penalty": 1.0,
+   "temperature": 0.8,
+   "top_p": 0.95
+  },
+  "seed": "sha256('rung|task_id|mode|sample')[:4] & 0x7fffffff, sent as options.seed",
+  "top_k_min_p": "not set: the model's Modelfile / Ollama defaults apply"
+ },
+ "invocations": [
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 50,
+   "n_tasks": 50,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T05:42:05+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 100,
+   "n_tasks": 100,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T05:50:07+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 150,
+   "n_tasks": 150,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T05:59:12+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 200,
+   "n_tasks": 200,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T06:07:54+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 250,
+   "n_tasks": 250,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T06:15:55+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft": "opencv-expert-q4"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 300,
+   "n_tasks": 300,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T06:26:00+00:00",
+   "think": {
+    "base": false,
+    "ft": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 50,
+   "n_tasks": 50,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T07:44:14+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 100,
+   "n_tasks": 100,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T07:47:49+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 150,
+   "n_tasks": 150,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T07:51:11+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 200,
+   "n_tasks": 200,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T07:54:11+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 250,
+   "n_tasks": 250,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T07:56:56+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base": "base-qwen3.5-9b",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 300,
+   "n_tasks": 300,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T08:00:04+00:00",
+   "think": {
+    "base": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 50,
+   "n_tasks": 50,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T08:56:07+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 100,
+   "n_tasks": 100,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T09:01:02+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 150,
+   "n_tasks": 150,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T09:07:07+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 200,
+   "n_tasks": 200,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T09:13:27+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 250,
+   "n_tasks": 250,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T09:18:27+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  },
+  {
+   "arms": {
+    "base5": "base-qwen3.5-9b-q5",
+    "ft5": "opencv-expert-q5"
+   },
+   "dataset": "evalplus/mbppplus@b2d74c91837c3f2a20c1299ae98133cbe7cfa077",
+   "limit": 300,
+   "n_tasks": 300,
+   "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+   "t": "2026-10-23T09:25:34+00:00",
+   "think": {
+    "base5": false,
+    "ft5": false
+   }
+  }
+ ],
+ "ollama": "http://127.0.0.1:11434",
+ "ollama_version": "0.40.4",
+ "rungs": {
+  "base": {
+   "model": "base-qwen3.5-9b",
+   "show": {
+    "capabilities": [
+     "tools",
+     "thinking",
+     "completion"
+    ],
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "9.2B",
+     "parent_model": "qwen3.5-9b.Q4_K_M.gguf",
+     "quantization_level": "Q4_K_M",
+     "runner": "llamacpp"
+    },
+    "parameters": "num_ctx                        8192\nstop                           \"<|im_end|>\"\ntemperature                    0"
+   },
+   "system": "You are a helpful Python programmer. Write the requested function.",
+   "system_sha1": "e136f82bb842831fcfd260f9cefeb1169b801d98",
+   "think": false
+  },
+  "base5": {
+   "model": "base-qwen3.5-9b-q5",
+   "show": {
+    "capabilities": [
+     "tools",
+     "thinking",
+     "completion"
+    ],
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "9.2B",
+     "parent_model": "qwen3.5-9b.Q5_K_M.gguf",
+     "quantization_level": "Q5_K_M",
+     "runner": "llamacpp"
+    },
+    "parameters": "temperature                    0\nnum_ctx                        8192\nnum_predict                    2048\nrepeat_penalty                 1\nstop                           \"<|im_end|>\""
+   },
+   "system": "You are a helpful Python programmer. Write the requested function.",
+   "system_sha1": "e136f82bb842831fcfd260f9cefeb1169b801d98",
+   "think": false
+  },
+  "ft": {
+   "model": "opencv-expert-q4",
+   "show": {
+    "capabilities": [
+     "tools",
+     "thinking",
+     "completion"
+    ],
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "9.2B",
+     "parent_model": "opencv-expert-r100e1.Q4_K_M.gguf",
+     "quantization_level": "Q4_K_M",
+     "runner": "llamacpp"
+    },
+    "parameters": "num_ctx                        8192\nstop                           \"<|im_end|>\"\ntemperature                    0"
+   },
+   "system": "You are a helpful Python programmer. Write the requested function.",
+   "system_sha1": "e136f82bb842831fcfd260f9cefeb1169b801d98",
+   "think": false
+  },
+  "ft5": {
+   "model": "opencv-expert-q5",
+   "show": {
+    "capabilities": [
+     "tools",
+     "thinking",
+     "completion"
+    ],
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "9.2B",
+     "parent_model": "opencv-expert-r100e1.Q5_K_M.gguf",
+     "quantization_level": "Q5_K_M",
+     "runner": "llamacpp"
+    },
+    "parameters": "num_ctx                        8192\nstop                           \"<|im_end|>\"\ntemperature                    0"
+   },
+   "system": "You are a helpful Python programmer. Write the requested function.",
+   "system_sha1": "e136f82bb842831fcfd260f9cefeb1169b801d98",
+   "think": false
+  }
+ }
+}

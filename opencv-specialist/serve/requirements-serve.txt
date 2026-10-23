@@ -1,0 +1,47 @@
+# Environment of the MCP server: ~/venvs/serve (CPython 3.12.3, WSL Ubuntu-24.04), created 2026-10-23.
+#   python3 -m venv ~/venvs/serve
+#   ~/venvs/serve/bin/python -m pip install -r serve/requirements-serve.txt
+# Direct requirements: requirements-cv5.txt (opencv-python-headless, numpy, pytest) + mcp + httpx.
+# Everything below is `pip freeze` of the venv right after `pip install -r requirements-cv5.txt mcp httpx`
+# (unpinned mcp and httpx resolved to the versions shown).
+# Licenses: mcp 2.3.0 MIT; mcp-types 2.3.0 MIT; httpx 0.28.1 BSD-3-Clause; httpx2 2.16.0 BSD-3-Clause (mcp's own HTTP
+# client; httpx is only what this server's Ollama calls and the tests use); pydantic 2.14.1 MIT; anyio 4.15.1 MIT.
+# NOTE: mcp 2.x renamed FastMCP to MCPServer (`from mcp.server.mcpserver import MCPServer`); serve/server.py needs mcp>=2.
+annotated-types==0.8.0
+anyio==4.15.1
+attrs==26.1.0
+certifi==2026.10.19
+cffi==2.1.1
+click==8.5.0
+cryptography==50.0.2
+h11==0.16.0
+httpcore2==2.16.0
+httpcore==1.0.9
+httpx2==2.16.0
+httpx==0.28.1
+idna==3.20
+iniconfig==2.3.1
+jsonschema-specifications==2025.9.1
+jsonschema==4.26.0
+mcp-types==2.3.0
+mcp==2.3.0
+numpy==2.4.6
+opencv-python-headless==5.0.0.93
+opentelemetry-api==1.45.1
+packaging==26.3
+pluggy==1.7.0
+pycparser==3.12
+pydantic==2.14.1
+pydantic_core==2.50.1
+Pygments==2.21.0
+PyJWT==2.15.1
+pytest==9.1.1
+python-multipart==0.0.32
+referencing==0.37.0
+rpds-py==2026.9.1
+sse-starlette==3.5.0
+starlette==1.9.0
+truststore==0.10.5
+typing-inspection==0.4.4
+typing_extensions==4.16.0
+uvicorn==0.54.0

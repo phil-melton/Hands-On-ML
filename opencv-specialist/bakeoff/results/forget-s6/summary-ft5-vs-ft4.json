@@ -1,0 +1,321 @@
+{
+ "arm_a": "ft",
+ "arm_b": "ft5",
+ "arms": {
+  "ft": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.7677809778720466,
+   "ci_lo": 0.666656114789153,
+   "classes": {
+    "pass": 216,
+    "runtime": 14,
+    "timeout": 3,
+    "wrong": 67
+   },
+   "code_path": {
+    "fence": 300
+   },
+   "decode_tps": {
+    "max": 54.29819581903892,
+    "mean": 53.701099941512624,
+    "median": 53.70849583285775,
+    "p90": 53.97281300115162
+   },
+   "extract": {
+    "fence": 300
+   },
+   "gen_wall_s": {
+    "max": 7.683,
+    "mean": 2.74961,
+    "median": 2.651,
+    "p90": 3.9108000000000005
+   },
+   "gen_wall_total_min": 13.748050000000001,
+   "grader_errors": 0,
+   "lint_flagged": 1,
+   "lint_rules": {
+    "import": 1
+   },
+   "model": "opencv-expert-q4",
+   "n": 300,
+   "pass1": 0.72,
+   "pass_if_lint_enforced": 215,
+   "passed": 216,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.02592296279363144,
+   "think": false,
+   "tokens": {
+    "max": 395,
+    "mean": 135.16333333333333,
+    "median": 130.0,
+    "p90": 195.10000000000002
+   },
+   "truncated": 0
+  },
+  "ft5": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.749060336215123,
+   "ci_lo": 0.6458824752950584,
+   "classes": {
+    "pass": 210,
+    "runtime": 17,
+    "timeout": 3,
+    "wrong": 70
+   },
+   "code_path": {
+    "fence": 300
+   },
+   "decode_tps": {
+    "max": 48.78754941738868,
+    "mean": 48.26742314859796,
+    "median": 48.266858826647336,
+    "p90": 48.57465135025826
+   },
+   "extract": {
+    "fence": 300
+   },
+   "gen_wall_s": {
+    "max": 25.533,
+    "mean": 3.268273333333333,
+    "median": 2.9610000000000003,
+    "p90": 4.714800000000005
+   },
+   "gen_wall_total_min": 16.341366666666666,
+   "grader_errors": 0,
+   "lint_flagged": 1,
+   "lint_rules": {
+    "import": 1
+   },
+   "model": "opencv-expert-q5",
+   "n": 300,
+   "pass1": 0.7,
+   "pass_if_lint_enforced": 209,
+   "passed": 210,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.026457513110645908,
+   "think": false,
+   "tokens": {
+    "max": 1210,
+    "mean": 147.19333333333333,
+    "median": 133.0,
+    "p90": 215.60000000000014
+   },
+   "truncated": 0
+  }
+ },
+ "decoding": {
+  "num_ctx": 4096,
+  "num_predict": 2048,
+  "repeat_penalty": 1.0,
+  "temperature": 0.0
+ },
+ "discordant": [
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/120"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/125"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/129"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "IndexError",
+   "passed": "ft5",
+   "task_id": "Mbpp/142"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/16"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/165"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/166"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/245"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/264"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/265"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/290"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "AttributeError",
+   "passed": "ft",
+   "task_id": "Mbpp/301"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/426"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/429"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "ft",
+   "task_id": "Mbpp/579"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/63"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/633"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/67"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/721"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft5",
+   "task_id": "Mbpp/737"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "ft5",
+   "task_id": "Mbpp/742"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/773"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft",
+   "task_id": "Mbpp/785"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/79"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/800"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/801"
+  }
+ ],
+ "n": 300,
+ "ollama_version": "0.40.4",
+ "paired": {
+  "a_only": 16,
+  "b_only": 10,
+  "both": 200,
+  "ci_hi": 0.054133479182731176,
+  "ci_lo": -0.014013232383570877,
+  "diff": 0.02,
+  "drop": 0.02,
+  "n": 300,
+  "neither": 74,
+  "p": 0.32693958282470703,
+  "p_mcnemar": 0.32693958282470703,
+  "se": 0.016985796414111045
+ },
+ "run": "/home/ptmel/opencv-expert/forgetting-runs/forget-s6",
+ "sandbox_s": {
+  "max": 90.092,
+  "mean": 1.1235448154657295,
+  "median": 0.079,
+  "p90": 0.089
+ },
+ "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+ "system": "You are a helpful Python programmer. Write the requested function.",
+ "warmup_prompt_tokens": {
+  "base": 67,
+  "base5": 67,
+  "ft": 67,
+  "ft5": 67
+ }
+}

@@ -1,0 +1,66 @@
+{
+ "created": "2026-10-23T04:18:33+00:00",
+ "decoding": {
+  "greedy": {
+   "num_ctx": 8192,
+   "num_predict": 2048,
+   "repeat_penalty": 1.0,
+   "temperature": 0.0
+  },
+  "keep_alive": "30m",
+  "sample": {
+   "num_ctx": 8192,
+   "num_predict": 2048,
+   "repeat_penalty": 1.0,
+   "temperature": 0.8,
+   "top_p": 0.95
+  },
+  "seed": "sha256('rung|task_id|mode|sample')[:4] & 0x7fffffff, sent as options.seed",
+  "top_k_min_p": "not set: the model's Modelfile / Ollama defaults apply"
+ },
+ "invocations": [
+  {
+   "dedupe_greedy": true,
+   "n_tasks": 99,
+   "only": null,
+   "per_family": null,
+   "rungs": [
+    "s6-q4"
+   ],
+   "samples": 0,
+   "splits": [
+    "dev"
+   ],
+   "t": "2026-10-23T04:18:33+00:00"
+  }
+ ],
+ "ollama": "http://127.0.0.1:11434",
+ "ollama_version": "0.40.4",
+ "rungs": {
+  "s6-q4": {
+   "model": "opencv-expert-q4",
+   "show": {
+    "capabilities": [
+     "tools",
+     "thinking",
+     "completion"
+    ],
+    "details": {
+     "families": [
+      "qwen35"
+     ],
+     "family": "qwen35",
+     "format": "gguf",
+     "parameter_size": "9.2B",
+     "parent_model": "opencv-expert-r100e1.Q4_K_M.gguf",
+     "quantization_level": "Q4_K_M",
+     "runner": "llamacpp"
+    },
+    "parameters": "num_ctx                        8192\nstop                           \"<|im_end|>\"\ntemperature                    0"
+   },
+   "system": "You are opencv-expert, an OpenCV 5.0 (Python cv2) worker. Given a task contract, return one Python function `solve(...) -> dict`, with the imports it needs, that satisfies it. No file, GUI or network access; never catch exceptions to hide failures.",
+   "system_sha1": "8816cfa0d37520336c61a1fb561c39caf98d3b90",
+   "think": false
+  }
+ }
+}

@@ -4,54 +4,6 @@ Up to 3 randomly drawn failing replies per class (fixed seed). Read each: does t
 
 ## format (3 shown)
 
-### r2-4b / test-chessboard_corners-005 / greedy 0
-
-- rule `syntax-at-runtime`; also nothing
-- evidence: exec-only: exception: SyntaxError keyword argument repeated: maxCorners (solution.py, line 55)
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, squares_x, squares_y) -> dict:
-    """
-    Detects inner corners of a chessboard with sub-pixel accuracy.
-    
-    Parameters:
-    - img: uint8, shape HxWx3. BGR photo of one chessboard.
-    - squares_x: int, number of squares along the top edge.
-    - squares_y: int, number of squares along the left edge.
-    
-    Returns:
-    - dict with key 'corners': float, shape Nx2. Row-major order of inner corners.
-    """
-    # Convert to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Blur to reduce noise
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-    
-    # Use Canny edge detection
-    edges = cv2.Canny(blurred, 50, 150)
-    
-    # Find lines using Hough Line Transform
-    lines = cv2.HoughLinesP(edges, 1, np.pi / 180, 50, minLineLength=50, maxLineGap=10)
-    
-    # Collect lines into two sets: horizontal and vertical
-    horizontal_lines = []
-    vertical_lines = []
-    
-    for line in lines:
-        x1, y1, x2, y2 = line[0]
-        if abs(y1 - y2) < 10:  # Horizontal line
-            horizontal_lines.append((x1, y1, x2, y2))
-        elif abs(x1 - x2) < 10:  # Vertical line
-            vertical_lines.append((x1, y1, x2, y2))
-    
-    # Sort horizontal lines by y-coordinate (top to bottom)
-    horizontal_lines.sort(key=lambda l: l[1])
-```
-
 ### r3-9b / test-text_layout-015 / greedy 0
 
 - rule `lint:syntax`; also ['format:syntax-at-runtime']
@@ -100,105 +52,129 @@ def solve(img, box, text, face, scale, thickness, color):
     
 ```
 
-### r5-9b-notes / shape_houghlines_acc / greedy 0
+### r6-9b-notes-q5 / test-text_layout-014 / greedy 0
 
-- rule `lint:syntax`; also nothing
-- evidence: line 130: [syntax] expected an indented block after 'else' statement on line 32
+- rule `lint:syntax`; also ['format:syntax-at-runtime']
+- evidence: line 152: [syntax] expected an indented block after 'for' statement on line 151
 
 ```python
 import cv2
 import numpy as np
 
-def solve(edges: np.ndarray, min_votes: int) -> dict:
+def solve(img, box, text, face, scale, thickness, color):
     """
-    Run the standard Hough line transform at 1 px / 1 degree resolution.
+    Draws text inside a specified bounding box on a copy of the input image.
+    The text is centered horizontally and vertically within the box.
+    If the text at the requested scale is too large to fit, the scale is reduced
+    until it fits.
     
-    Args:
-        edges: uint8, shape HxW. 0/255 edge map.
-        min_votes: int, scalar. Discard lines with fewer votes than this.
-        
+    Parameters:
+    img (np.ndarray): Input image (H, W, 3) uint8 BGR.
+    box (tuple): (x, y, w, h) defining the rectangle.
+    text (str): Text to draw.
+    face (int): Font face constant (e.g., cv2.FONT_HERSHEY_SIMPLEX).
+    scale (float): Initial font scale.
+    thickness (int): Font thickness.
+    color (tuple): BGR color (3 values).
+    
     Returns:
-        dict with 'lines': float, shape Nx3. One row (rho, theta, votes) per line,
-        strongest first. Rho in px, theta in radians.
+    dict: {
+        'img': np.ndarray, # Modified image
+        'scale': float,   # Actual scale used
+        'text_size': tuple # (width, height) from getTextSize
+    }
     """
-    # HoughLinesP parameters for 1px/1deg resolution:
-    # rho = 1, theta = pi/180
-    rho = 1.0
-    theta = np.pi / 180.0
+    # Create a copy to avoid modifying the original input
+    result_img = img.copy()
     
-    lines = cv2.HoughLinesP(
-        edges,
-        rho=rho,
-        theta=theta,
-        threshold=min_votes,
-        minLineLength=100,
-        maxLineGap=10
-    )
+    x, y, w, h = box
     
-    if lines is None:
-        lines = np.empty((0, 3), dtype=np.float32)
-    else:
-        # HoughLinesP returns (N, 4) in 4.x/5.0: (x1, y1, x2, y2)
-        # We need to compute rho and theta for each line.
-        # However, the standard HoughLinesP implementation in OpenCV already
-        # returns lines in the Hough space if we use the standard parameters?
-        # Actually, no. HoughLinesP returns lines in image coordinates.
-        # The task asks for (rho, theta, votes).
-        # To get rho and theta from (x1, y1, x2, y2):
-        # rho = x1*cos(theta) + y1*sin(theta)
+    # Initial attempt with the requested scale
+    current_scale = scale
+    success = False
+    
+    # We need to find the largest scale <= current_scale that fits.
+    # Since getTextSize returns bounding box size, we can binary search or decrement.
+    # Given the constraints and typical use cases, a simple iterative reduction or binary search works.
+    # Let's use a binary search approach for efficiency and robustness.
+    
+```
+
+### s6-q4 / test-chessboard_corners-014 / greedy 0
+
+- rule `lint:syntax`; also ['format:syntax-at-runtime']
+- evidence: line 15: [syntax] '(' was never closed
+
+```python
+import cv2
+import numpy as np
+
+def solve(img, squares_x, squares_y) -> dict:
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Detect chessboard corners
+    # The board may be rotated, so we need to find the orientation
+    # First, detect corners
+    ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), None)
+    
+    if not ret:
+        # Try with different parameters
+        ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), 
+                                                cv2.CALIBRADEMODEL_CALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIBRATETOCALIB
 ```
 
 ## api (3 shown)
 
-### r2-4b / test-feature_homography-017 / greedy 0
+### r2-4b / test-chessboard_corners-016 / greedy 0
 
-- rule `cv2-attribute`; also nothing
-- evidence: exec-only: exception on input 0: AttributeError module 'cv2' has no attribute 'ORB_SCORE_HARRIS'
+- rule `cv2-call-signature`; also nothing
+- evidence: exec-only: exception on input 0: error OpenCV(5.0.0) :-1: error: (-5:Bad argument) in function 'findChessboardCorners' > Overload resolution failed: > - 'useInnerOnly' is an invalid keyword argument for findChessboardCorners() > - 'useInnerOnly' is an invalid keyword argument for findChessboardCorners()
 
 ```python
 import cv2
 import numpy as np
 
-def solve(img_a, img_b) -> dict:
+def solve(img, squares_x, squares_y) -> dict:
     """
-    Computes the 3x3 homography H mapping img_a to img_b using matched local features.
-    
-    Args:
-        img_a: uint8, shape HxWx3, BGR, reference picture.
-        img_b: uint8, shape HxWx3, BGR, wider view.
-        
+    Detects inner corners of a chessboard image using OpenCV's findChessboardCorners.
+    Refines the results to sub-pixel accuracy and returns them in row-major order.
+
+    Parameters:
+        img (np.ndarray): uint8, shape HxWx3, BGR image of a chessboard.
+        squares_x (int): Number of squares along the top edge.
+        squares_y (int): Number of squares along the left edge.
+
     Returns:
-        dict with key 'H': float, shape 3x3, normalized so H[2, 2] = 1.
+        dict:
+            'corners': np.ndarray, shape Nx2, float. Coordinates of inner corners.
     """
-    # Convert to grayscale for feature detection
-    gray_a = cv2.cvtColor(img_a, cv2.COLOR_BGR2GRAY)
-    gray_b = cv2.cvtColor(img_b, cv2.COLOR_BGR2GRAY)
+    # Ensure input is BGR and uint8 if not already (though spec says it is)
+    if img.dtype != np.uint8:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Detect features using ORB (fast, robust to scale and illumination)
-    # Parameters tuned for textured surfaces
-    orb_a = cv2.ORB_create(nfeatures=2000, scaleFactor=1.2, nlevels=8, cornerThreshold=31,
-                           fastThreshold=20, edgetype=0, scoreType=cv2.ORB_SCORE_HARRIS)
-    orb_b = cv2.ORB_create(nfeatures=2000, scaleFactor=1.2, nlevels=8, cornerThreshold=31,
-                           fastThreshold=20, edgetype=0, scoreType=cv2.ORB_SCORE_HARRIS)
+    # Use cv2.findChessboardCorners with sub-pixel refinement
+    # The function returns:
+    #   - corners: boolean array indicating which points are corners
+    #   - corners: array of (x, y) coordinates for detected corners
+    # We need to filter for INNER corners only.
     
-    # Detect keypoints and compute descriptors
-    kp_a, des_a = orb_a.detectAndCompute(gray_a, None)
-    kp_b, des_b = orb_b.detectAndCompute(gray_b, None)
+    # Parameters for findChessboardCorners:
+    #   img: input image
+    #   squaresX, squaresY: number of squares in each direction
+    #   minResponse: minimum response value (default 0.0)
+    #   maxResponse: maximum response value (default 1.0)
+    #   preCornerType: pre-corner type (default cv2.CORNER_HARRIS)
+    #   useInnerOnly: boolean, if True, only inner corners are returned
     
-    if kp_a is None or kp_b is None or len(kp_a) == 0 or len(kp_b) == 0:
-        raise ValueError("No features detected in either image.")
+    # Note: In OpenCV 5.0, findChessboardCorners supports 'useInnerOnly' parameter.
+    # However, the return value structure might vary slightly. 
+    # Typically, it returns (corners, corners) where corners is the mask and corners is the points.
+    # Let's use the standard call.
     
-    # Match descriptors using BFMatcher with TM_SQDIFF (good for texture)
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
-    matches = bf.knnMatch(des_a, des_b, k=2)
-    
-    # Apply Lowe's ratio test
-    good_matches = []
-    for m, n in matches:
-        if m.distance < 0.75 * n.distance:
 ```
 
-### r2-4b / test-perspective_rectify-008 / greedy 0
+### r2-4b / test-perspective_rectify-012 / greedy 0
 
 - rule `cv2-attribute`; also nothing
 - evidence: exec-only: exception on input 0: AttributeError module 'cv2' has no attribute 'undilate'
@@ -209,72 +185,24 @@ import numpy as np
 
 def solve(img, out_w, out_h) -> dict:
     """
-    Finds the four corners of the bright card on the dark surface and warps the card 
-    to an upright image of size out_w x out_h.
+    Locates a rectangular card on a darker surface, finds its four corners,
+    warps the image to rectify the card, and returns the corners and warped image.
     
     Parameters:
-        img (np.ndarray): uint8, shape HxWx3. BGR photo; one bright card on a dark background.
-        out_w (int): width of the rectified image in px.
-        out_h (int): height of the rectified image in px.
-    
-    Returns:
-        dict with:
-            - 'corners': float, shape 4x2. Card corners as (x, y) in the photo.
-              Row order: TL, TR, BR, BL based on IMAGE position.
-              - TL: smallest x+y
-              - TR: smallest y-x
-              - BR: largest x+y
-              - BL: largest y-x
-            - 'warped': uint8, shape out_hxout_wx3. BGR; the card rectified.
-    """
-    # Convert to HSV to segment the bright card
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    
-    # Define range of bright colors (adjust thresholds if necessary, but generic bright works)
-    # Assuming the card is significantly brighter than the background
-    lower_bright = np.array([0, 50, 50])
-    upper_bright = np.array([180, 255, 255])
-    
-    # Threshold the HSV image to get bright components
-    mask = cv2.inRange(hsv, lower_bright, upper_bright)
-    
-    # Apply morphological operations to clean up noise
-    kernel = np.ones((5,5), np.uint8)
-    dilated_mask = cv2.dilate(mask, kernel, iterations=2)
-    eroded_mask = cv2.undilate(dilated_mask, kernel, iterations=2) # Note: cv2.erode is standard
-    
-    # Corrected erosion
-```
-
-### r2-4b / test-perspective_rectify-011 / greedy 0
-
-- rule `cv2-attribute`; also nothing
-- evidence: exec-only: exception on input 0: AttributeError module 'cv2' has no attribute 'undilate'
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, out_w, out_h) -> dict:
-    """
-    Detects the four corners of a rectangular card in an image and returns
-    the corners and a rectified (warped) image.
-    
-    Parameters:
-        img: uint8, shape HxWx3. BGR photo.
+        img: uint8, shape HxWx3. BGR photo; one bright card on a dark background.
         out_w: int, width of the rectified image.
         out_h: int, height of the rectified image.
     
     Returns:
         dict with:
-            - 'corners': float, shape 4x2. Card corners (x, y) in original image coordinates.
-              Order: TL, TR, BR, BL based on IMAGE position.
-            - 'warped': uint8, shape out_hxout_wx3. Rectified BGR image.
+            - 'corners': float, shape 4x2. Card corners as (x, y) in original image coordinates.
+              Order: TL (smallest x+y), TR (smallest y-x), BR (largest x+y), BL (largest y-x).
+            - 'warped': uint8, shape out_hxout_wx3. BGR image with the card rectified.
     """
-    # Convert to HSV to segment the bright card on dark background
+    # Convert to HSV to segment the bright card
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     
-    # Define range of bright colors (card is bright, background is dark)
+    # Define range of bright colors (card is bright on dark background)
     # Adjust lower and upper bounds based on typical bright objects on dark backgrounds
     lower_bright = np.array([0, 50, 50])
     upper_bright = np.array([180, 255, 255])
@@ -285,127 +213,207 @@ def solve(img, out_w, out_h) -> dict:
     # Apply morphological operations to clean up noise and fill gaps
     kernel = np.ones((5,5), np.uint8)
     dilated_mask = cv2.dilate(mask, kernel, iterations=2)
-    eroded_mask = cv2.undilate(dilated_mask, kernel, iterations=2) # Note: cv2.erode is standard, 'undilate' is not a standard function name in OpenCV. Corrected below.
+    eroded_mask = cv2.undilate(dilated_mask, kernel, iterations=2) # Note: cv2.undilate is not standard, use erode
+    
+    # Corrected: Use erode instead of undilate
     eroded_mask = cv2.erode(dilated_mask, kernel, iterations=2)
     
     # Find contours
     contours, _ = cv2.findContours(eroded_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+```
+
+### r5-9b-notes / test-chessboard_corners-013 / greedy 0
+
+- rule `cv2-attribute`; also nothing
+- evidence: exec-only: exception on input 0: AttributeError module 'cv2' has no attribute 'CALIBRE_USE_EXACT_MATCHING'
+
+```python
+import cv2
+import numpy as np
+
+def solve(img, squares_x, squares_y) -> dict:
+    """
+    Detects the inner corners of a chessboard in an image.
     
-    # Find the largest contour (assuming one card)
+    Args:
+        img (np.ndarray): uint8, shape (H, W, 3), BGR image.
+        squares_x (int): Number of squares along the top edge.
+        squares_y (int): Number of squares along the left edge.
+        
+    Returns:
+        dict:
+            'corners' (np.ndarray): float, shape (N, 2), sub-pixel coordinates of inner corners.
+            Ordered row-major in the board's frame.
+    """
+    
+    # 1. Preprocessing: Convert to grayscale and threshold to get a binary mask of the board.
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Use adaptive thresholding or simple Otsu to handle varying lighting/noise.
+    # Since the background is plain, simple thresholding often works well.
+    # We use a binary inverse threshold to make the board white and background black (or vice versa).
+    # The chessboard has high contrast.
+    _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    # Morphological operations to clean up noise and ensure the board is a solid blob.
+    kernel = np.ones((5,5), np.uint8)
+    dilated_binary = cv2.dilate(binary, kernel, iterations=2)
+    eroded_binary = cv2.erode(dilated_binary, kernel, iterations=2)
+    
+    # Find contours to locate the largest connected component (the chessboard).
+    contours, _ = cv2.findContours(eroded_binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if not contours:
+        raise ValueError("No chessboard found in the image.")
+        
+    # Get the largest contour
+    c = max(contours, key=cv2.contourArea)
 ```
 
 ## lint (3 shown)
 
-### r3-9b / call_imdecode_none / greedy 0
+### r6-9b-notes-q5 / test-feature_homography-011 / greedy 0
 
 - rule `lint:broad-except`; also nothing
-- evidence: line 32: [broad-except] `except Exception` hides failures from the verifier
+- evidence: line 31: [broad-except] `except Exception` hides failures from the verifier
 
 ```python
 import cv2
 import numpy as np
 
-def solve(buf: bytes) -> dict:
+def solve(img_a, img_b) -> dict:
     """
-    Decodes the encoded image bytes as a colour image.
-    If decoding fails or the buffer is not a valid image, returns shape [0, 0, 0] and mean 0.0.
+    Computes a 3x3 homography H mapping pixels from img_a to img_b.
+    Uses ORB features and RANSAC to find matches on the flat textured surface.
     
     Args:
-        buf (bytes): Bytes of an encoded image file (PNG) or arbitrary bytes.
+        img_a (np.ndarray): Source image (HxWx3, uint8, BGR).
+        img_b (np.ndarray): Target image (HxWx3, uint8, BGR).
         
     Returns:
-        dict: Contains 'shape' (list of 3 ints) and 'mean' (float).
+        dict: {'H': np.ndarray} where H is 3x3 float32, normalized such that H[2,2] == 1.
     """
+    
+    # 1. Feature Detection and Description
+    # Using ORB as it is available in OpenCV 5.0 and robust for textured surfaces.
+    orb = cv2.ORB_create(nfeatures=500)
+    kp_a, des_a = orb.detectAndCompute(img_a, None)
+    kp_b, des_b = orb.detectAndCompute(img_b, None)
+    
+    if des_a is None or des_b is None:
+        raise ValueError("No features detected in one or both images.")
+
+    # 2. Feature Matching
+    # Using BFMatcher with Hamming distance (required for ORB)
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
     try:
-        # OpenCV expects BGR for color images when reading from bytes
-        img = cv2.imdecode(np.frombuffer(buf, dtype=np.uint8), cv2.IMREAD_COLOR)
-        
-        if img is None:
-            # Decoding failed (invalid image)
-            return {
-                'shape': [0, 0, 0],
-                'mean': 0.0
-            }
-        
-        # Ensure the image is in the expected format (H, W, C)
-        # OpenCV returns uint8, which is correct for mean calculation
-        return {
-            'shape': img.shape,
-            'mean': float(np.mean(img))
-        }
+        matches = bf.match(des_a, des_b)
     except Exception:
-        # Catch any unexpected errors during decoding
-        return {
-            'shape': [0, 0, 0],
-            'mean': 0.0
-        }
+        # Fallback if crossCheck fails or is too strict, though usually fine for ORB
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING)
+        matches = bf.knnMatch(des_a, des_b, k=2)
+        # Lowe's ratio test
+        matches = [(m[0] for m in matches if m[0].distance < 0.75 * m[1].distance)]
+        matches = list(matches)
+
+    if len(matches) < 4:
+        raise ValueError("Not enough good matches to compute a homography.")
 ```
 
-### r4-7b-notes / call_imdecode_none / greedy 0
+### r6-9b-notes-q5 / test-feature_homography-017 / greedy 0
 
 - rule `lint:broad-except`; also nothing
-- evidence: line 10: [broad-except] bare `except:` hides failures from the verifier
+- evidence: line 33: [broad-except] `except Exception` hides failures from the verifier
 
 ```python
 import cv2
 import numpy as np
 
-def solve(buf) -> dict:
-    try:
-        img = cv2.imdecode(np.frombuffer(buf, np.uint8), cv2.IMREAD_COLOR)
-        if img is None:
-            return {'shape': [0, 0, 0], 'mean': 0.0}
-        return {'shape': img.shape, 'mean': np.mean(img)}
-    except:
-        return {'shape': [0, 0, 0], 'mean': 0.0}
-```
-
-### r5-9b-notes / test-text_layout-015 / greedy 0
-
-- rule `lint:broad-except`; also ['convention:ValueError']
-- evidence: line 62: [broad-except] bare `except:` hides failures from the verifier
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, box, text, face, scale, thickness, color) -> dict:
+def solve(img_a, img_b) -> dict:
     """
-    Draws text centered in a rectangle on an image, scaling down the font if necessary.
+    Computes a 3x3 homography H mapping pixel coordinates from img_a to img_b.
+    Uses ORB feature detection and matching, followed by RANSAC refinement.
     
     Args:
-        img: uint8, shape HxWx3 (BGR).
-        box: tuple/list of 4 ints (x, y, w, h).
-        text: str.
-        face: int (cv2.FONT_HERSHEY_*).
-        scale: float (requested font scale).
-        thickness: int (stroke thickness).
-        color: tuple/list of 3 ints (BGR).
+        img_a (np.ndarray): Source image (uint8, HxWx3, BGR).
+        img_b (np.ndarray): Target image (uint8, HxWx3, BGR).
         
     Returns:
-        dict with keys:
-            'img': The modified image.
-            'scale': The actual scale used.
-            'text_size': Tuple (width, height) of the text bounding box.
+        dict: {'H': np.ndarray} where H is a 3x3 float32 matrix.
+              H maps points in img_a to img_b: p_b = H @ p_a.
+              Normalized such that H[2, 2] = 1.
     """
     
-    # Unpack box
-    x, y, w, h = box
+    # 1. Feature Detection and Description
+    # Using ORB as it is available in OpenCV 5.0 and robust for textured surfaces.
+    orb = cv2.ORB_create(nfeatures=500)
+    kp_a, des_a = orb.detectAndCompute(img_a, None)
+    kp_b, des_b = orb.detectAndCompute(img_b, None)
     
-    # Ensure inputs are in the expected numpy types for OpenCV operations
-    img = np.array(img, dtype=np.uint8)
-    color = np.array(color, dtype=np.uint8)
+    if des_a is None or des_b is None:
+        raise ValueError("No features detected in one or both images.")
+
+    # 2. Feature Matching
+    # Using BFMatcher with Hamming distance (standard for ORB)
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    try:
+        matches = bf.match(des_a, des_b)
+    except Exception:
+        # Fallback if crossCheck fails or is too strict, though unlikely with ORB
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING)
+        matches = bf.knnMatch(des_a, des_b, k=2)
+        # Lowe's ratio test
+        matches = [(m[0] for m in matches if m[0].distance < 0.75 * m[1].distance)]
+        matches = list(matches)
+
+```
+
+### r6-9b-notes-q5 / test-feature_homography-019 / greedy 0
+
+- rule `lint:broad-except`; also nothing
+- evidence: line 31: [broad-except] `except Exception` hides failures from the verifier
+
+```python
+import cv2
+import numpy as np
+
+def solve(img_a, img_b) -> dict:
+    """
+    Computes a 3x3 homography H mapping pixels from img_a to img_b.
+    Uses ORB features and RANSAC to find matches on the flat textured surface.
     
-    # We need to find the largest scale <= requested_scale such that the text fits.
-    # OpenCV's getTextSize returns (width, height, baseline).
-    # The width and height returned are the bounding box dimensions.
-    # We must ensure:
-    #   x + width <= x + w  => width <= w
-    #   y + height <= y + h => height <= h
+    Args:
+        img_a (np.ndarray): Source image (HxWx3, uint8, BGR).
+        img_b (np.ndarray): Target image (HxWx3, uint8, BGR).
+        
+    Returns:
+        dict: {'H': np.ndarray} where H is 3x3 float32, normalized such that H[2,2] == 1.
+    """
     
-    # Start with the requested scale.
-    current_scale = scale
+    # 1. Feature Detection and Description
+    # Using ORB as it is available in OpenCV 5.0 and robust for textured surfaces.
+    orb = cv2.ORB_create(nfeatures=500)
+    kp_a, des_a = orb.detectAndCompute(img_a, None)
+    kp_b, des_b = orb.detectAndCompute(img_b, None)
     
+    if des_a is None or des_b is None:
+        raise ValueError("No features detected in one or both images.")
+
+    # 2. Feature Matching
+    # Using BFMatcher with Hamming distance (required for ORB)
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    try:
+        matches = bf.match(des_a, des_b)
+    except Exception:
+        # Fallback if crossCheck fails or is too strict, though usually fine for ORB
+        bf = cv2.BFMatcher(cv2.NORM_HAMMING)
+        matches = bf.knnMatch(des_a, des_b, k=2)
+        # Lowe's ratio test
+        matches = [(m[0] for m in matches if m[0].distance < 0.75 * m[1].distance)]
+        matches = list(matches)
+
+    if len(matches) < 4:
+        raise ValueError("Not enough good matches to compute a homography.")
 ```
 
 ## timeout (0 shown)
@@ -414,206 +422,234 @@ def solve(img, box, text, face, scale, thickness, color) -> dict:
 
 ## convention (3 shown)
 
-### r2-4b / shape_chessboard / greedy 0
+### r5-9b-notes / test-text_layout-006 / greedy 0
 
-- rule `stage:contract`; also nothing
-- evidence: item 0: 'corners' should be float, got int32
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, cols, rows) -> dict:
-    """
-    Finds the inner corners of a chessboard using OpenCV's corner detection.
-    
-    Parameters:
-    - img: uint8, shape HxW, grayscale image of a flat chessboard.
-    - cols: int, number of inner corners per row.
-    - rows: int, number of inner corners per column.
-    
-    Returns:
-    - dict with key 'corners': float, shape Nx2, containing (x, y) of every inner corner.
-    """
-    # Convert to grayscale if not already
-    if len(img.shape) == 3:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Blur the image to reduce noise
-    img_blur = cv2.GaussianBlur(img, (5, 5), 0)
-    
-    # Detect corners using goodFeaturesToTrack
-    # The 'maxCorners' parameter should be set to the total number of corners we expect
-    # Total corners = cols * rows
-    max_corners = cols * rows
-    
-    # goodFeaturesToTrack returns a list of corners, each as [x, y]
-    # We use a high quality level and a large window size to ensure we get the inner corners
-    # The 'qualityLevel' and 'maxCorners' are tuned for chessboard patterns
-    corners = cv2.goodFeaturesToTrack(
-        img_blur,
-        maxCorners=max_corners,
-        qualityLevel=0.01,
-        minDistance=33
-    )
-    
-    # If no corners are found, return an empty list
-    if corners is None:
-        return {'corners': np.array([]).reshape(0, 2)}
-```
-
-### r3-9b / dtype_persp_points / greedy 0
-
-- rule `cv2-assertion`; also nothing
-- evidence: exception on input 0: error OpenCV(5.0.0) /io/opencv/modules/geometry/src/geometry.cpp:901: error: (-215:Assertion failed) src.checkVector(2, CV_32F) == 4 && dst.checkVector(2, CV_32F) == 4 in function 'getPerspectiveTransform'
-
-```python
-import cv2
-import numpy as np
-
-def solve(src, dst) -> dict:
-    """
-    Computes the 3x3 perspective transform matrix H that maps src corners to dst corners.
-    
-    Parameters:
-    src (np.ndarray): 4x2 array of source corner coordinates (x, y).
-    dst (np.ndarray): 4x2 array of destination corner coordinates (x, y).
-    
-    Returns:
-    dict: {'H': np.ndarray} where H is the 3x3 transformation matrix.
-    """
-    # Ensure inputs are float64 for calculation
-    src = np.array(src, dtype=np.float64)
-    dst = np.array(dst, dtype=np.float64)
-    
-    # OpenCV's getPerspectiveTransform expects 4x2 arrays and returns a 3x3 matrix
-    H = cv2.getPerspectiveTransform(src, dst)
-    
-    return {'H': H}
-```
-
-### r4-7b-notes / test-histogram_stats-003 / greedy 0
-
-- rule `verifier-contract`; also nothing
-- evidence: manufactured: scene 4005120: contract: 'hist' should be int, got float32; 'median' should be an int, got 65.0
-
-```python
-import cv2
-import numpy as np
-
-def solve(img) -> dict:
-    # Convert BGR to BT.601 luma
-    luma = 0.299 * img[:, :, 2] + 0.587 * img[:, :, 1] + 0.114 * img[:, :, 0]
-    
-    # Round to nearest integer
-    gray = np.round(luma).astype(np.uint8)
-    
-    # Calculate the histogram
-    hist = cv2.calcHist([gray], [0], None, [256], [0, 256]).flatten()
-    
-    # Calculate mean, standard deviation, and median
-    mean = np.mean(gray)
-    std = np.std(gray, ddof=0)  # Population standard deviation
-    median = np.median(gray)
-    
-    return {
-        'hist': hist,
-        'mean': mean,
-        'std': std,
-        'median': median
-    }
-```
-
-## algorithm (3 shown)
-
-### r1-7b / test-text_layout-014 / greedy 0
-
-- rule `verifier-value`; also nothing
-- evidence: manufactured: scene 4008561: 686 changed pixels outside the box (26, 45, 514, 55); ink bbox x 16..353, y 42..80
+- rule `ValueError`; also nothing
+- evidence: exec-only: exception on input 0: ValueError not enough values to unpack (expected 3, got 2)
 
 ```python
 import cv2
 import numpy as np
 
 def solve(img, box, text, face, scale, thickness, color) -> dict:
+    """
+    Draws text inside a specified bounding box, scaling the font down if necessary
+    to fit within the box. Returns the modified image, the used scale, and the text size.
+    
+    Parameters:
+    - img: uint8, shape (H, W, 3), BGR image.
+    - box: tuple/list of 4 ints (x, y, w, h).
+    - text: str, the text to draw.
+    - face: int, cv2.FONT_HERSHEY_* constant.
+    - scale: float, requested font scale.
+    - thickness: int, stroke thickness.
+    - color: tuple/list of 3 ints, BGR color.
+    
+    Returns:
+    - dict with keys 'img', 'scale', 'text_size'.
+    """
     x, y, w, h = box
-    (text_width, text_height), baseline = cv2.getTextSize(text, face, scale, thickness)
     
-    # Calculate the center of the box
-    center_x = x + w // 2
-    center_y = y + h // 2
+    # Convert color to tuple if it's a list or numpy array
+    if isinstance(color, (list, np.ndarray)):
+        color = tuple(color)
     
-    # Calculate the top-left corner of the text box
-    text_x = center_x - text_width // 2
-    text_y = center_y - text_height // 2
+    # Initial scale
+    current_scale = scale
     
-    # Ensure the text fits within the box
-    while text_width > w or text_height > h:
-        scale *= 0.9
-        (text_width, text_height), baseline = cv2.getTextSize(text, face, scale, thickness)
+    # Loop to find the largest scale that fits the text within the box
+    # We need to account for the baseline returned by getTextSize.
+    # The bounding box for the text is (width, height, baseline).
+    # The text is drawn at (x + (w - width)/2, y + (h - height)/2).
+    # We must ensure the drawn text does not exceed the box boundaries.
+    # Since getTextSize returns the bounding box of the text including the baseline,
+    # we just need to ensure width <= w and height <= h.
     
-    # Draw the text on the image
-    cv2.putText(img, text, (text_x, text_y + text_height), face, scale, color, thickness)
-    
-    return {
-        'img': img,
-        'scale': scale,
-        'text_size': (text_width, text_height)
-    }
+    while True:
+        # Get text size at current scale
+        # getTextSize returns (width, height, baseline)
 ```
 
-### r3-9b / test-hough_segments-021 / greedy 0
+### r6-9b-notes-q5 / test-components_stats-002 / greedy 0
 
-- rule `verifier-value`; also nothing
-- evidence: manufactured: scene 4001843: 4 rows for 5 strokes (strokes were missed)
+- rule `ValueError`; also nothing
+- evidence: exec-only: exception on input 0: ValueError too many values to unpack (expected 3)
+
+```python
+import numpy as np
+import cv2
+
+def solve(mask: np.ndarray, connectivity: int) -> dict:
+    """
+    Analyzes a boolean mask to find connected components.
+    
+    Parameters:
+    - mask: bool, shape (H, W). True = foreground.
+    - connectivity: int, 4 or 8.
+    
+    Returns:
+    - dict with 'count', 'areas', 'boxes', 'centroids'.
+    """
+    if mask.dtype != bool:
+        raise ValueError("mask must be boolean")
+    
+    h, w = mask.shape
+    
+    # Convert to uint8 for OpenCV functions that require it (findContours, connectedComponents)
+    # Note: OpenCV 5.0 findContours and connectedComponents require uint8 masks.
+    # We convert True->255, False->0.
+    mask_uint8 = (mask.astype(np.uint8) * 255).astype(np.uint8)
+    
+    # OpenCV 5.0 connectedComponents returns (num_labels, labels, centroids)
+    # labels shape: (H, W)
+    # centroids shape: (N, 1, 2) -> Note the middle axis is present in 5.0 for centroids? 
+    # Actually, the prompt says: "Results changed without raising... kmeans labels... unchanged".
+    # But for connectedComponents, let's check the standard behavior in 5.0.
+    # In 5.0, connectedComponents returns (num_labels, labels, centroids).
+    # The prompt note says: "findChessboardCorners... corners (N,2)... findNonZero (N,2)".
+    # It does NOT explicitly say connectedComponents centroids changed shape to (N,2).
+    # However, the prompt says: "Return shapes lost the middle axis: ... kmeans labels ... unchanged".
+    # Let's assume standard OpenCV 5.0 behavior for connectedComponents:
+    # num_labels: int
+    # labels: (H, W)
+    # centroids: (N, 1, 2) -> Wait, the prompt says "Return shapes lost the middle axis" for specific functions.
+    # It lists: HoughLinesP, findNonZero, findChessboardCorners, convexityDefects, minEnclosingTriangle, calcHist.
+    # It does NOT list connectedComponents centroids.
+    # BUT, the prompt also says: "Unchanged since 4.x... goodFeaturesToTrack...".
+```
+
+### s6-q4 / test-components_stats-016 / greedy 0
+
+- rule `TypeError`; also nothing
+- evidence: exec-only: exception on input 0: TypeError only integer scalar arrays can be converted to a scalar index
 
 ```python
 import cv2
 import numpy as np
 
-def solve(img: np.ndarray) -> dict:
-    """
-    Detects straight bright strokes on a dark background and returns their endpoints.
+def solve(mask, connectivity) -> dict:
+    # mask is bool HxW; convert to uint8 for cv2.connectedComponents
+    mask_u8 = mask.astype(np.uint8)
     
-    Args:
-        img: uint8, shape HxWx3. BGR; bright straight strokes 1 to 4 px wide, 
-             each at least 40 px long, on a dark uniform background.
+    # cv2.connectedComponents: connectivity 4 or 8
+    # Returns (num, labels) where num includes background (label 0)
+    num, labels = cv2.connectedComponents(mask_u8, connectivity=connectivity)
     
-    Returns:
-        dict with key 'segments': a list of [x1, y1, x2, y2] for each stroke.
-        Sorting: by x1 ascending, then y1 ascending.
-        Ordering of points: (x1, y1) has smaller x (or smaller y if x equal).
-    """
+    # num includes background (label 0), so foreground components are 1..num-1
+    # If no foreground, num == 1
+    if num <= 1:
+        return {
+            'count': 0,
+            'areas': np.array([], dtype=int),
+            'boxes': np.array([], dtype=int).reshape(0, 4),
+            'centroids': np.array([], dtype=np.float64).reshape(0, 2)
+        }
     
-    # Convert BGR to grayscale
+    # For each component (label 1 to num-1), compute area, bounding box, centroid
+    areas = []
+    boxes = []
+    centroids = []
+    
+    for label in range(1, num):
+        # Get pixels belonging to this component
+        # Use np.where on labels == label
+        ys, xs = np.where(labels == label)
+        if len(xs) == 0:
+            continue
+        
+        area = len(xs)
+        x_min = int(xs.min())
+        x_max = int(xs.max())
+        y_min = int(ys.min())
+        y_max = int(ys.max())
+        w = x_max - x_min + 1
+        h = y_max - y_min + 1
+```
+
+## algorithm (3 shown)
+
+### r4-7b-notes / test-contour_area-000 / greedy 0
+
+- rule `verifier-value`; also nothing
+- evidence: manufactured: scene 4000000: count 1, but the scene has 4 shapes
+
+```python
+import cv2
+import numpy as np
+
+def solve(img) -> dict:
+    # Convert the image to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Threshold to isolate bright strokes against dark background
-    # Assuming background is dark and strokes are bright. 
-    # A simple threshold should work. Let's use Otsu's thresholding after Gaussian filtering.
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    # Threshold the image to create a binary image
+    _, binary = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
     
-    # Morphological operations to clean up noise and ensure strokes are solid
-    kernel = np.ones((3,3), np.uint8)
-    dilated_thresh = cv2.dilate(thresh, kernel, iterations=2)
-    eroded_thresh = cv2.erode(dilated_thresh, kernel, iterations=1)
+    # Find contours in the binary image
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    # Find contours
-    contours, _ = cv2.findContours(eroded_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # Calculate the area of each contour
+    areas = [cv2.contourArea(contour) for contour in contours]
     
-    segments = []
+    # Sort the areas in descending order
+    areas.sort(reverse=True)
     
+    # Count the number of shapes
+    count = len(areas)
+    
+    return {'areas': np.array(areas), 'count': count}
+```
+
+### r4-7b-notes / test-hough_segments-000 / greedy 0
+
+- rule `verifier-value`; also nothing
+- evidence: manufactured: scene 4001000: 2 rows for 3 strokes (strokes were missed)
+
+```python
+import cv2
+import numpy as np
+
+def solve(img) -> dict:
+    # Convert the image to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Apply a Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    
+    # Use Canny edge detection to find edges
+    edges = cv2.Canny(blurred, 50, 150)
+    
+    # Find contours of the edges
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Filter contours to find only the straight strokes
+    strokes = []
     for contour in contours:
         # Approximate the contour to a polygon
-        epsilon = 5.0  # Adjust based on stroke width (1-4px), 5 should be safe for 40px+ length
+        epsilon = 0.02 * cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, epsilon, True)
+        
+        # Check if the contour is a straight line
+        if len(approx) == 2:
+            x1, y1 = approx[0][0]
+            x2, y2 = approx[1][0]
+            # Ensure x1 < x2 and y1 < y2
+            if x1 > x2:
+                x1, x2 = x2, x1
+            if y1 > y2:
+                y1, y2 = y2, y1
+            strokes.append([x1, y1, x2, y2])
+    
+    # Sort the strokes by x1, then y1
+    strokes.sort(key=lambda x: (x[0], x[1]))
+    
+    # Return the result as a dictionary
+    return {'segments': strokes}
 ```
 
-### r5-9b-notes / test-hough_segments-021 / greedy 0
+### r5-9b-notes / test-histogram_stats-010 / greedy 0
 
 - rule `verifier-value`; also nothing
-- evidence: manufactured: scene 4001841: 2 rows for 3 strokes (strokes were missed)
+- evidence: manufactured: scene 4005402: median 157, expected the lower median 156 (upper median 158, N = 2296)
 
 ```python
 import cv2
@@ -621,148 +657,184 @@ import numpy as np
 
 def solve(img: np.ndarray) -> dict:
     """
-    Detects straight bright strokes on a dark background and returns their endpoints.
-    
+    Computes the 256-level histogram, mean, standard deviation, and median
+    of the BT.601 luma values of a BGR image.
+
     Args:
-        img: uint8, shape HxWx3 (BGR). Bright strokes 1-4px wide, >=40px long.
-             Dark uniform background. Strokes don't touch/cross, >=20px apart, clear of border.
-    
+        img (np.ndarray): uint8 image of shape (H, W, 3) in BGR format.
+
     Returns:
-        dict with key 'segments': list of [x1, y1, x2, y2] for each stroke.
-        (x1, y1) has smaller x (or smaller y if x equal). Sorted by x1, then y1.
+        dict:
+            - 'hist': np.ndarray of shape (256,), integer counts.
+            - 'mean': float, arithmetic mean.
+            - 'std': float, population standard deviation.
+            - 'median': int, lower median.
     """
-    
-    # Convert BGR to grayscale
+    # Convert BGR to grayscale using BT.601 coefficients
+    # cv2.COLOR_BGR2GRAY uses the standard conversion which is effectively BT.601
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Threshold to isolate bright strokes. 
-    # Since background is dark and strokes are bright, a simple threshold works.
-    # We use Otsu's thresholding after Gaussian blurring to handle noise if any,
-    # but given the description, a fixed high threshold relative to max might be safer.
-    # However, Otsu is robust for bimodal histograms (dark bg, bright strokes).
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    _, thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    
-    # Morphological operations to connect broken parts of strokes and remove noise
-    # Strokes are straight and at least 40px long.
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
-    # Dilate to connect gaps within a stroke
-    dilated = cv2.dilate(thresh, kernel, iterations=2)
-    # Erode to restore approximate original width (though width is ambiguous)
-    eroded = cv2.erode(dilated, kernel, iterations=2)
-    
-    # Find contours
-    contours, _ = cv2.findContours(eroded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    segments = []
-    
+
+    # Calculate histogram
+    # hist is returned as a float array by calcHist, so we cast to int
+    hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+    hist = hist.astype(np.int32)
+
+    # Calculate mean and standard deviation
+    # We use the flat array of the image to compute statistics over all pixels
+    flat_gray = gray.flatten()
+    mean_val = float(np.mean(flat_gray))
+    std_val = float(np.std(flat_gray, ddof=0))  # ddof=0 for population std
+
+    # Calculate median
+    # np.median returns a float, we cast to int as requested
+    median_val = int(np.median(flat_gray))
+
+    return {
+        'hist': hist,
+        'mean': mean_val,
 ```
 
 ## other (3 shown)
 
-### r1-7b / test-chessboard_corners-013 / greedy 0
+### r2-4b / test-text_layout-014 / greedy 0
 
-- rule `exception:ValueError`; also nothing
-- evidence: exec-only: exception on input 0: ValueError Chessboard not found in the image
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, squares_x, squares_y) -> dict:
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Find the chessboard corners
-    ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), None, cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_NORMALIZE_IMAGE)
-    
-    if not ret:
-        raise ValueError("Chessboard not found in the image")
-    
-    # Refine the corner locations
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-    corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
-    
-    # Convert the corners to the required format
-    corners = corners.reshape(-1, 2)
-    
-    # Return the result as a dictionary
-    return {'corners': corners}
-```
-
-### r1-7b / test-chessboard_corners-019 / greedy 0
-
-- rule `exception:ValueError`; also nothing
-- evidence: exec-only: exception on input 0: ValueError Chessboard not found in the image
+- rule `exception:TypeError`; also nothing
+- evidence: exec-only: exception on input 0: TypeError '>' not supported between instances of 'tuple' and 'int'
 
 ```python
 import cv2
-import numpy as np
 
-def solve(img, squares_x, squares_y) -> dict:
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    
-    # Find the chessboard corners
-    ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), None)
-    
-    if not ret:
-        raise ValueError("Chessboard not found in the image")
-    
-    # Refine the corner locations to sub-pixel accuracy
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-    corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
-    
-    # Convert the corners to the required format
-    corners = corners.reshape(-1, 2).astype(np.float)
-    
-    return {'corners': corners}
-```
-
-### r5-9b-notes / test-chessboard_corners-018 / greedy 0
-
-- rule `exception:ValueError`; also nothing
-- evidence: exec-only: exception on input 0: ValueError Chessboard corners not found.
-
-```python
-import cv2
-import numpy as np
-
-def solve(img, squares_x, squares_y) -> dict:
+def solve(img, box, text, face, scale, thickness, color) -> dict:
     """
-    Detects chessboard corners with sub-pixel accuracy and returns them in row-major order.
+    Draws text centered in a given box on a copy of the image.
+    Adjusts the font scale if the text exceeds the box dimensions.
     
-    Args:
-        img (np.ndarray): uint8, shape (H, W, 3), BGR image.
-        squares_x (int): Number of squares along the board's top edge (width).
-        squares_y (int): Number of squares along the board's left edge (height).
-        
+    Parameters:
+        img: uint8, shape HxWx3, BGR image.
+        box: int, shape 4, (x, y, w, h) coordinates of the rectangle.
+        text: str, the text to draw.
+        face: int, OpenCV font face constant.
+        scale: float, initial font scale.
+        thickness: int, stroke thickness.
+        color: int, BGR color tuple.
+    
     Returns:
-        dict:
-            'corners' (np.ndarray): float32, shape (N, 2), where N = (squares_x - 1) * (squares_y - 1).
-            Coordinates are in row-major order starting from the board's top-left corner.
+        dict with keys:
+            - 'img': modified image
+            - 'scale': actual scale used
+            - 'text_size': (width, height) of the text
     """
+    # Make a copy of the image to avoid modifying the original
+    img_copy = img.copy()
     
+    # Extract box coordinates
+    x, y, w, h = box
+    
+    # Calculate initial text size
+    text_size = cv2.getTextSize(text, face, scale, thickness)
+    text_w, text_h = text_size
+    
+    # Determine the maximum scale that fits within the box
+    # The text must fit entirely within the box, including the baseline
+    # We need to ensure:
+    #   text_w <= w
+    #   text_h <= h
+    # If the text is too wide, we scale down proportionally
+    # If the text is too tall, we scale down proportionally
+    
+```
+
+### s6-q5 / test-chessboard_corners-000 / greedy 0
+
+- rule `exception:ValueError`; also nothing
+- evidence: exec-only: exception on input 0: ValueError Could not detect chessboard corners
+
+```python
+import cv2
+import numpy as np
+
+def solve(img, squares_x, squares_y) -> dict:
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     
-    # Find chessboard corners
-    # Note: findChessboardCorners returns corners in row-major order starting from the top-left.
-    # However, the documentation states that if the top-left square is white, the order is reversed.
-    # The problem statement says "its top-left square may be black or white".
-    # We need to handle the reversal if the top-left square is white.
+    # Detect chessboard corners
+    # The board may have top-left square black or white, so we need to handle both cases
+    # cv2.findChessboardCorners returns corners in the order:
+    # For a board with squares_x columns and squares_y rows:
+    # The corners are returned in row-major order of the board's frame
+    # But we need to determine the orientation
+    
+    # findChessboardCorners returns corners as (N, 1, 2)
+    # N = (squares_x - 1) * (squares_y - 1)
+    
+    # The function returns corners in the order:
+    # First the top-left corner, then moving right along the top row, then down to the next row, etc.
+    # This is exactly what we need for row-major order in the board's frame
     
     ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), None)
     
     if not ret:
-        raise ValueError("Chessboard corners not found.")
+        # Try with different parameters if needed
+        # But the problem states the board is visible and upright
+        raise ValueError("Could not detect chessboard corners")
     
-    # Refine corners to sub-pixel accuracy
-    corners = cv2.cornerSubPix(gray, corners, (5, 5), (-1, -1), cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.3)
+    # corners shape is (N, 1, 2) in OpenCV 4.x, but in 5.0 it might be different
+    # Let's reshape to be safe
+    corners = corners.reshape(-1, 2)
     
-    # Check the color of the top-left square to determine if the order needs to be reversed.
-    # The corners array contains the centers of the squares.
-    # The top-left corner in the image corresponds to the first corner in the array if the top-left square is black.
-    # If the top-left square is white, the order is reversed.
+    # The corners are already in row-major order in the board's frame
+    # First corner is the top-left corner of the board
+    # Then we go left to right along the top row, then down to the next row, etc.
+    
+    return {
+        'corners': corners.astype(np.float64)
+    }
+```
+
+### s6-q8 / test-chessboard_corners-004 / greedy 0
+
+- rule `exception:ValueError`; also nothing
+- evidence: exec-only: exception on input 0: ValueError Chessboard corners not found
+
+```python
+import cv2
+import numpy as np
+
+def solve(img, squares_x, squares_y) -> dict:
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    
+    # Detect chessboard corners
+    # findChessboardCorners returns corners in the order:
+    # row-major order of the board's corners (not inner corners)
+    # Actually, findChessboardCorners returns the corners of the squares,
+    # which are the inner corners of the board.
+    # The corners are returned in row-major order of the board's grid.
+    
+    # The board has squares_x columns and squares_y rows of squares.
+    # The corners returned are the inner corners, so there are (squares_x-1) * (squares_y-1) corners.
+    # They are returned in row-major order of the board's grid.
+    
+    # Let's detect the chessboard
+    ret, corners = cv2.findChessboardCorners(gray, (squares_x, squares_y), None)
+    
+    if not ret:
+        raise ValueError("Chessboard corners not found")
+    
+    # Refine corners with sub-pixel accuracy
+    corners = cv2.refineCorner(corners, gray, (squares_x, squares_y))
+    
+    # corners shape should be (N, 1, 2) in OpenCV 4.x, but in 5.0 it might be different
+    # Let's check the shape
+    if corners.ndim == 3:
+        corners = corners.reshape(-1, 2)
+    elif corners.ndim == 2:
+        corners = corners.reshape(-1, 2)
+    
+    # corners should now be (N, 2) where N = (squares_x - 1) * (squares_y - 1)
+    # The order is row-major in the board's frame: first the corner nearest the board's top-left,
+    # then left to right along the board's top row of corners, then the next row down, etc.
+    
+    # This is exactly what findChessboardCorners returns, so we just need to make sure the shape is correct.
     
 ```

@@ -42,6 +42,9 @@ RUNGS: dict[str, Rung] = {r.name: r for r in (
     Rung("s6-q4", "opencv-expert-q4", think=False),
     Rung("s6-q5", "opencv-expert-q5", think=False),
     Rung("s6-q8", "opencv-expert-q8", think=False),
+    # Stage 6: Q5_K_M ships (the smallest quant within noise of the best), so its like-for-like comparator is the same
+    # base + notes at Q5_K_M, quantized from the base BF16 GGUF with the same llama.cpp build. r5 is the base at Q4_K_M.
+    Rung("r6-9b-notes-q5", "base-qwen3.5-9b-q5", think=False, notes=True),
 )}
 
 MODES: dict[str, dict] = {

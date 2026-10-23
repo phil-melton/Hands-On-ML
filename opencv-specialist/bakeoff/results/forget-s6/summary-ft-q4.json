@@ -1,0 +1,406 @@
+{
+ "arm_a": "base",
+ "arm_b": "ft",
+ "arms": {
+  "base": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.7739944271643041,
+   "ci_lo": 0.6736074258805683,
+   "classes": {
+    "pass": 218,
+    "runtime": 17,
+    "syntax": 10,
+    "wrong": 55
+   },
+   "code_path": {
+    "fence": 288,
+    "fence-unclosed": 12
+   },
+   "decode_tps": {
+    "max": 54.047014146430634,
+    "mean": 53.470273911213944,
+    "median": 53.47504155785583,
+    "p90": 53.72443699152546
+   },
+   "extract": {
+    "fence": 288,
+    "fence-unclosed": 12
+   },
+   "gen_wall_s": {
+    "max": 39.035,
+    "mean": 5.9434233333333335,
+    "median": 4.102,
+    "p90": 8.237100000000002
+   },
+   "gen_wall_total_min": 29.717116666666666,
+   "grader_errors": 0,
+   "lint_flagged": 11,
+   "lint_rules": {
+    "import": 1,
+    "syntax": 10
+   },
+   "model": "base-qwen3.5-9b",
+   "n": 300,
+   "pass1": 0.7266666666666667,
+   "pass_if_lint_enforced": 217,
+   "passed": 218,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.025730800105594736,
+   "think": false,
+   "tokens": {
+    "max": 2048,
+    "mean": 304.24333333333334,
+    "median": 206.0,
+    "p90": 429.1
+   },
+   "truncated": 12
+  },
+  "ft": {
+   "blocked_by": {},
+   "capabilities": [
+    "tools",
+    "thinking",
+    "completion"
+   ],
+   "ci_hi": 0.7677809778720466,
+   "ci_lo": 0.666656114789153,
+   "classes": {
+    "pass": 216,
+    "runtime": 14,
+    "timeout": 3,
+    "wrong": 67
+   },
+   "code_path": {
+    "fence": 300
+   },
+   "decode_tps": {
+    "max": 54.29819581903892,
+    "mean": 53.701099941512624,
+    "median": 53.70849583285775,
+    "p90": 53.97281300115162
+   },
+   "extract": {
+    "fence": 300
+   },
+   "gen_wall_s": {
+    "max": 7.683,
+    "mean": 2.74961,
+    "median": 2.651,
+    "p90": 3.9108000000000005
+   },
+   "gen_wall_total_min": 13.748050000000001,
+   "grader_errors": 0,
+   "lint_flagged": 1,
+   "lint_rules": {
+    "import": 1
+   },
+   "model": "opencv-expert-q4",
+   "n": 300,
+   "pass1": 0.72,
+   "pass_if_lint_enforced": 215,
+   "passed": 216,
+   "prompt_tokens": {
+    "max": 218,
+    "mean": 96.08,
+    "median": 88.0,
+    "p90": 134.0
+   },
+   "se": 0.02592296279363144,
+   "think": false,
+   "tokens": {
+    "max": 395,
+    "mean": 135.16333333333333,
+    "median": 130.0,
+    "p90": 195.10000000000002
+   },
+   "truncated": 0
+  }
+ },
+ "decoding": {
+  "num_ctx": 4096,
+  "num_predict": 2048,
+  "repeat_penalty": 1.0,
+  "temperature": 0.0
+ },
+ "discordant": [
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/120"
+  },
+  {
+   "other_cls": "timeout",
+   "other_error": null,
+   "passed": "base",
+   "task_id": "Mbpp/126"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft",
+   "task_id": "Mbpp/135"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/16"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "ft",
+   "task_id": "Mbpp/161"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/165"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/20"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/251"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/259"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/293"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/392"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/429"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/432"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/435"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/437"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/446"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/473"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/475"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/564"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/600"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/631"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/633"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft",
+   "task_id": "Mbpp/641"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/643"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "IndexError",
+   "passed": "ft",
+   "task_id": "Mbpp/67"
+  },
+  {
+   "other_cls": "syntax",
+   "other_error": "SyntaxError",
+   "passed": "ft",
+   "task_id": "Mbpp/734"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/737"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/741"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "TypeError",
+   "passed": "base",
+   "task_id": "Mbpp/742"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "base",
+   "task_id": "Mbpp/745"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "AttributeError",
+   "passed": "base",
+   "task_id": "Mbpp/763"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/772"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/773"
+  },
+  {
+   "other_cls": "timeout",
+   "other_error": null,
+   "passed": "base",
+   "task_id": "Mbpp/781"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft",
+   "task_id": "Mbpp/785"
+  },
+  {
+   "other_cls": "runtime",
+   "other_error": "ValueError",
+   "passed": "ft",
+   "task_id": "Mbpp/80"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/800"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/801"
+  },
+  {
+   "other_cls": "wrong",
+   "other_error": "AssertionError",
+   "passed": "ft",
+   "task_id": "Mbpp/84"
+  },
+  {
+   "other_cls": "syntax",
+   "other_error": "SyntaxError",
+   "passed": "ft",
+   "task_id": "Mbpp/9"
+  }
+ ],
+ "n": 300,
+ "ollama_version": "0.40.4",
+ "paired": {
+  "a_only": 21,
+  "b_only": 19,
+  "both": 197,
+  "ci_hi": 0.04861613954857219,
+  "ci_lo": -0.035269530326965094,
+  "diff": 0.006666666666666667,
+  "drop": 0.006666666666666667,
+  "n": 300,
+  "neither": 63,
+  "p": 0.8746293123804207,
+  "p_mcnemar": 0.8746293123804207,
+  "se": 0.021113555766061404
+ },
+ "run": "/home/ptmel/opencv-expert/forgetting-runs/forget-s6",
+ "sandbox_s": {
+  "max": 90.092,
+  "mean": 0.5475666666666666,
+  "median": 0.08,
+  "p90": 0.087
+ },
+ "slice_sha256": "4820ab7de00c34df1f419ac26c73ba97beff8984c6684cf91023287e0a952af9",
+ "system": "You are a helpful Python programmer. Write the requested function.",
+ "warmup_prompt_tokens": {
+  "base": 67,
+  "ft": 67
+ }
+}
