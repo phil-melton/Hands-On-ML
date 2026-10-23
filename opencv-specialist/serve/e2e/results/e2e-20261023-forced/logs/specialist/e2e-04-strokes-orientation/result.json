@@ -1,0 +1,120 @@
+{
+  "usage": {
+    "input": 8,
+    "cache_creation": 9195,
+    "cache_read": 26310,
+    "output": 1428,
+    "fresh": 10631,
+    "total": 36941
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 8,
+    "cache_creation": 9195,
+    "cache_read": 26310,
+    "output": 48,
+    "fresh": 9251,
+    "total": 35561
+  },
+  "cost_usd": 0.056338,
+  "num_turns": 4,
+  "n_assistant_messages": 4,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "mcp__opencv-expert__opencv_solve": 2,
+    "Write": 1
+  },
+  "n_tool_calls": 3,
+  "n_tool_errors": 0,
+  "n_solve": 2,
+  "n_solve_verified": 1,
+  "solve": {
+    "calls": 2,
+    "verified": 1,
+    "unverified": 1,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\specialist\\e2e-04-strokes-orientation",
+    "session_id": "978b8404-03d0-4ee6-a7f5-b19fddaa7347",
+    "tools": [
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-04-strokes-orientation",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 117.14334276498994,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:38:37.764957+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/specialist/e2e-04-strokes-orientation",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Write",
+    "--allowedTools",
+    "Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\specialist\\e2e-04-strokes-orientation",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

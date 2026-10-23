@@ -1,0 +1,121 @@
+{
+  "usage": {
+    "input": 6,
+    "cache_creation": 6197,
+    "cache_read": 22344,
+    "output": 1496,
+    "fresh": 7699,
+    "total": 30043
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 6,
+    "cache_creation": 6197,
+    "cache_read": 22344,
+    "output": 27,
+    "fresh": 6230,
+    "total": 28574
+  },
+  "cost_usd": 0.044228800000000006,
+  "num_turns": 3,
+  "n_assistant_messages": 3,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 2
+  },
+  "n_tool_calls": 2,
+  "n_tool_errors": 1,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-10-board-scale-parts",
+    "session_id": "44f890f0-20d1-4008-b2fe-00f97304bd40",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-10-board-scale-parts",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 16.799730192986317,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:31:38.020983+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-10-board-scale-parts",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-10-board-scale-parts",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

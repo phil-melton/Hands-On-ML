@@ -848,3 +848,11 @@ def test_timeout_max_turns_and_crash_are_recorded(stub_run, monkeypatch):
     R.main(base + ["--rerun", "--max-turns", "3"])
     res = json.loads((run / "logs" / "alone" / tid / "result.json").read_text())
     assert res["stopped_by"] == "max_turns" and res["exit_code"] == 1 and res["usage"]["total"] == 10
+
+
+def test_builtin_tools_narrows_both_tool_lists_for_forced_delegation():
+    kw = dict(model="sonnet", claude_exe="/c/claude.exe", mcp_config_win=r"C:\x\mcp.json", workdir_win=r"C:\x\w")
+    forced =R.build_command(arm="specialist", builtin_tools=("Write",), **kw)
+    assert forced[forced.index("--tools") + 1] == "Write"
+    assert forced[forced.index("--allowedTools") + 1].split(",") == ["Write", R.MCP_TOOL]
+    assert R.build_command(arm="specialist", **kw) == R.build_command(arm="specialist", builtin_tools=R.BUILTIN_TOOLS, **kw)

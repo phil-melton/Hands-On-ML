@@ -1,0 +1,35 @@
+{
+  "task": "e2e-11-view-roi-map",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "H": {
+      "ok": true,
+      "error": 0.21437997417942162,
+      "tol": 3.772167680771589,
+      "detail": "probe error at the ROI corners"
+    },
+    "roi_corners_b": {
+      "ok": true,
+      "error": 0.21437734210765988,
+      "tol": 3.772167680771589,
+      "detail": "per-point errors 0.214, 0.138, 0.204, 0.134"
+    },
+    "roi_area_b_px2": {
+      "ok": true,
+      "error": 0.5004119695149711,
+      "tol": 2392.2027651595754,
+      "detail": "got 45906, truth 45906.5"
+    },
+    "roi_centroid_b": {
+      "ok": true,
+      "error": 0.04634864310100932,
+      "tol": 3.772167680771589,
+      "detail": "got [192.96387481689453, 136.43585443496704], truth [192.92296347789113, 136.45763651609474]"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

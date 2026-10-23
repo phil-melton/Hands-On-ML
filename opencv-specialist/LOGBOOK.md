@@ -1,9 +1,25 @@
 # opencv-expert logbook
 
-**Next step:** Stage 7 (MCP server `serve/server.py` with runtime metamorphic checks, `claude mcp add`, 5-task smoke
-test, the 20-task E2E set for criterion 4), then the final report (⛔). Stage 6 ships `opencv-expert` = Q5_K_M
-(`serve/Modelfile`); its test-set and MBPP+ results are below, with the like-for-like Q5 base comparator `r6-9b-notes-q5`.
-Colab spend so far 39.44 CU (Stage 4 23.15, Stage 5 16.29); Stages 6-7 run locally (0 CU).
+**Next step:** ⛔ Final report sent to Phil (Claude doc "opencv-expert final report",
+https://claude.ai/artifact/8o5UjqcHmSbgx7hHuaXww4): wait for his six decisions (ship Q5; record verdicts; close the
+project; skip the bf16 rung; fix the api-drift white paper next session; free ~49 GB of GGUFs). All stages are done.
+Total spend 39.44 Colab CU (~$3.94), $0 API.
+
+## 2026-10-23 Final report (⛔ gate): criteria target vs measured
+
+Sent as a Claude doc with a Decision dropdown per proposal (https://claude.ai/artifact/8o5UjqcHmSbgx7hHuaXww4).
+
+| criterion | target | measured (shipped Q5 vs base) | verdict |
+|---|---|---|---|
+| 1a specialization, test | >= +10 pts, p < 0.05 | +41.6 like-for-like (+38.2 vs the Q4 base; Q4 +22.7) | met |
+| 1b specialization, 5.0 subset | >= +25 pts | +57.7 (+51.0; Q4 +28.2) | met |
+| 2 generalization | held-out gain >= half in-family | -6.8 vs +33.1 needed (-4.5; Q4 -6.8) | not met |
+| 3 forgetting, MBPP+ | drop <= 3 pts | +4.0 like-for-like, n.s. (+2.7 vs the Q4 base; Q4 +0.7) | met as frozen, missed like-for-like |
+| 4 integration, E2E | >= alone, fewer orchestrator tokens | 20/20 = 20/20 offered (tool unused, 1.15x tokens); forced 19/20 at 1.60x | not met |
+
+Spend: Stage 4 23.15 CU, Stage 5 16.29 CU, total 39.44 CU (~$3.94 at $0.10/CU); 660.56 CU left; $0 API; the E2E sessions
+used Phil's Claude subscription. Surprises and next steps are in the doc (breadth of families for transfer; an E2E set
+the orchestrator cannot do alone; Q4 margin; a bf16 rung for the serving gap; a larger forgetting slice).
 
 ## 2026-10-23 Stage 7 built: MCP server, runtime metamorphic checks, E2E set; prediction
 
@@ -29,6 +45,37 @@ Tests: 46 (serve) + 98 (e2e); full suite 1,270 passed, 4 skipped.
 Orchestrator: Sonnet 5.5 (`--model sonnet`), signed in through Phil's subscription (no API key: plan usage, $0 API).
 Prediction (Rule 1): alone 20 x ~400k tokens (the `total` counter, mostly cache reads) and ~3 min per task; specialist
 20 x ~250k and ~2.5 min: ~13M tokens, ~1.8 h sequential. First one task per arm to check the plumbing.
+Plumbing check (after Phil re-ran `claude auth login`; the first attempt failed on an expired OAuth session): task 15,
+both arms PASS 4/4, 2 turns, one Bash call, alone 14.6k tokens / 15 s, specialist 16.9k / 16 s. The specialist arm had
+`opencv-expert` connected and did not call it. The token prediction was >25x high (Rule 1): I assumed the full Claude
+Code prompt and ~10 turns; with three built-in tools the session prompt is ~7k tokens and a one-script task takes 2
+turns. Revised: ~15-60k tokens and 0.3-3 min per session, ~40 sessions, under 1 h in all.
+Measured, run `e2e-20261023` (06:19-06:28): both arms 20/20; the specialist arm never called `opencv_solve`. Since
+AGENT_PROMPT's smoke test is "through the tool", a third arm, run `e2e-20261023-dir`: the same tasks and inputs, the
+specialist prompt plus one TOOLS paragraph telling the orchestrator to use `opencv_solve` for the image-processing steps
+(the alone arm is copied from the main run). Prediction: 2-4 tool calls per task at 15-50 s each, ~1-3 min and ~20-40k
+tokens per session, ~40 min in all.
+Measured, directed (06:29-06:35): 20/20 PASS, but `opencv_solve` was called in 1 of 20 sessions (task 1: one verified
+call for the corners, then arithmetic); Sonnet ignores the instruction and writes one script. So a fourth variant, run
+`e2e-20261023-forced`: the specialist arm with Write + `opencv_solve` only (`run --builtin-tools Write`, new option,
+default unchanged, test added), the prompt's Python paragraph replaced by "no shell; image steps go through
+`opencv_solve`; arithmetic yourself; Write answer.json". Its first 5 tasks are AGENT_PROMPT's smoke test through the
+tool. Prediction: 2-4 calls per task at 15-50 s, ~1-3 min and ~25-50k tokens per session (each tool result carries its
+code), ~40 min.
+Measured, forced (06:37-07:06): 14/20 vs alone 20/20 (sign test p 0.031); 35 `opencv_solve` calls, 27 verified, all 20
+sessions used it; tokens median 1.57x alone (25.8k vs 15.4k), wall 3.0x; smoke test (tasks 1-5): 5 sessions, 6 calls, 5
+verified, 4 tasks pass. Watchdog fired at 06:49 and 07:00 (Ollama unloaded, reloaded on the next call; no failed request).
+All 6 failures are tool-interface defects, not the model: 4 tasks lost precision because `server._py` shortened every
+float to 8 digits (`46.541373` vs truth 46.541373155555675; the family tolerance is 1e-9 relative), and the 2 text-layout
+tasks need `out.png` in the work dir, which a session without a shell cannot copy from the tool's run dir. Fixed:
+full-precision floats, and an optional `save_dir` that copies image outputs as `<name>.png` (2 tests; 48 pass). No
+tolerance or grader changed. Rerun as `e2e-20261023-forced2` (same prompts) to measure the fixed tool; forced1 stays on record.
+Measured, forced2 (07:09-07:43): 19/20 vs 20/20 (p 1.0); 39 calls, 32 verified; tokens median 1.60x (25.6k), wall 3.0x.
+The one failure (task 13) is the orchestrator's: it found the box but never asked the tool to render `out.png`.
+**Criterion 4: not met.** Offered, the tool is never used (20/20 = 20/20 at 1.15x tokens, sign test over tasks p 0.003
+on tokens); told to use it, used once (1.17x); forced, success 14/20 then 19/20 at 1.57-1.60x tokens. Sonnet 5.5 solves
+these tasks alone in one script; a delegation round trip plus a tool result that carries the code costs more than that.
+Results (reports, configs, prompts, grades, per-session results, gzipped transcripts) in `serve/e2e/results/`.
 
 ## 2026-10-23 Stage 6 evaluation: test set, quant ladder, forgetting; ship Q5_K_M (local GPU, 0 CU)
 
@@ -93,7 +140,7 @@ because I ran the full test suite on the CPU during generation; it cost the repl
 | 1b specialization, 5.0 subset | >= +25, p < 0.05 | +28.2, p 0.003: met | +51.0, p 3e-8: met | +57.7, p 6e-11: met |
 | 2 generalization | held-out gain >= half in-family | -6.8 vs +19.5 needed: **not met** | -4.5 (CI [-13.5, +4.5]) vs +30.5: **not met** | -6.8 (CI [-20.1, +6.5]) vs +33.1: **not met** |
 | 3 forgetting (MBPP+) | drop <= 3 | +0.7: met (CI to +4.9) | +2.7: met (CI to +6.9) | +4.0 (CI [-0.4, +8.4], p 0.096): **not met** |
-| 4 integration | Stage 7 | - | - | - |
+| 4 integration | >= alone, fewer tokens | **not met** (Stage 7 entry) | | |
 
 Generalization fails outright, not for lack of power: the upper CI end is below the target. Chessboard stays 0 % for
 every model (r5 too), and color_segmentation loses 2 prompts (86.4 -> 77.3). The fine-tune learned the trained

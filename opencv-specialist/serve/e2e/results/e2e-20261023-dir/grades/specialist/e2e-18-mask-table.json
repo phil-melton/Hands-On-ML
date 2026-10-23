@@ -1,0 +1,47 @@
+{
+  "task": "e2e-18-mask-table",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "n_components": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_area": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_bbox": {
+      "ok": true,
+      "error": null,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_centroid": {
+      "ok": true,
+      "error": 0.0,
+      "tol": 1e-06,
+      "detail": "got [104.0, 134.5], truth [104.0, 134.5]"
+    },
+    "n_touching_border": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "n_single_pixel": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 6,
+  "n_pass": 6
+}

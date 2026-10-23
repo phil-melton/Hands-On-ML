@@ -1,0 +1,35 @@
+{
+  "task": "e2e-14-field-label-shrink",
+  "status": "ok",
+  "detail": "",
+  "passed": false,
+  "keys": {
+    "box": {
+      "ok": true,
+      "error": null,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "scale": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "text_size": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "layout": {
+      "ok": false,
+      "error": null,
+      "tol": null,
+      "detail": "out.png is missing"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 3
+}

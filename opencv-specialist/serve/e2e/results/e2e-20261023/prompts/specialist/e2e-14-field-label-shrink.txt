@@ -1,0 +1,22 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-14-field-label-shrink
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023\specialist\e2e-14-field-label-shrink
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-14-field-label-shrink/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The image shows a form field: a one-pixel-wide rectangular outline on a plain background. The field's interior is the set of pixels strictly inside the outline (the outline itself is not part of it). Draw the text "OFFS-92" on a copy of the image with cv2.putText using the Hershey font cv2.FONT_HERSHEY_COMPLEX_SMALL (value 5), requested font scale 2.19, line thickness 3 and BGR colour [210, 17, 9], so that the text is centred in the interior, horizontally and vertically. Centre the box that cv2.getTextSize reports for the text (its width, its height plus the baseline below it). If the text does not fit in the interior at that scale (wider than the interior, or taller than the interior including the baseline), shrink the font scale to the largest scale at which it does fit; a scale up to 10 % below that largest scale is accepted. Never change a pixel outside the interior (the outline must stay intact). Save the resulting image as out.png in your work directory (PNG, same size as the input). Report the field's interior box, the font scale you drew with and the (width, height) that cv2.getTextSize reported at that scale.
+
+INPUT IMAGES
+  - field: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-14-field-label-shrink/field.png  (358 px wide, 158 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-14-field-label-shrink/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "box": [x, y, w, h], integers: the interior covers columns x..x+w-1 and rows y..y+h-1
+  - "scale": number, the font scale used for drawing
+  - "text_size": [width, height], integers, as returned by cv2.getTextSize at that scale and thickness (height without the baseline)
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

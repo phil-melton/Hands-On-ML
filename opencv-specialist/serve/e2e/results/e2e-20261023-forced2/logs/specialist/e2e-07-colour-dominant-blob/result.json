@@ -1,0 +1,120 @@
+{
+  "usage": {
+    "input": 6,
+    "cache_creation": 7818,
+    "cache_read": 17843,
+    "output": 815,
+    "fresh": 8639,
+    "total": 26482
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 6,
+    "cache_creation": 7818,
+    "cache_read": 17843,
+    "output": 53,
+    "fresh": 7877,
+    "total": 25720
+  },
+  "cost_usd": 0.0430026,
+  "num_turns": 3,
+  "n_assistant_messages": 3,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "mcp__opencv-expert__opencv_solve": 1,
+    "Write": 1
+  },
+  "n_tool_calls": 2,
+  "n_tool_errors": 0,
+  "n_solve": 1,
+  "n_solve_verified": 1,
+  "solve": {
+    "calls": 1,
+    "verified": 1,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\specialist\\e2e-07-colour-dominant-blob",
+    "session_id": "0dba505a-ba22-40a1-bef9-74c2d37ff249",
+    "tools": [
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-07-colour-dominant-blob",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 33.29336652098573,
+  "stopped_by": "completed",
+  "started": "2026-10-23T12:14:06.455816+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-07-colour-dominant-blob",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Write",
+    "--allowedTools",
+    "Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\specialist\\e2e-07-colour-dominant-blob",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

@@ -1,0 +1,23 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-10-board-scale-parts
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023\specialist\e2e-10-board-scale-parts
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-10-board-scale-parts/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+Two photos taken with the same camera at the same distance. board.png shows a chessboard calibration target with 7 x 6 squares (7 along the top edge, 6 along the left edge), each square 25 mm wide; the board is upright (rotated by less than 30 degrees, never mirrored) but seen from an angle. parts.png shows flat-coloured parts lying on a dark belt; a part may be a ring with a hole. Calibrate the scale from the board: find the inner corners with sub-pixel accuracy, take the mean distance in px between adjacent corners along the rows and the mean along the columns, average those two pitches, and set mm_per_px = square size / that mean pitch. Then, in parts.png, A pixel is red when, in 8-bit HSV (cv2.COLOR_BGR2HSV: H 0-179, S and V 0-255), S >= 100 and V >= 80 and its hue is in 0-10 or 170-179 (red wraps around 0); every bound is inclusive. Parts of any other colour (yellow, green, blue, orange, pastel) must be ignored. Count the red parts, add up the area enclosed by each red part's outer boundary (a hole inside a part is NOT subtracted) in px^2 and convert the total to mm^2 with the scale: area_mm2 = area_px2 * mm_per_px^2.
+
+INPUT IMAGES
+  - board: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-10-board-scale-parts/board.png  (640 px wide, 480 px high, 3-channel BGR)
+  - parts: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-10-board-scale-parts/parts.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-10-board-scale-parts/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "mm_per_px": number
+  - "n_red_parts": integer
+  - "red_area_mm2": number, mm^2
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

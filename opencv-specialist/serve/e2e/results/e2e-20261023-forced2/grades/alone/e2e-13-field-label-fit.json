@@ -1,0 +1,35 @@
+{
+  "task": "e2e-13-field-label-fit",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "box": {
+      "ok": true,
+      "error": null,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "scale": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "text_size": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "layout": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": "text_layout.verify_manufactured passed"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

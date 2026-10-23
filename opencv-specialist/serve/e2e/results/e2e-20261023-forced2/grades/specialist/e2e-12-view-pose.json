@@ -1,0 +1,29 @@
+{
+  "task": "e2e-12-view-pose",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "rotation_deg": {
+      "ok": true,
+      "error": 0.009911524984090647,
+      "tol": 1.7353727137613963,
+      "detail": "got -6.47366, truth -6.46375 (period 360)"
+    },
+    "edge_scale": {
+      "ok": true,
+      "error": 0.0002459063394237848,
+      "tol": 0.030612383353645252,
+      "detail": "got 1.01111, truth 1.01087"
+    },
+    "roi_centre_b": {
+      "ok": true,
+      "error": 0.03796411132030372,
+      "tol": 3.4132807439314456,
+      "detail": "got [173.09930419921875, 134.27127075195312], truth [173.1349078499343, 134.25809297505165]"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 3,
+  "n_pass": 3
+}

@@ -1,0 +1,564 @@
+{
+  "name": "e2e-20261023-forced",
+  "created": "2026-10-23T11:36:06.229259+00:00",
+  "root": "/home/ptmel/opencv-expert/e2e-runs",
+  "distro": "Ubuntu-24.04",
+  "claude": "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+  "mcp_config": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/mcp.json",
+  "mcp_server": {
+    "python": "/home/ptmel/venvs/serve/bin/python",
+    "server": "/home/ptmel/Hands-On-ML/opencv-specialist/serve/server.py"
+  },
+  "arms": [
+    "alone",
+    "specialist"
+  ],
+  "builtin_tools": [
+    "Bash",
+    "Read",
+    "Write"
+  ],
+  "tasks": [
+    {
+      "id": "e2e-01-card-geometry",
+      "number": 1,
+      "title": "Card corners, then side, area and direction",
+      "steps": [
+        "find the card's four corners",
+        "order them by image position",
+        "derive side length, area and edge direction"
+      ],
+      "families": [
+        "perspective_rectify"
+      ],
+      "held_out": {
+        "perspective_rectify": false
+      },
+      "seeds": {
+        "scene": 6010000
+      },
+      "images": [
+        "photo"
+      ]
+    },
+    {
+      "id": "e2e-02-card-blobs",
+      "number": 2,
+      "title": "Rectify the card, then measure its blobs",
+      "steps": [
+        "find the card corners",
+        "rectify to the stated size",
+        "segment the dark blobs",
+        "count them and measure the largest"
+      ],
+      "families": [
+        "perspective_rectify",
+        "components_stats",
+        "contour_area"
+      ],
+      "held_out": {
+        "perspective_rectify": false,
+        "components_stats": false,
+        "contour_area": false
+      },
+      "seeds": {
+        "scene": 6020002
+      },
+      "images": [
+        "photo"
+      ]
+    },
+    {
+      "id": "e2e-03-strokes-longest",
+      "number": 3,
+      "title": "Strokes, then the longest one's length, direction and midpoint",
+      "steps": [
+        "find every stroke's end points",
+        "pick the longest",
+        "length, direction and midpoint"
+      ],
+      "families": [
+        "hough_segments"
+      ],
+      "held_out": {
+        "hough_segments": false
+      },
+      "seeds": {
+        "scene": 6030000
+      },
+      "images": [
+        "strokes"
+      ]
+    },
+    {
+      "id": "e2e-04-strokes-orientation",
+      "number": 4,
+      "title": "Strokes, then sorted lengths, total length and axis alignment",
+      "steps": [
+        "find every stroke's end points",
+        "length of each, sorted",
+        "sum, and count those near an image axis"
+      ],
+      "families": [
+        "hough_segments"
+      ],
+      "held_out": {
+        "hough_segments": false
+      },
+      "seeds": {
+        "scene": 6040000
+      },
+      "images": [
+        "strokes"
+      ]
+    },
+    {
+      "id": "e2e-05-component-hist",
+      "number": 5,
+      "title": "Label the particles, then the gray statistics of the largest",
+      "steps": [
+        "threshold the particles",
+        "label 8-connected components",
+        "pick the largest, box it",
+        "histogram statistics of its pixels"
+      ],
+      "families": [
+        "components_stats",
+        "histogram_stats"
+      ],
+      "held_out": {
+        "components_stats": false,
+        "histogram_stats": false
+      },
+      "seeds": {
+        "scene": 6050010
+      },
+      "images": [
+        "micrograph"
+      ]
+    },
+    {
+      "id": "e2e-06-parts-colour-area",
+      "number": 6,
+      "title": "Segment parts by colour, then add up their areas",
+      "steps": [
+        "classify pixels into the four colours",
+        "separate the parts of each colour",
+        "outer-boundary area of each part",
+        "sum per colour"
+      ],
+      "families": [
+        "color_segmentation",
+        "contour_area"
+      ],
+      "held_out": {
+        "color_segmentation": true,
+        "contour_area": false
+      },
+      "seeds": {
+        "scene": 6060002
+      },
+      "images": [
+        "parts"
+      ]
+    },
+    {
+      "id": "e2e-07-colour-dominant-blob",
+      "number": 7,
+      "title": "Count colour pixels, then the largest blob of the dominant colour",
+      "steps": [
+        "classify pixels into the four colours",
+        "pick the dominant colour",
+        "label its 8-connected components",
+        "area, box and centroid of the largest"
+      ],
+      "families": [
+        "color_segmentation",
+        "components_stats"
+      ],
+      "held_out": {
+        "color_segmentation": true,
+        "components_stats": false
+      },
+      "seeds": {
+        "scene": 6070011
+      },
+      "images": [
+        "scene"
+      ]
+    },
+    {
+      "id": "e2e-08-board-pitch-scale",
+      "number": 8,
+      "title": "Chessboard corners, then pitch and image scale",
+      "steps": [
+        "find the inner corners in board order",
+        "pitch along rows and columns",
+        "scale in mm per pixel"
+      ],
+      "families": [
+        "chessboard_corners"
+      ],
+      "held_out": {
+        "chessboard_corners": true
+      },
+      "seeds": {
+        "scene": 6080000
+      },
+      "images": [
+        "board"
+      ]
+    },
+    {
+      "id": "e2e-09-board-corner-lookup",
+      "number": 9,
+      "title": "Chessboard corners in board order, a lookup and the corner colour",
+      "steps": [
+        "find the inner corners in board order",
+        "look up row 2 column 3, centroid and span",
+        "classify the top-left square"
+      ],
+      "families": [
+        "chessboard_corners"
+      ],
+      "held_out": {
+        "chessboard_corners": true
+      },
+      "seeds": {
+        "scene": 6090000
+      },
+      "images": [
+        "board"
+      ]
+    },
+    {
+      "id": "e2e-10-board-scale-parts",
+      "number": 10,
+      "title": "Calibrate a scale on the board, then measure red parts in mm^2",
+      "steps": [
+        "chessboard corners in board order",
+        "mean pitch -> mm per pixel",
+        "segment red in parts.png",
+        "outer-boundary areas, converted to mm^2"
+      ],
+      "families": [
+        "chessboard_corners",
+        "color_segmentation",
+        "contour_area"
+      ],
+      "held_out": {
+        "chessboard_corners": true,
+        "color_segmentation": true,
+        "contour_area": false
+      },
+      "seeds": {
+        "board": 6100000,
+        "parts": 6100001
+      },
+      "images": [
+        "board",
+        "parts"
+      ]
+    },
+    {
+      "id": "e2e-11-view-roi-map",
+      "number": 11,
+      "title": "Two views: homography, then map a region and measure it",
+      "steps": [
+        "match features, estimate H",
+        "map the ROI corners to img_b",
+        "area and centroid of the mapped quadrilateral"
+      ],
+      "families": [
+        "feature_homography"
+      ],
+      "held_out": {
+        "feature_homography": false
+      },
+      "seeds": {
+        "scene": 6110000
+      },
+      "images": [
+        "img_a",
+        "img_b"
+      ]
+    },
+    {
+      "id": "e2e-12-view-pose",
+      "number": 12,
+      "title": "Two views: homography, then the region's rotation, scale and centre",
+      "steps": [
+        "match features, estimate H",
+        "map the ROI corners",
+        "rotation, scale and centre of the mapped top edge"
+      ],
+      "families": [
+        "feature_homography"
+      ],
+      "held_out": {
+        "feature_homography": false
+      },
+      "seeds": {
+        "scene": 6120000
+      },
+      "images": [
+        "img_a",
+        "img_b"
+      ]
+    },
+    {
+      "id": "e2e-13-field-label-fit",
+      "number": 13,
+      "title": "Find a form field, then centre a label in it (the text fits)",
+      "steps": [
+        "find the field's outline and its interior box",
+        "measure the text with getTextSize and fit the scale",
+        "draw it centred, save out.png, report"
+      ],
+      "families": [
+        "text_layout"
+      ],
+      "held_out": {
+        "text_layout": false
+      },
+      "seeds": {
+        "scene": 6130000
+      },
+      "images": [
+        "field"
+      ]
+    },
+    {
+      "id": "e2e-14-field-label-shrink",
+      "number": 14,
+      "title": "Find a form field, then centre a label in it (the text shrinks)",
+      "steps": [
+        "find the field's outline and its interior box",
+        "measure the text with getTextSize and fit the scale",
+        "draw it centred, save out.png, report"
+      ],
+      "families": [
+        "text_layout"
+      ],
+      "held_out": {
+        "text_layout": false
+      },
+      "seeds": {
+        "scene": 6140001
+      },
+      "images": [
+        "field"
+      ]
+    },
+    {
+      "id": "e2e-15-exposure-outliers",
+      "number": 15,
+      "title": "Gray histogram statistics, then the 2-sigma outliers",
+      "steps": [
+        "gray histogram",
+        "mean, population std, lower median",
+        "count pixels beyond mean +- 2 std"
+      ],
+      "families": [
+        "histogram_stats"
+      ],
+      "held_out": {
+        "histogram_stats": false
+      },
+      "seeds": {
+        "scene": 6150001
+      },
+      "images": [
+        "image"
+      ]
+    },
+    {
+      "id": "e2e-16-exposure-compare",
+      "number": 16,
+      "title": "Two exposures: statistics of each, then compare",
+      "steps": [
+        "statistics of a.png",
+        "statistics of b.png",
+        "compare brightness and contrast"
+      ],
+      "families": [
+        "histogram_stats"
+      ],
+      "held_out": {
+        "histogram_stats": false
+      },
+      "seeds": {
+        "a": 6160000,
+        "b": 6160001
+      },
+      "images": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "id": "e2e-17-shape-rank",
+      "number": 17,
+      "title": "Shape areas, then rank, threshold count and share",
+      "steps": [
+        "find every shape",
+        "outer-boundary area of each",
+        "sort, count above a threshold, largest share"
+      ],
+      "families": [
+        "contour_area"
+      ],
+      "held_out": {
+        "contour_area": false
+      },
+      "seeds": {
+        "scene": 6170000
+      },
+      "images": [
+        "shapes"
+      ]
+    },
+    {
+      "id": "e2e-18-mask-table",
+      "number": 18,
+      "title": "Label a mask, then the largest component and two counts",
+      "steps": [
+        "label 8-connected components",
+        "area, box and centroid of the largest",
+        "count border-touching and single-pixel components"
+      ],
+      "families": [
+        "components_stats"
+      ],
+      "held_out": {
+        "components_stats": false
+      },
+      "seeds": {
+        "scene": 6180000
+      },
+      "images": [
+        "mask"
+      ]
+    },
+    {
+      "id": "e2e-19-card-strokes",
+      "number": 19,
+      "title": "Rectify the card, then find its strokes and the longest",
+      "steps": [
+        "find the card corners",
+        "rectify to the stated size",
+        "find the strokes in the rectified image",
+        "length and direction of the longest"
+      ],
+      "families": [
+        "perspective_rectify",
+        "hough_segments"
+      ],
+      "held_out": {
+        "perspective_rectify": false,
+        "hough_segments": false
+      },
+      "seeds": {
+        "scene": 6190039
+      },
+      "images": [
+        "photo"
+      ]
+    },
+    {
+      "id": "e2e-20-palette-luma",
+      "number": 20,
+      "title": "Segment the four colours, then the gray statistics of each",
+      "steps": [
+        "classify pixels into the four colours",
+        "count each colour",
+        "mean gray level of each colour's pixels",
+        "rank brightness"
+      ],
+      "families": [
+        "color_segmentation",
+        "histogram_stats"
+      ],
+      "held_out": {
+        "color_segmentation": true,
+        "histogram_stats": false
+      },
+      "seeds": {
+        "scene": 6200003
+      },
+      "images": [
+        "scene"
+      ]
+    }
+  ],
+  "input_sha256": {
+    "e2e-01-card-geometry": {
+      "photo": "bfaa7b481c945c4e7bc345fb7dc22cdb6cfad05f7e2ca12ce1f2b7c57f09af26"
+    },
+    "e2e-02-card-blobs": {
+      "photo": "d5a9b3f9d115f01de3137c7790cea58026d2b1ad1ccd81b9331c1cb62b0cba95"
+    },
+    "e2e-03-strokes-longest": {
+      "strokes": "1150f098f09e04e6a1446a485bd3c8fc65d2fd81452dcf42888f2a5055ba3cfa"
+    },
+    "e2e-04-strokes-orientation": {
+      "strokes": "666430e191627dcee6baadec897386e7715972a252999ae4aa95cab426b16e64"
+    },
+    "e2e-05-component-hist": {
+      "micrograph": "c5bed6ddf54162b7888f949d667162e4b8b3c7d1a685253cf077fea98f61aab4"
+    },
+    "e2e-06-parts-colour-area": {
+      "parts": "026c4bcc1b412c94c9cc4c4400059652711320acb8ab170b4095bd38a152bac3"
+    },
+    "e2e-07-colour-dominant-blob": {
+      "scene": "efb4298e686cbaf514d1082c918f0508467b0ff30a9a40b3a35be06bc81bf67d"
+    },
+    "e2e-08-board-pitch-scale": {
+      "board": "df2463e4b91f18f1b1510e109a968c27b2ac5e220cd6a4030d69fdf16f144d56"
+    },
+    "e2e-09-board-corner-lookup": {
+      "board": "a6f3f52b6dedff303046eba576e65cde882443d59ff2e56ea1964786e162f5f9"
+    },
+    "e2e-10-board-scale-parts": {
+      "board": "9a56db03bb70d6d0690d57c28ae0ea3491f3cd8d75de66f818014abe99566fcf",
+      "parts": "60c3cdd47548be5f7c8444be295683b32ce45abf221f53ccaf51a5d6b928b15e"
+    },
+    "e2e-11-view-roi-map": {
+      "img_a": "76281479ae31fe138bf20c98d23c76cd0efea1086fb448acd1db92fc3be22785",
+      "img_b": "3e3d7702eebe740a705d3538972b04e63d32db5f6ecc6c03d158b7734db5129c"
+    },
+    "e2e-12-view-pose": {
+      "img_a": "c9eba13b9a57c72a803ff3373e38efdf5e21c45c4abf25a307e1450a0cd15a78",
+      "img_b": "a0f289fb41f0276b4471ebf7c9410ff053e6300fb1fe68a29087c027bcc10ce9"
+    },
+    "e2e-13-field-label-fit": {
+      "field": "09caeeb25934abf806a1856a9e0ce8f48a2f828d2490f00274cd2ff3e21a1d56"
+    },
+    "e2e-14-field-label-shrink": {
+      "field": "b0c2a803b9e2bb8135668c98dfebdd14f63c9dac4e0f16bdbf285c699e49fda5"
+    },
+    "e2e-15-exposure-outliers": {
+      "image": "6e0886fc425f6e90a2386d2d6793cc77faeb7cffaf6f91b9a150fb5ca03ff87c"
+    },
+    "e2e-16-exposure-compare": {
+      "a": "0a38f3b00d478ac179624d38c6b206fe991be14b6541d4b5064f724f9d1a3838",
+      "b": "786ed07728c5b2ad1eac101a9df9d32e22bedce0cef0e1ae2f148683e6273518"
+    },
+    "e2e-17-shape-rank": {
+      "shapes": "7c316add866002d89b05d13d5d94730582cc424b8a7f219fe868fa59a5a5462d"
+    },
+    "e2e-18-mask-table": {
+      "mask": "ed7099f7aef47f19c5b587ba4aa0a7ae477eca9f27dd8bde47eb827e26a9e3b9"
+    },
+    "e2e-19-card-strokes": {
+      "photo": "f3b618793bec4618dd19a2a6eacbc988ca9d0ea85bb4d0c9a50e814efa776d13"
+    },
+    "e2e-20-palette-luma": {
+      "scene": "5ac9dd486308308434d83ba8e54f88ab423b34cfe0a22b6bc6b3f2919ff27d3a"
+    }
+  },
+  "seed_range": [
+    6000000,
+    7000000
+  ]
+}

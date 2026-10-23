@@ -1,0 +1,122 @@
+{
+  "usage": {
+    "input": 6,
+    "cache_creation": 5929,
+    "cache_read": 21747,
+    "output": 1665,
+    "fresh": 7600,
+    "total": 29347
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 6,
+    "cache_creation": 5929,
+    "cache_read": 21747,
+    "output": 19,
+    "fresh": 5954,
+    "total": 27701
+  },
+  "cost_usd": 0.0447274,
+  "num_turns": 4,
+  "n_assistant_messages": 3,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 1,
+    "Read": 2
+  },
+  "n_tool_calls": 3,
+  "n_tool_errors": 0,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023\\specialist\\e2e-19-card-strokes",
+    "session_id": "af00ef0e-85f0-4dda-bd61-a9d08ca4cfac",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-19-card-strokes",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 16.61767718300689,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:27:48.730977+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023/specialist/e2e-19-card-strokes",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023\\specialist\\e2e-19-card-strokes",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

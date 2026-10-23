@@ -1,0 +1,121 @@
+{
+  "usage": {
+    "input": 4,
+    "cache_creation": 4985,
+    "cache_read": 12255,
+    "output": 810,
+    "fresh": 5799,
+    "total": 18054
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 4,
+    "cache_creation": 4985,
+    "cache_read": 12255,
+    "output": 25,
+    "fresh": 5014,
+    "total": 17269
+  },
+  "cost_usd": 0.030499000000000002,
+  "num_turns": 2,
+  "n_assistant_messages": 2,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 1
+  },
+  "n_tool_calls": 1,
+  "n_tool_errors": 0,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-11-view-roi-map",
+    "session_id": "c653bbf7-b8a8-4f41-868d-5136a127d305",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-11-view-roi-map",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 10.928894101991318,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:31:54.821760+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-11-view-roi-map",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-11-view-roi-map",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

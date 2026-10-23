@@ -1,0 +1,23 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/alone/e2e-12-view-pose
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-forced2\alone\e2e-12-view-pose
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/alone/e2e-12-view-pose/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+img_b shows the same flat, textured surface as img_a from a different viewpoint (img_b is a wider view). Match local features between the two images and estimate the homography that maps pixel coordinates (x, y) in img_a to the corresponding coordinates in img_b. A rectangular region of interest is marked in img_a by its corners TL, TR, BR, BL = [[32, 32], [255, 32], [255, 183], [32, 183]]. Map the corners into img_b and report: the rotation of the region's top edge (from the mapped TL corner to the mapped TR corner), as the angle atan2(dy, dx) in degrees (y down, in (-180, 180]), measured in img_b; the edge scale, the length in px of that mapped top edge divided by the length of the same edge in img_a; and the centre of the mapped region, the mean of the four mapped corners.
+
+INPUT IMAGES
+  - img_a: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/alone/e2e-12-view-pose/img_a.png  (288 px wide, 216 px high, 3-channel BGR)
+  - img_b: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/alone/e2e-12-view-pose/img_b.png  (384 px wide, 288 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/alone/e2e-12-view-pose/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "rotation_deg": number in (-180, 180], degrees
+  - "edge_scale": number
+  - "roi_centre_b": [x, y] in img_b
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

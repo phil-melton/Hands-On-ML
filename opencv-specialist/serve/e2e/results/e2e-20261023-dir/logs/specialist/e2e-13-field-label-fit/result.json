@@ -1,0 +1,121 @@
+{
+  "usage": {
+    "input": 8,
+    "cache_creation": 6656,
+    "cache_read": 31489,
+    "output": 2163,
+    "fresh": 8827,
+    "total": 40316
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 8,
+    "cache_creation": 6656,
+    "cache_read": 31489,
+    "output": 26,
+    "fresh": 6690,
+    "total": 38179
+  },
+  "cost_usd": 0.05456780000000001,
+  "num_turns": 5,
+  "n_assistant_messages": 4,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 4
+  },
+  "n_tool_calls": 4,
+  "n_tool_errors": 2,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-13-field-label-fit",
+    "session_id": "35e104d9-589d-45fe-9cc3-3dbb3ddb402f",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-13-field-label-fit",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 23.346731202997034,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:32:15.681625+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-13-field-label-fit",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-13-field-label-fit",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

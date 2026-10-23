@@ -1,0 +1,35 @@
+{
+  "task": "e2e-02-card-blobs",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "corners": {
+      "ok": true,
+      "error": 2.3313372304481708,
+      "tol": 7.565759937736944,
+      "detail": "per-point errors 1.76, 1.49, 1.49, 2.33"
+    },
+    "n_blobs": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_centroid_xy": {
+      "ok": true,
+      "error": 2.0907739697564574,
+      "tol": 18.993567220367648,
+      "detail": "got [124.0, 155.0], truth [125.74648327930171, 156.1494050407627]"
+    },
+    "area_ratio_largest_to_second": {
+      "ok": true,
+      "error": 0.03678943466016138,
+      "tol": 0.775317008236482,
+      "detail": "got 2.71577, truth 2.67898"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

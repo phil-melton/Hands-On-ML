@@ -31,6 +31,7 @@ import json
 import keyword
 import os
 import re
+import shutil
 import sys
 import time
 import traceback
@@ -288,13 +289,14 @@ def contract_problems(spec: TaskSpec, out: dict) -> list[str]:
 # --- measurements ------------------------------------------------------------------------------------------------
 
 def _py(x: Any) -> Any:
-    """JSON-safe python value: numpy scalars unwrapped, floats shortened, nan/inf as strings."""
+    """JSON-safe python value: numpy scalars unwrapped, floats at full precision (the orchestrator may have no other
+    copy of a value: shortening to 8 digits failed 4 of 20 forced-delegation E2E tasks, 2026-10-23), nan/inf as strings."""
     if isinstance(x, (list, tuple)):
         return [_py(v) for v in x]
     if isinstance(x, np.generic):
         x = x.item()
     if isinstance(x, float):
-        return float(f"{x:.8g}") if np.isfinite(x) else str(x)
+        return x if np.isfinite(x) else str(x)
     if isinstance(x, (bool, int)) or x is None:
         return x
     return str(x)[:2000]
@@ -349,6 +351,20 @@ def describe(value: Any, run_dir: Path, name: str) -> Any:
 
 # --- the tool ----------------------------------------------------------------------------------------------------
 
+def _copy_images(result: dict, save_dir: str) -> None:
+    """Copy each saved image output into ``save_dir`` as <name>.png (the directory must exist)."""
+    dest = resolve_path(save_dir)
+    if not dest.is_dir():
+        result["warnings"].append(f"save_dir {save_dir!r} is not an existing directory; images stay in run_dir")
+        return
+    for k, m in result["measurements"].items():
+        if isinstance(m, dict) and m.get("image"):
+            target = dest / (re.sub(r"[^A-Za-z0-9_.-]", "_", k) + ".png")
+            shutil.copyfile(m["image"], target)
+            m["saved_to"] = str(target)
+            m["saved_to_windows"] = windows_path(target)
+
+
 def _new_run_dir() -> Path:
     d = RUNS_DIR / (datetime.now().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6])
     d.mkdir(parents=True, exist_ok=True)
@@ -371,7 +387,7 @@ def _fail(error: str, **extra: Any) -> dict:
 
 @mcp.tool()
 def opencv_solve(task: str, images: dict[str, str], outputs: dict[str, str], params: dict | None = None,
-                 max_repairs: int = 3, metamorphic: bool = True) -> dict:
+                 max_repairs: int = 3, metamorphic: bool = True, save_dir: str | None = None) -> dict:
     """Write, run and check OpenCV 5.0 (Python cv2) code for an image-measurement task on local images.
 
     A small local model writes `solve(...) -> dict`; the server runs it in a sandbox on your image(s), checks the
@@ -398,6 +414,8 @@ def opencv_solve(task: str, images: dict[str, str], outputs: dict[str, str], par
       max_repairs: repair rounds after a failed attempt (0-5, default 3).
       metamorphic: after success, rerun the code on rotated / mirrored / dimmed copies of the image(s) and report
         how the outputs behave (confidence signal only).
+      save_dir: optional existing directory (e.g. your working directory) into which image outputs are also
+        copied as <output name>.png; their entries in `measurements` then carry "saved_to".
 
     Returns a dict:
       verified: True if the code ran in the sandbox and every declared output has the declared dtype and shape.
@@ -412,7 +430,7 @@ def opencv_solve(task: str, images: dict[str, str], outputs: dict[str, str], par
     """
     t_start = time.monotonic()
     try:
-        return _solve(task, images, outputs, params, max_repairs, metamorphic, t_start)
+        return _solve(task, images, outputs, params, max_repairs, metamorphic, t_start, save_dir)
     except Exception as e:  # a bug here must still reach the client as a result, with enough to debug it
         print(traceback.format_exc(), file=sys.stderr, flush=True)
         r = _fail(f"internal error: {type(e).__name__}: {e}")
@@ -421,7 +439,7 @@ def opencv_solve(task: str, images: dict[str, str], outputs: dict[str, str], par
         return r
 
 
-def _solve(task, images, outputs, params, max_repairs, do_metamorphic, t_start) -> dict:
+def _solve(task, images, outputs, params, max_repairs, do_metamorphic, t_start, save_dir=None) -> dict:
     # ---- arguments
     if not isinstance(task, str) or not task.strip():
         return _fail("task must be a non-empty string")
@@ -545,6 +563,8 @@ def _solve(task, images, outputs, params, max_repairs, do_metamorphic, t_start) 
     result["code"] = code
     if res is not None and res.ok:
         result["measurements"] = {k: describe(v, run_dir, k) for k, v in res.outputs[0].items()}
+        if save_dir:
+            _copy_images(result, save_dir)
     if verified and do_metamorphic:
         t0 = time.monotonic()
         result["metamorphic"] = meta_checks.run_metamorphic(

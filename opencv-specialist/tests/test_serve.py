@@ -223,6 +223,42 @@ def test_image_and_large_outputs_are_saved_and_summarised(img_path, ollama):
     assert any("cannot test it" in w for w in r["warnings"])    # dtype str is shown to the model, only the key is checked
 
 
+def test_floats_come_back_at_full_precision(img_path, ollama):
+    # the orchestrator may have no other copy of a value (E2E forced delegation, 2026-10-23: 8 digits failed 1e-9 checks)
+    code = textwrap.dedent('''\
+        import numpy as np
+
+        def solve(img):
+            return {"mean": 46.541373155555675, "pair": [1 / 3, 2 / 3], "f32": np.float32(0.1)}
+        ''')
+    r = solve(img_path, ollama, [fence(code)], outputs={"mean": "float, shape scalar", "pair": "float, shape N",
+                                                        "f32": "any, shape scalar"})
+    assert r["verified"], r["log"]
+    m = r["measurements"]
+    assert m["mean"] == 46.541373155555675 and m["pair"] == [1 / 3, 2 / 3]
+    assert m["f32"] == float(np.float32(0.1))          # a float32 result is passed on exactly, not re-rounded
+
+
+def test_save_dir_copies_image_outputs(img_path, ollama, tmp_path):
+    code = textwrap.dedent('''\
+        import numpy as np
+
+        def solve(img):
+            return {"out": (img[:, :, 0] > 100).astype(np.uint8) * 255, "n": 1}
+        ''')
+    dest = tmp_path / "work"
+    dest.mkdir()
+    r = solve(img_path, ollama, [fence(code)], outputs={"out": "uint8, shape HxW", "n": "int, shape scalar"},
+              save_dir=str(dest))
+    assert r["verified"], r["log"]
+    assert r["measurements"]["out"]["saved_to"] == str(dest / "out.png")
+    assert (cv2.imread(str(dest / "out.png"), 0) == cv2.imread(r["measurements"]["out"]["image"], 0)).all()
+    r = solve(img_path, ollama, [fence(code)], outputs={"out": "uint8, shape HxW", "n": "int, shape scalar"},
+              save_dir=str(tmp_path / "missing"))
+    assert r["verified"] and "saved_to" not in r["measurements"]["out"]
+    assert any("not an existing directory" in w for w in r["warnings"])
+
+
 # --------------------------------------------------------------------------------------------------- repairs
 
 def test_repair_round_uses_the_training_repair_format(img_path, ollama):
@@ -396,7 +432,7 @@ def test_the_tool_is_registered_with_its_schema():
     assert [t.name for t in tools] == ["opencv_solve"]
     t = tools[0]
     schema = t.input_schema
-    assert set(schema["properties"]) == {"task", "images", "outputs", "params", "max_repairs", "metamorphic"}
+    assert set(schema["properties"]) == {"task", "images", "outputs", "params", "max_repairs", "metamorphic", "save_dir"}
     assert set(schema["required"]) == {"task", "images", "outputs"}
     assert schema["properties"]["max_repairs"]["default"] == 3 and schema["properties"]["metamorphic"]["default"] is True
     assert "<dtype>, shape <shape>" in t.description and "float, shape N. px^2" in t.description

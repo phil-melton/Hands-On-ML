@@ -25,7 +25,8 @@ to have *run*, not to have *got right*.
 
 Everything lands in `~/.opencv-expert/runs/<timestamp>-<id>/` (prompt, each reply and attempt, `result.json`, output
 PNGs). Under WSL the result also carries `run_dir_windows` / `windows_path` (`\\wsl.localhost\...`) so a Windows
-viewer can open the images.
+viewer can open the images. `save_dir` (an existing directory, e.g. the caller's working directory) also copies each
+image output there as `<name>.png`. Floats come back at full precision: the caller may have no other copy of a value.
 
 `verified: true` means the code ran and every declared output has the declared dtype/shape. It does not mean the
 numbers are right. Model and sandbox failures (and unreadable images, unreachable Ollama) come back in the result

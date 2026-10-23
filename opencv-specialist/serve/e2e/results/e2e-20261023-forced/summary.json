@@ -1,0 +1,1093 @@
+{
+  "n_tasks": 20,
+  "arms": {
+    "alone": {
+      "n_run": 20,
+      "n_pass": 20,
+      "rate": 1.0,
+      "wilson95": [
+        0.8388748398148705,
+        1.0
+      ],
+      "held_out_family_tasks": {
+        "n": 6,
+        "n_pass": 6
+      },
+      "status": {
+        "ok": 20
+      },
+      "isolation_problems": [],
+      "peeked": [
+        "e2e-09-board-corner-lookup",
+        "e2e-13-field-label-fit"
+      ],
+      "permission_denials": {},
+      "stopped_by": {
+        "completed": 20
+      },
+      "tools": {
+        "calls_per_task": {
+          "n": 20,
+          "mean": 1.45,
+          "median": 1.0,
+          "total": 29.0
+        },
+        "bash_per_task": {
+          "n": 20,
+          "mean": 1.35,
+          "median": 1.0,
+          "total": 27.0
+        },
+        "turns_per_task": {
+          "n": 20,
+          "mean": 2.45,
+          "median": 2.0,
+          "total": 49.0
+        },
+        "tool_errors_per_task": {
+          "n": 20,
+          "mean": 0.15,
+          "median": 0.0,
+          "total": 3.0
+        },
+        "solve_calls_per_task": {
+          "n": 20,
+          "mean": 0.0,
+          "median": 0.0,
+          "total": 0.0
+        },
+        "solve_calls_total": 0,
+        "solve_verified_total": 0,
+        "tasks_using_solve": 0
+      }
+    },
+    "specialist": {
+      "n_run": 20,
+      "n_pass": 14,
+      "rate": 0.7,
+      "wilson95": [
+        0.4810271799475211,
+        0.8545227559784271
+      ],
+      "held_out_family_tasks": {
+        "n": 6,
+        "n_pass": 5
+      },
+      "status": {
+        "ok": 20
+      },
+      "isolation_problems": [],
+      "peeked": [],
+      "permission_denials": {},
+      "stopped_by": {
+        "completed": 20
+      },
+      "tools": {
+        "calls_per_task": {
+          "n": 20,
+          "mean": 2.75,
+          "median": 2.0,
+          "total": 55.0
+        },
+        "bash_per_task": {
+          "n": 20,
+          "mean": 0.0,
+          "median": 0.0,
+          "total": 0.0
+        },
+        "turns_per_task": {
+          "n": 20,
+          "mean": 3.75,
+          "median": 3.0,
+          "total": 75.0
+        },
+        "tool_errors_per_task": {
+          "n": 20,
+          "mean": 0.0,
+          "median": 0.0,
+          "total": 0.0
+        },
+        "solve_calls_per_task": {
+          "n": 20,
+          "mean": 1.75,
+          "median": 1.0,
+          "total": 35.0
+        },
+        "solve_calls_total": 35,
+        "solve_verified_total": 27,
+        "tasks_using_solve": 20
+      }
+    }
+  },
+  "paired": {
+    "n": 20,
+    "both": 14,
+    "alone_only": 6,
+    "specialist_only": 0,
+    "neither": 0,
+    "tasks": {
+      "both": [
+        "e2e-01-card-geometry",
+        "e2e-02-card-blobs",
+        "e2e-03-strokes-longest",
+        "e2e-04-strokes-orientation",
+        "e2e-06-parts-colour-area",
+        "e2e-07-colour-dominant-blob",
+        "e2e-08-board-pitch-scale",
+        "e2e-09-board-corner-lookup",
+        "e2e-10-board-scale-parts",
+        "e2e-11-view-roi-map",
+        "e2e-12-view-pose",
+        "e2e-17-shape-rank",
+        "e2e-18-mask-table",
+        "e2e-19-card-strokes"
+      ],
+      "alone_only": [
+        "e2e-05-component-hist",
+        "e2e-13-field-label-fit",
+        "e2e-14-field-label-shrink",
+        "e2e-15-exposure-outliers",
+        "e2e-16-exposure-compare",
+        "e2e-20-palette-luma"
+      ],
+      "specialist_only": [],
+      "neither": []
+    },
+    "sign_test_p": 0.03125
+  },
+  "tokens": {
+    "alone": {
+      "total": {
+        "n": 20,
+        "mean": 19419.25,
+        "median": 15401.0,
+        "total": 388385.0
+      },
+      "fresh": {
+        "n": 20,
+        "mean": 6310.55,
+        "median": 5714.5,
+        "total": 126211.0
+      },
+      "output": {
+        "n": 20,
+        "mean": 1037.05,
+        "median": 841.0,
+        "total": 20741.0
+      },
+      "parts": {
+        "input": {
+          "n": 20,
+          "mean": 4.8,
+          "median": 4.0,
+          "total": 96.0
+        },
+        "cache_creation": {
+          "n": 20,
+          "mean": 5268.7,
+          "median": 4792.0,
+          "total": 105374.0
+        },
+        "cache_read": {
+          "n": 20,
+          "mean": 13108.7,
+          "median": 9850.0,
+          "total": 262174.0
+        },
+        "output": {
+          "n": 20,
+          "mean": 1037.05,
+          "median": 841.0,
+          "total": 20741.0
+        }
+      },
+      "cost_usd": {
+        "n": 20,
+        "mean": 0.034076640000000005,
+        "median": 0.0299407,
+        "total": 0.6815328
+      }
+    },
+    "specialist": {
+      "total": {
+        "n": 20,
+        "mean": 34927.25,
+        "median": 25810.5,
+        "total": 698545.0
+      },
+      "fresh": {
+        "n": 20,
+        "mean": 10220.95,
+        "median": 8867.5,
+        "total": 204419.0
+      },
+      "output": {
+        "n": 20,
+        "mean": 1278.0,
+        "median": 824.5,
+        "total": 25560.0
+      },
+      "parts": {
+        "input": {
+          "n": 20,
+          "mean": 7.2,
+          "median": 6.0,
+          "total": 144.0
+        },
+        "cache_creation": {
+          "n": 20,
+          "mean": 8935.75,
+          "median": 8016.0,
+          "total": 178715.0
+        },
+        "cache_read": {
+          "n": 20,
+          "mean": 24706.3,
+          "median": 17349.5,
+          "total": 494126.0
+        },
+        "output": {
+          "n": 20,
+          "mean": 1278.0,
+          "median": 824.5,
+          "total": 25560.0
+        }
+      },
+      "cost_usd": {
+        "n": 20,
+        "mean": 0.05347866,
+        "median": 0.0440886,
+        "total": 1.0695732
+      }
+    }
+  },
+  "wall": {
+    "alone": {
+      "n": 20,
+      "mean": 14.78484232659539,
+      "median": 12.541730612996616,
+      "total": 295.6968465319078
+    },
+    "specialist": {
+      "n": 20,
+      "mean": 87.01823989719996,
+      "median": 38.4160307419952,
+      "total": 1740.3647979439993
+    }
+  },
+  "per_task": [
+    {
+      "id": "e2e-01-card-geometry",
+      "families": [
+        "perspective_rectify"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "perspective_rectify": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15500,
+        "tokens_fresh": 5770,
+        "tokens_output": 984,
+        "wall_s": 10.312203212000895,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 23386,
+        "tokens_fresh": 9736,
+        "tokens_output": 961,
+        "wall_s": 31.93623294500867,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-02-card-blobs",
+      "families": [
+        "perspective_rectify",
+        "components_stats",
+        "contour_area"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "perspective_rectify": false,
+        "components_stats": false,
+        "contour_area": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 16336,
+        "tokens_fresh": 6476,
+        "tokens_output": 1186,
+        "wall_s": 11.270994694001274,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 26259,
+        "tokens_fresh": 8668,
+        "tokens_output": 824,
+        "wall_s": 37.79488484299509,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-03-strokes-longest",
+      "families": [
+        "hough_segments"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "hough_segments": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15134,
+        "tokens_fresh": 5488,
+        "tokens_output": 887,
+        "wall_s": 16.35319464400527,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 23277,
+        "tokens_fresh": 7151,
+        "tokens_output": 624,
+        "wall_s": 28.775735555012943,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-04-strokes-orientation",
+      "families": [
+        "hough_segments"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "hough_segments": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 37936,
+        "tokens_fresh": 10536,
+        "tokens_output": 2357,
+        "wall_s": 28.21343727299245,
+        "tool_calls": 3,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 36941,
+        "tokens_fresh": 10631,
+        "tokens_output": 1428,
+        "wall_s": 117.14334276498994,
+        "tool_calls": 3,
+        "solve": 2,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-05-component-hist",
+      "families": [
+        "components_stats",
+        "histogram_stats"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "components_stats": false,
+        "histogram_stats": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 15000,
+        "tokens_fresh": 5198,
+        "tokens_output": 648,
+        "wall_s": 10.037693887978094,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "4/6",
+        "status": "ok",
+        "tokens_total": 23752,
+        "tokens_fresh": 7316,
+        "tokens_output": 617,
+        "wall_s": 26.874273560009897,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-06-parts-colour-area",
+      "families": [
+        "color_segmentation",
+        "contour_area"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "color_segmentation": true,
+        "contour_area": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 15302,
+        "tokens_fresh": 5458,
+        "tokens_output": 787,
+        "wall_s": 11.844694148981944,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 38036,
+        "tokens_fresh": 10598,
+        "tokens_output": 1574,
+        "wall_s": 42.57550804200582,
+        "tool_calls": 3,
+        "solve": 2,
+        "solve_verified": 2,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-07-colour-dominant-blob",
+      "families": [
+        "color_segmentation",
+        "components_stats"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "color_segmentation": true,
+        "components_stats": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 15610,
+        "tokens_fresh": 5659,
+        "tokens_output": 783,
+        "wall_s": 12.297293316019932,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 27589,
+        "tokens_fresh": 9239,
+        "tokens_output": 759,
+        "wall_s": 42.019668502005516,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-08-board-pitch-scale",
+      "families": [
+        "chessboard_corners"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "chessboard_corners": true
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "5/5",
+        "status": "ok",
+        "tokens_total": 15185,
+        "tokens_fresh": 5380,
+        "tokens_output": 758,
+        "wall_s": 10.122337930020876,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "5/5",
+        "status": "ok",
+        "tokens_total": 57797,
+        "tokens_fresh": 14416,
+        "tokens_output": 2078,
+        "wall_s": 235.72404737299075,
+        "tool_calls": 4,
+        "solve": 3,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-09-board-corner-lookup",
+      "families": [
+        "chessboard_corners"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "chessboard_corners": true
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 24583,
+        "tokens_fresh": 6944,
+        "tokens_output": 1456,
+        "wall_s": 16.383073787001194,
+        "tool_calls": 2,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 88339,
+        "tokens_fresh": 22353,
+        "tokens_output": 3636,
+        "wall_s": 524.111019620992,
+        "tool_calls": 5,
+        "solve": 4,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-10-board-scale-parts",
+      "families": [
+        "chessboard_corners",
+        "color_segmentation",
+        "contour_area"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "chessboard_corners": true,
+        "color_segmentation": true,
+        "contour_area": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 55252,
+        "tokens_fresh": 9891,
+        "tokens_output": 2414,
+        "wall_s": 30.26547246298287,
+        "tool_calls": 5,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 48508,
+        "tokens_fresh": 15774,
+        "tokens_output": 2303,
+        "wall_s": 134.60790450000786,
+        "tool_calls": 5,
+        "solve": 4,
+        "solve_verified": 3,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-11-view-roi-map",
+      "families": [
+        "feature_homography"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "feature_homography": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15670,
+        "tokens_fresh": 5814,
+        "tokens_output": 891,
+        "wall_s": 10.122306689998368,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 24101,
+        "tokens_fresh": 7592,
+        "tokens_output": 797,
+        "wall_s": 23.04952420099289,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-12-view-pose",
+      "families": [
+        "feature_homography"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "feature_homography": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 15299,
+        "tokens_fresh": 5480,
+        "tokens_output": 795,
+        "wall_s": 9.974042582995025,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "3/3",
+        "status": "ok",
+        "tokens_total": 23732,
+        "tokens_fresh": 7311,
+        "tokens_output": 684,
+        "wall_s": 27.443221169000026,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-13-field-label-fit",
+      "families": [
+        "text_layout"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "text_layout": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15669,
+        "tokens_fresh": 5773,
+        "tokens_output": 967,
+        "wall_s": 14.540220342983957,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "3/4",
+        "status": "ok",
+        "tokens_total": 59496,
+        "tokens_fresh": 15924,
+        "tokens_output": 2893,
+        "wall_s": 151.8435054110014,
+        "tool_calls": 4,
+        "solve": 3,
+        "solve_verified": 2,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-14-field-label-shrink",
+      "families": [
+        "text_layout"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "text_layout": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15820,
+        "tokens_fresh": 5914,
+        "tokens_output": 1030,
+        "wall_s": 15.677037474000826,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "3/4",
+        "status": "ok",
+        "tokens_total": 53676,
+        "tokens_fresh": 12805,
+        "tokens_output": 2218,
+        "wall_s": 136.60054616999696,
+        "tool_calls": 4,
+        "solve": 3,
+        "solve_verified": 3,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-15-exposure-outliers",
+      "families": [
+        "histogram_stats"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "histogram_stats": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 14621,
+        "tokens_fresh": 7956,
+        "tokens_output": 606,
+        "wall_s": 15.211979810002958,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "3/4",
+        "status": "ok",
+        "tokens_total": 22363,
+        "tokens_fresh": 6723,
+        "tokens_output": 638,
+        "wall_s": 21.9086823950056,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-16-exposure-compare",
+      "families": [
+        "histogram_stats"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "histogram_stats": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 14958,
+        "tokens_fresh": 5201,
+        "tokens_output": 671,
+        "wall_s": 12.104650052002398,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "5/6",
+        "status": "ok",
+        "tokens_total": 25362,
+        "tokens_fresh": 8254,
+        "tokens_output": 825,
+        "wall_s": 25.62406065899995,
+        "tool_calls": 3,
+        "solve": 2,
+        "solve_verified": 2,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-17-shape-rank",
+      "families": [
+        "contour_area"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "contour_area": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 14614,
+        "tokens_fresh": 4978,
+        "tokens_output": 648,
+        "wall_s": 10.674517750972882,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 21106,
+        "tokens_fresh": 6093,
+        "tokens_output": 600,
+        "wall_s": 16.745592994004255,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-18-mask-table",
+      "families": [
+        "components_stats"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "components_stats": false
+      },
+      "steps": 3,
+      "alone": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 14971,
+        "tokens_fresh": 5273,
+        "tokens_output": 741,
+        "wall_s": 22.482597310998244,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "6/6",
+        "status": "ok",
+        "tokens_total": 24102,
+        "tokens_fresh": 7531,
+        "tokens_output": 614,
+        "wall_s": 39.03717664099531,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-19-card-strokes",
+      "families": [
+        "perspective_rectify",
+        "hough_segments"
+      ],
+      "held_out": false,
+      "held_out_map": {
+        "perspective_rectify": false,
+        "hough_segments": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 25686,
+        "tokens_fresh": 7676,
+        "tokens_output": 1450,
+        "wall_s": 15.022931251995033,
+        "tool_calls": 3,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 27052,
+        "tokens_fresh": 9067,
+        "tokens_output": 867,
+        "wall_s": 43.95296090800548,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    },
+    {
+      "id": "e2e-20-palette-luma",
+      "families": [
+        "color_segmentation",
+        "histogram_stats"
+      ],
+      "held_out": true,
+      "held_out_map": {
+        "color_segmentation": true,
+        "histogram_stats": false
+      },
+      "steps": 4,
+      "alone": {
+        "passed": true,
+        "keys": "4/4",
+        "status": "ok",
+        "tokens_total": 15239,
+        "tokens_fresh": 5346,
+        "tokens_output": 682,
+        "wall_s": 12.786167909973301,
+        "tool_calls": 1,
+        "solve": 0,
+        "solve_verified": 0,
+        "stopped_by": "completed"
+      },
+      "specialist": {
+        "passed": false,
+        "keys": "3/4",
+        "status": "ok",
+        "tokens_total": 23671,
+        "tokens_fresh": 7237,
+        "tokens_output": 620,
+        "wall_s": 32.59690968997893,
+        "tool_calls": 2,
+        "solve": 1,
+        "solve_verified": 1,
+        "stopped_by": "completed"
+      }
+    }
+  ],
+  "token_ratio_specialist_over_alone": {
+    "total": {
+      "n": 20,
+      "median": 1.5683919067305379,
+      "iqr": [
+        1.5243278073297137,
+        1.9469665590769518
+      ],
+      "mean_of_ratios": 1.9453568167490194,
+      "ratio_of_means": 1.7985890289274817,
+      "specialist_fewer": 2,
+      "specialist_more": 18,
+      "sign_test_p": 0.0004024505615234375
+    },
+    "fresh": {
+      "n": 20,
+      "median": 1.417841819714026,
+      "iqr": [
+        1.305116360453956,
+        1.750945490155484
+      ],
+      "mean_of_ratios": 1.6497865279901434,
+      "ratio_of_means": 1.6196607268780059,
+      "specialist_fewer": 1,
+      "specialist_more": 19,
+      "sign_test_p": 4.00543212890625e-05
+    },
+    "output": {
+      "n": 20,
+      "median": 0.953089360418137,
+      "iqr": [
+        0.8524355154941055,
+        1.4221311475409837
+      ],
+      "mean_of_ratios": 1.276941370917518,
+      "ratio_of_means": 1.2323417385854105,
+      "specialist_fewer": 13,
+      "specialist_more": 7,
+      "sign_test_p": 0.26317596435546875
+    }
+  },
+  "wall_ratio_specialist_over_alone": {
+    "n": 20,
+    "median": 3.0113303254881165,
+    "iqr": [
+      2.2370458159199704,
+      4.2259239050207755
+    ]
+  },
+  "criterion4_inputs": {
+    "specialist_success_ge_alone": false,
+    "paired_n": 20,
+    "median_token_ratio_total": 1.5683919067305379,
+    "mean_tokens_specialist_lt_alone": false
+  }
+}

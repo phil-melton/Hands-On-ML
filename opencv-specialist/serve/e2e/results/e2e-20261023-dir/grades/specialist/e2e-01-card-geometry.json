@@ -1,0 +1,35 @@
+{
+  "task": "e2e-01-card-geometry",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "corners": {
+      "ok": true,
+      "error": 1.6449394143817118,
+      "tol": 7.356671476114868,
+      "detail": "per-point errors 0.899, 0.374, 1.14, 1.64"
+    },
+    "longest_side_px": {
+      "ok": true,
+      "error": 2.2891112266100038,
+      "tol": 14.713342952229736,
+      "detail": "got 200.25, truth 202.539"
+    },
+    "quad_area_px2": {
+      "ok": true,
+      "error": 411.7141925784672,
+      "tol": 3868.7035558887014,
+      "detail": "got 31569.5, truth 31981.2"
+    },
+    "top_edge_angle_deg": {
+      "ok": true,
+      "error": 0.011274114607346064,
+      "tol": 4.453947800092467,
+      "detail": "got 7.31349, truth 7.30221 (period 360)"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

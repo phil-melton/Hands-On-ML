@@ -1,0 +1,35 @@
+{
+  "task": "e2e-19-card-strokes",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "corners": {
+      "ok": true,
+      "error": 3.5843321287773695,
+      "tol": 8.043772280459999,
+      "detail": "per-point errors 3.58, 3.2, 3.2, 1.63"
+    },
+    "n_strokes": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "longest_length_px": {
+      "ok": true,
+      "error": 5.8663380561339125,
+      "tol": 23.30202249799561,
+      "detail": "got 177.257, truth 171.391"
+    },
+    "longest_angle_deg": {
+      "ok": true,
+      "error": 0.09405749679828546,
+      "tol": 7.126002967007299,
+      "detail": "got 177.732, truth 177.826 (period 180)"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

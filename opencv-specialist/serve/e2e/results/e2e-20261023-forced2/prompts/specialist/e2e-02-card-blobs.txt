@@ -1,0 +1,21 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-02-card-blobs
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-forced2\specialist\e2e-02-card-blobs
+You have no shell and cannot run code yourself. Image processing goes through the `opencv_solve` tool: a local OpenCV 5.0 specialist model that writes, runs and checks the OpenCV code for one image-processing step on an image file (give it the Linux path) and returns its measurements. Call it once per step you need, then do the arithmetic that combines its results yourself and write answer.json with the Write tool (use the Windows path). Do not look outside the work directory.
+
+TASK
+The photo shows one flat rectangular card (bright paper) lying on a darker surface, seen from an arbitrary angle and rotation. Dark round blobs are printed on the card, away from its edge. Find the card's four corners (order them TL, TR, BR, BL by image position: TL is the corner with the smallest x+y, BR the largest x+y, TR the smallest y-x and BL the largest y-x), then rectify the card: warp it to an upright image of 238 x 320 px (width x height) so that the TL corner lands on pixel (0, 0), TR on (237, 0), BR on (237, 319) and BL on (0, 319). In the rectified image count the dark blobs, and for the largest blob (by area) report its centroid (x, y) in rectified-image pixels, and the ratio of its area to the area of the second-largest blob (both measured in the rectified image). Dark pixels along the border of the rectified image come from the dark surface beyond the card's edge, not from the card: they are not blobs.
+
+INPUT IMAGES
+  - photo: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-02-card-blobs/photo.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-02-card-blobs/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "corners": 4 x 2 array [[x, y], ...] of the card corners in the PHOTO, order TL, TR, BR, BL
+  - "n_blobs": integer, number of dark blobs on the card
+  - "largest_centroid_xy": [x, y] in rectified-image pixels
+  - "area_ratio_largest_to_second": number (> 1)
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

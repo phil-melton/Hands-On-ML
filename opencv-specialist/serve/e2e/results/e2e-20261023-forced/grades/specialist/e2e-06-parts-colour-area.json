@@ -1,0 +1,29 @@
+{
+  "task": "e2e-06-parts-colour-area",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "area_px2_by_colour": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "n_parts_by_colour": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "largest_total_colour": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 3,
+  "n_pass": 3
+}

@@ -144,20 +144,22 @@ def mcp_config(distro: str = "Ubuntu-24.04", python: str = SERVE_PYTHON, server:
                                       "args": ["-d", distro, "--", python, server], "env": {}}}}
 
 
-def allowed_tools(arm: str) -> list[str]:
-    return list(BUILTIN_TOOLS) + ([MCP_TOOL] if arm == "specialist" else [])
+def allowed_tools(arm: str, builtin: tuple | list = BUILTIN_TOOLS) -> list[str]:
+    return list(builtin) + ([MCP_TOOL] if arm == "specialist" else [])
 
 
 def build_command(*, arm: str, model: str, claude_exe: str = DEFAULT_CLAUDE, mcp_config_win: str | None = None,
                   workdir_win: str | None = None, isolation: str = "flags", max_turns: int | None = None,
-                  max_budget_usd: float | None = None, effort: str | None = None) -> list[str]:
+                  max_budget_usd: float | None = None, effort: str | None = None,
+                  builtin_tools: tuple | list = BUILTIN_TOOLS) -> list[str]:
     """The exact argv of one headless session. The prompt goes on stdin. The two arms differ in exactly two places:
-    ``--mcp-config <file>`` (specialist only) and the MCP tool in ``--allowedTools``."""
+    ``--mcp-config <file>`` (specialist only) and the MCP tool in ``--allowedTools``. ``builtin_tools`` narrows the
+    built-in tools (the forced-delegation variant: Write only, so every image step must go through the specialist)."""
     if arm not in ARMS:
         raise ValueError(f"arm must be one of {ARMS}")
     cmd = [claude_exe, "-p", "--output-format", "stream-json", "--verbose", "--model", model,
-           "--permission-mode", "dontAsk", "--tools", ",".join(BUILTIN_TOOLS),
-           "--allowedTools", ",".join(allowed_tools(arm)), "--strict-mcp-config", "--no-session-persistence"]
+           "--permission-mode", "dontAsk", "--tools", ",".join(builtin_tools),
+           "--allowedTools", ",".join(allowed_tools(arm, builtin_tools)), "--strict-mcp-config", "--no-session-persistence"]
     cmd += ISOLATION_ARGS[isolation]
     if arm == "specialist":
         if not mcp_config_win:
@@ -636,7 +638,8 @@ def run_one(a, cfg: dict, lay: Layout, arm: str, tid: str) -> dict | None:
     dist = cfg["distro"]
     cmd = build_command(arm=arm, model=a.model, claude_exe=a.claude or cfg["claude"],
                         mcp_config_win=to_windows_path(lay.mcp, dist), workdir_win=to_windows_path(work, dist),
-                        isolation=a.isolation, max_turns=a.max_turns, max_budget_usd=a.max_budget_usd, effort=a.effort)
+                        isolation=a.isolation, max_turns=a.max_turns, max_budget_usd=a.max_budget_usd, effort=a.effort,
+                        builtin_tools=tuple(x for x in a.builtin_tools.split(",") if x))
     env = build_env(os.environ, arm=arm, isolation=a.isolation, extra=dict(kv.split("=", 1) for kv in a.env))
     cwd = _cwd_for(a, work)
     if a.dry_run:
@@ -789,6 +792,8 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--max-turns", type=int)
     p.add_argument("--max-budget-usd", type=float)
     p.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"])
+    p.add_argument("--builtin-tools", default=",".join(BUILTIN_TOOLS),
+                   help="comma list of built-in tools (default Bash,Read,Write; e.g. Write for forced delegation)")
     p.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_S, help="wall-clock limit per task, seconds")
     p.add_argument("--cwd", default="task", help="'task' (the work dir; a UNC path to Windows) or a Linux path used for every task "
                    "(e.g. /mnt/c/Users/ptmel/e2e-cwd if a UNC cwd does not work)")

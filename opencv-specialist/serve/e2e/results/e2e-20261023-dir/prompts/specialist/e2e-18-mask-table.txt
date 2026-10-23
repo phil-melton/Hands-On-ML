@@ -1,0 +1,27 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-18-mask-table
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\specialist\e2e-18-mask-table
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-18-mask-table/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+mask.png is a binary mask (0 = background, 255 = foreground). Group the foreground pixels into connected components, where two pixels are connected when they share an edge or a corner (8-connectivity); the background is not a component. Report the number of components; for the component with the largest pixel area (it is unique) its area, its tight bounding box [x, y, w, h] (x, y of the top-left pixel; w, h the pixel columns and rows it spans) and its centroid (x, y), the mean column and mean row of its pixels; how many components touch the image border (any of their pixels lies in the first or last row or column of the mask); and how many components consist of a single pixel.
+
+INPUT IMAGES
+  - mask: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-18-mask-table/mask.png  (320 px wide, 240 px high, single-channel)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-18-mask-table/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "n_components": integer
+  - "largest_area": integer, pixels
+  - "largest_bbox": [x, y, w, h], integers
+  - "largest_centroid": [x, y], numbers
+  - "n_touching_border": integer
+  - "n_single_pixel": integer
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+TOOLS
+An `opencv_solve` tool is available: a local OpenCV 5.0 specialist model that writes, runs and checks the OpenCV code for one image-processing step on an image file and returns its measurements. Use it for the image-processing steps (finding, measuring, rectifying) and do the arithmetic that combines its results yourself.
+When answer.json is written, reply with the single word DONE.

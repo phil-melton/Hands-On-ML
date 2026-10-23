@@ -1,0 +1,25 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-15-exposure-outliers
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\specialist\e2e-15-exposure-outliers
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-15-exposure-outliers/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+Analyse the exposure of the image. The gray level of a pixel is its ITU-R BT.601 luma, round(0.299 R + 0.587 G + 0.114 B), the value cv2.COLOR_BGR2GRAY produces. Compute the 256-bin histogram of the gray levels and from it the mean, the population standard deviation (divide by N, not N-1) and the lower median (the smallest gray level v such that at least half of the pixels have gray level <= v). Then count the outliers: the pixels whose gray level differs from the mean by more than two standard deviations, |gray - mean| > 2 * std.
+
+INPUT IMAGES
+  - image: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-15-exposure-outliers/image.png  (114 px wide, 48 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-15-exposure-outliers/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "mean_gray": number
+  - "std_gray": number
+  - "median_gray": integer gray level
+  - "n_outliers": integer, pixels
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+TOOLS
+An `opencv_solve` tool is available: a local OpenCV 5.0 specialist model that writes, runs and checks the OpenCV code for one image-processing step on an image file and returns its measurements. Use it for the image-processing steps (finding, measuring, rectifying) and do the arithmetic that combines its results yourself.
+When answer.json is written, reply with the single word DONE.

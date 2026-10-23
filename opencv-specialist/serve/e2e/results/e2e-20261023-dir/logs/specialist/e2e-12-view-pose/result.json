@@ -1,0 +1,121 @@
+{
+  "usage": {
+    "input": 4,
+    "cache_creation": 4776,
+    "cache_read": 12219,
+    "output": 743,
+    "fresh": 5523,
+    "total": 17742
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 4,
+    "cache_creation": 4776,
+    "cache_read": 12219,
+    "output": 25,
+    "fresh": 4805,
+    "total": 17024
+  },
+  "cost_usd": 0.0289858,
+  "num_turns": 2,
+  "n_assistant_messages": 2,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 1
+  },
+  "n_tool_calls": 1,
+  "n_tool_errors": 0,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-12-view-pose",
+    "session_id": "45b9658d-ec9f-40c9-bfd3-592b57964c80",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-12-view-pose",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 9.929318164999131,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:32:05.751555+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-12-view-pose",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-12-view-pose",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

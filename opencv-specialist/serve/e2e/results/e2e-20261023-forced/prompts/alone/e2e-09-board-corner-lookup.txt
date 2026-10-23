@@ -1,0 +1,23 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-09-board-corner-lookup
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-forced\alone\e2e-09-board-corner-lookup
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-09-board-corner-lookup/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The photo shows one chessboard calibration target with 6 x 5 squares (6 squares along the top edge, 5 along the left edge). The board is upright (its top edge is the one nearest the top of the image, rotated by less than 30 degrees, never mirrored) but seen from an angle. Find every inner corner (each point where four squares meet) with sub-pixel accuracy and number them in the board's own frame: row-major, the corner nearest the board's top-left first, then left to right along the top row of corners, then the next row down; rows and columns count from 0. Report the corner in row 2, column 3, the centroid (mean position) of all inner corners, and the distance in px between the first and the last corner. Finally decide from the image whether the board's top-left square (the square at the top-left end of the board, whose lower-right corner is the first inner corner) is dark (black) or light (white).
+
+INPUT IMAGES
+  - board: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-09-board-corner-lookup/board.png  (640 px wide, 480 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-09-board-corner-lookup/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "corner_row2_col3_xy": [x, y], px
+  - "grid_centroid_xy": [x, y], px
+  - "first_to_last_px": number, px
+  - "top_left_square_is_dark": true or false
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

@@ -1,0 +1,120 @@
+{
+  "usage": {
+    "input": 6,
+    "cache_creation": 7423,
+    "cache_read": 17108,
+    "output": 825,
+    "fresh": 8254,
+    "total": 25362
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 6,
+    "cache_creation": 7423,
+    "cache_read": 17108,
+    "output": 46,
+    "fresh": 7475,
+    "total": 24583
+  },
+  "cost_usd": 0.041375600000000005,
+  "num_turns": 4,
+  "n_assistant_messages": 3,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "mcp__opencv-expert__opencv_solve": 2,
+    "Write": 1
+  },
+  "n_tool_calls": 3,
+  "n_tool_errors": 0,
+  "n_solve": 2,
+  "n_solve_verified": 2,
+  "solve": {
+    "calls": 2,
+    "verified": 2,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\specialist\\e2e-16-exposure-compare",
+    "session_id": "7743e246-798b-400e-b08a-6cf3d57fbc35",
+    "tools": [
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-16-exposure-compare",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 25.62406065899995,
+  "stopped_by": "completed",
+  "started": "2026-10-23T12:03:22.052077+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/specialist/e2e-16-exposure-compare",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Write",
+    "--allowedTools",
+    "Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced\\specialist\\e2e-16-exposure-compare",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

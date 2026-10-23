@@ -1,0 +1,35 @@
+{
+  "task": "e2e-15-exposure-outliers",
+  "status": "ok",
+  "detail": "",
+  "passed": false,
+  "keys": {
+    "mean_gray": {
+      "ok": true,
+      "error": 0.0,
+      "tol": 1e-09,
+      "detail": "got 95.33333333333333, truth 95.33333333333333 (relative error)"
+    },
+    "std_gray": {
+      "ok": false,
+      "error": 3.3423095293680977e-09,
+      "tol": 1e-09,
+      "detail": "got 46.541373, truth 46.541373155555675 (relative error)"
+    },
+    "median_gray": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "n_outliers": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 3
+}

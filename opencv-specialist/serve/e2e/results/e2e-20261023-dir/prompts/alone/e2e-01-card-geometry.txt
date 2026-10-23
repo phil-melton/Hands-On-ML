@@ -1,0 +1,23 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-01-card-geometry
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\alone\e2e-01-card-geometry
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-01-card-geometry/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The photo shows one flat rectangular card lying on a darker surface, seen from an arbitrary angle and rotation, entirely inside the frame. Find the card's four corners and report them in the order top-left, top-right, bottom-right, bottom-left by image position (TL is the corner with the smallest x+y, BR the largest x+y, TR the smallest y-x and BL the largest y-x). Then, from those four corners, compute the length in px of the longest of the card's four sides, the area in px^2 enclosed by the four corners, and the direction of the top edge (from the TL corner to the TR corner) as an angle in degrees, atan2(dy, dx) with y down, in (-180, 180].
+
+INPUT IMAGES
+  - photo: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-01-card-geometry/photo.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-01-card-geometry/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "corners": 4 x 2 array [[x, y], ...] in the order TL, TR, BR, BL
+  - "longest_side_px": number, px
+  - "quad_area_px2": number, px^2
+  - "top_edge_angle_deg": number in (-180, 180], degrees
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

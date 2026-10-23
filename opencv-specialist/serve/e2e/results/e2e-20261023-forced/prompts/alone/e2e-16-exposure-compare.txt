@@ -1,0 +1,26 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-16-exposure-compare
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-forced\alone\e2e-16-exposure-compare
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-16-exposure-compare/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+Two exposures of the same scene, a.png and b.png. For each image compute the mean and the lower median of its gray levels. The gray level of a pixel is its ITU-R BT.601 luma, round(0.299 R + 0.587 G + 0.114 B), the value cv2.COLOR_BGR2GRAY produces; the lower median is the smallest gray level v such that at least half of the image's pixels have gray level <= v. Then decide which image is brighter (larger mean) and which has the higher contrast (larger population standard deviation of the gray levels, dividing by N).
+
+INPUT IMAGES
+  - a: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-16-exposure-compare/a.png  (151 px wide, 99 px high, 3-channel BGR)
+  - b: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-16-exposure-compare/b.png  (159 px wide, 57 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced/alone/e2e-16-exposure-compare/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "mean_a": number
+  - "mean_b": number
+  - "median_a": integer gray level
+  - "median_b": integer gray level
+  - "brighter": either "a" or "b"
+  - "higher_contrast": either "a" or "b"
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

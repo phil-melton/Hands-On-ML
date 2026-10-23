@@ -1,0 +1,41 @@
+{
+  "task": "e2e-08-board-pitch-scale",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "n_corners": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "first_corner_xy": {
+      "ok": true,
+      "error": 0.04326943203875014,
+      "tol": 0.2217981955740551,
+      "detail": "got [221.90202, 158.58934], truth [221.86611086069468, 158.5651992157686]"
+    },
+    "pitch_x_px": {
+      "ok": true,
+      "error": 0.00549469005889236,
+      "tol": 0.4435963911481102,
+      "detail": "got 31.6792, truth 31.6847"
+    },
+    "pitch_y_px": {
+      "ok": true,
+      "error": 0.0016531406422117811,
+      "tol": 0.4435963911481102,
+      "detail": "got 32.1967, truth 32.1983"
+    },
+    "mm_per_px": {
+      "ok": true,
+      "error": 6.0789753522250134e-05,
+      "tol": 0.006613658426048108,
+      "detail": "got 0.469669, truth 0.469608"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 5,
+  "n_pass": 5
+}

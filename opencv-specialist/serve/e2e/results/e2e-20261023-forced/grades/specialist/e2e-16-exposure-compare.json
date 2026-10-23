@@ -1,0 +1,47 @@
+{
+  "task": "e2e-16-exposure-compare",
+  "status": "ok",
+  "detail": "",
+  "passed": false,
+  "keys": {
+    "mean_a": {
+      "ok": false,
+      "error": 2.3988137027516904e-08,
+      "tol": 1e-09,
+      "detail": "got 147.01672, truth 147.0167235266573 (relative error)"
+    },
+    "mean_b": {
+      "ok": true,
+      "error": 6.782260222108976e-11,
+      "tol": 1e-09,
+      "detail": "got 130.14984, truth 130.1498400088271 (relative error)"
+    },
+    "median_a": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "median_b": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "brighter": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "higher_contrast": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 6,
+  "n_pass": 5
+}

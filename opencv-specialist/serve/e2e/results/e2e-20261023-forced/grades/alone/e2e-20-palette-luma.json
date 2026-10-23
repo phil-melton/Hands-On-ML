@@ -1,0 +1,35 @@
+{
+  "task": "e2e-20-palette-luma",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "counts": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "mean_gray_by_colour": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "brightest": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "darkest": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

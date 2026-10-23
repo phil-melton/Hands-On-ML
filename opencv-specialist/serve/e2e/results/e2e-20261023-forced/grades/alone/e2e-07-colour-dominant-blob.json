@@ -1,0 +1,47 @@
+{
+  "task": "e2e-07-colour-dominant-blob",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "counts": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "dominant": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    },
+    "n_components": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_area": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_bbox": {
+      "ok": true,
+      "error": null,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_centroid": {
+      "ok": true,
+      "error": 0.0,
+      "tol": 1e-06,
+      "detail": "got [66.0, 103.0], truth [66.0, 103.0]"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 6,
+  "n_pass": 6
+}

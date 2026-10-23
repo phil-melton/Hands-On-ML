@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "opencv-expert": {
+      "type": "stdio",
+      "command": "wsl.exe",
+      "args": [
+        "-d",
+        "Ubuntu-24.04",
+        "--",
+        "/home/ptmel/venvs/serve/bin/python",
+        "/home/ptmel/Hands-On-ML/opencv-specialist/serve/server.py"
+      ],
+      "env": {}
+    }
+  }
+}

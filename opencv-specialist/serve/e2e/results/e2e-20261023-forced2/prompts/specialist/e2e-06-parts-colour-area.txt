@@ -1,0 +1,20 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-06-parts-colour-area
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-forced2\specialist\e2e-06-parts-colour-area
+You have no shell and cannot run code yourself. Image processing goes through the `opencv_solve` tool: a local OpenCV 5.0 specialist model that writes, runs and checks the OpenCV code for one image-processing step on an image file (give it the Linux path) and returns its measurements. Call it once per step you need, then do the arithmetic that combines its results yourself and write answer.json with the Write tool (use the Windows path). Do not look outside the work directory.
+
+TASK
+The image shows a few flat-coloured parts lying on a dark belt; a part may be a ring with a hole. A pixel has a colour when, in 8-bit HSV (cv2.COLOR_BGR2HSV: H 0-179, S and V 0-255), S >= 100 and V >= 80 and its hue lies in that colour's inclusive range: red 0-10 or 170-179 (red wraps around 0), yellow 20-35, green 40-80, blue 100-130. Every bound is inclusive. Pixels in no range (greys, pastels, dark pixels, other hues) have no colour. Parts that match none of the four colours must be ignored. For each of red, yellow, green and blue, count the parts of that colour and add up the area enclosed by each part's outer boundary (a hole inside a part is NOT subtracted), in px^2. Also report which colour has the largest total area.
+
+INPUT IMAGES
+  - parts: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-06-parts-colour-area/parts.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-06-parts-colour-area/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "area_px2_by_colour": object {"red": number, "yellow": number, "green": number, "blue": number}, px^2, 0 for a colour with no part
+  - "n_parts_by_colour": object {"red": integer, "yellow": integer, "green": integer, "blue": integer}
+  - "largest_total_colour": one of "red", "yellow", "green", "blue"
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

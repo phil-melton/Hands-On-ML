@@ -1,0 +1,23 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-19-card-strokes
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\alone\e2e-19-card-strokes
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-19-card-strokes/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The photo shows one flat rectangular card (bright paper) lying on a darker surface, seen from an arbitrary angle and rotation. Thin dark straight strokes are printed on the card, away from its edge. Find the card's four corners (order them TL, TR, BR, BL by image position: TL is the corner with the smallest x+y, BR the largest x+y, TR the smallest y-x and BL the largest y-x), then rectify the card: warp it to an upright image of 277 x 212 px (width x height) so that the TL corner lands on pixel (0, 0), TR on (276, 0), BR on (276, 211) and BL on (0, 211). In the rectified image find every stroke and its two end points. Report the number of strokes and, for the longest stroke (the largest distance between its end points, measured in the rectified image), its length in rectified-image px and its direction as an angle in degrees in [0, 180), atan2(dy, dx) modulo 180 with y down, in the rectified image. Dark pixels along the border of the rectified image come from the dark surface beyond the card's edge, not from the card: they are not strokes.
+
+INPUT IMAGES
+  - photo: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-19-card-strokes/photo.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-19-card-strokes/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "corners": 4 x 2 array [[x, y], ...] of the card corners in the PHOTO, order TL, TR, BR, BL
+  - "n_strokes": integer
+  - "longest_length_px": number, rectified-image px
+  - "longest_angle_deg": number in [0, 180), degrees, in the rectified image
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

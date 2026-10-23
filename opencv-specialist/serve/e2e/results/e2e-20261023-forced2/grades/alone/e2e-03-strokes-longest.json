@@ -1,0 +1,35 @@
+{
+  "task": "e2e-03-strokes-longest",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "n_strokes": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "longest_length_px": {
+      "ok": true,
+      "error": 3.494901459817612,
+      "tol": 7.999999999999999,
+      "detail": "got 176.287, truth 172.792"
+    },
+    "longest_angle_deg": {
+      "ok": true,
+      "error": 0.018445421175869114,
+      "tol": 2.6536571567401306,
+      "detail": "got 150.895, truth 150.913 (period 180)"
+    },
+    "longest_midpoint_xy": {
+      "ok": true,
+      "error": 0.0,
+      "tol": 3.9999999999999996,
+      "detail": "got [298.5, 117.0], truth [298.5, 117.0]"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

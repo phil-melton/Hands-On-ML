@@ -1,0 +1,29 @@
+{
+  "task": "e2e-10-board-scale-parts",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "mm_per_px": {
+      "ok": true,
+      "error": 1.4223625292464348e-05,
+      "tol": 0.01063480932169425,
+      "detail": "got 0.611365, truth 0.611351"
+    },
+    "n_red_parts": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "red_area_mm2": {
+      "ok": true,
+      "error": 59.85604915637805,
+      "tol": 139.53557132595142,
+      "detail": "got 1205.03, truth 1145.17"
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 3,
+  "n_pass": 3
+}

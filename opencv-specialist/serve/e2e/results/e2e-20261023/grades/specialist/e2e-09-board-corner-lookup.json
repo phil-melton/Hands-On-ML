@@ -1,0 +1,35 @@
+{
+  "task": "e2e-09-board-corner-lookup",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "corner_row2_col3_xy": {
+      "ok": true,
+      "error": 0.015289109469528444,
+      "tol": 0.40447305525184596,
+      "detail": "got [380.68792724609375, 278.767822265625], truth [380.6828872458412, 278.78225678209856]"
+    },
+    "grid_centroid_xy": {
+      "ok": true,
+      "error": 0.013633683637461187,
+      "tol": 0.40447305525184596,
+      "detail": "got [335.6208671569824, 244.43860397338867], truth [335.6294673783724, 244.44918289212214]"
+    },
+    "first_to_last_px": {
+      "ok": true,
+      "error": 0.0004833304732017041,
+      "tol": 0.8089461105036919,
+      "detail": "got 254.169, truth 254.169"
+    },
+    "top_left_square_is_dark": {
+      "ok": true,
+      "error": null,
+      "tol": null,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 4,
+  "n_pass": 4
+}

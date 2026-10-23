@@ -1,0 +1,25 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-07-colour-dominant-blob
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\alone\e2e-07-colour-dominant-blob
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-07-colour-dominant-blob/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The image shows flat-coloured shapes on a plain background, plus distractor shapes. A pixel has a colour when, in 8-bit HSV (cv2.COLOR_BGR2HSV: H 0-179, S and V 0-255), S >= 100 and V >= 80 and its hue lies in that colour's inclusive range: red 0-10 or 170-179 (red wraps around 0), yellow 20-35, green 40-80, blue 100-130. Every bound is inclusive. Pixels in no range (greys, pastels, dark pixels, other hues) have no colour. Count the pixels of each of the four colours over the whole image (exactly: no smoothing, resizing or minimum size). Find the colour with the most pixels. Then group that colour's pixels into connected components (8-connectivity: pixels sharing an edge or a corner are connected) and report how many components there are and, for the component with the largest pixel area (it is unique), its area, its tight bounding box [x, y, w, h] (x, y of the top-left pixel; w, h the pixel columns and rows it spans) and its centroid (x, y), the mean column and mean row of its pixels.
+
+INPUT IMAGES
+  - scene: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-07-colour-dominant-blob/scene.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/alone/e2e-07-colour-dominant-blob/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "counts": object {"red": integer, "yellow": integer, "green": integer, "blue": integer}, pixels
+  - "dominant": one of "red", "yellow", "green", "blue"
+  - "n_components": integer
+  - "largest_area": integer, pixels
+  - "largest_bbox": [x, y, w, h], integers
+  - "largest_centroid": [x, y], numbers
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

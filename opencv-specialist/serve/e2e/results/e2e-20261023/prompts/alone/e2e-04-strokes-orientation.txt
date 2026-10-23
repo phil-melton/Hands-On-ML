@@ -1,0 +1,22 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/alone/e2e-04-strokes-orientation
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023\alone\e2e-04-strokes-orientation
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/alone/e2e-04-strokes-orientation/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The image shows thin bright straight strokes on a dark background (each at least 40 px long; they never touch or cross). Find every stroke and measure its length (the distance between its two end points). Report the lengths in px sorted from longest to shortest, their sum, and how many strokes are aligned with an image axis, meaning that the stroke's direction is within 10 degrees of horizontal or of vertical.
+
+INPUT IMAGES
+  - strokes: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/alone/e2e-04-strokes-orientation/strokes.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023/alone/e2e-04-strokes-orientation/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "lengths_desc_px": array of numbers, px, longest first, one per stroke
+  - "total_length_px": number, px
+  - "n_axis_aligned": integer
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+When answer.json is written, reply with the single word DONE.

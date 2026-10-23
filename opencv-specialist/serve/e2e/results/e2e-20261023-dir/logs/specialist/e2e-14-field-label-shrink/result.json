@@ -1,0 +1,122 @@
+{
+  "usage": {
+    "input": 10,
+    "cache_creation": 6931,
+    "cache_read": 41435,
+    "output": 2285,
+    "fresh": 9226,
+    "total": 50661
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 10,
+    "cache_creation": 6931,
+    "cache_read": 41435,
+    "output": 44,
+    "fresh": 6985,
+    "total": 48420
+  },
+  "cost_usd": 0.058881,
+  "num_turns": 6,
+  "n_assistant_messages": 5,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "Bash": 4,
+    "Write": 1
+  },
+  "n_tool_calls": 5,
+  "n_tool_errors": 2,
+  "n_solve": 0,
+  "n_solve_verified": 0,
+  "solve": {
+    "calls": 0,
+    "verified": 0,
+    "unverified": 0,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-14-field-label-shrink",
+    "session_id": "5df7698a-eead-43a1-b124-fa8f77fc818b",
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-14-field-label-shrink",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 24.80673327797558,
+  "stopped_by": "completed",
+  "started": "2026-10-23T11:32:39.029440+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-14-field-label-shrink",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Bash,Read,Write",
+    "--allowedTools",
+    "Bash,Read,Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-dir\\specialist\\e2e-14-field-label-shrink",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

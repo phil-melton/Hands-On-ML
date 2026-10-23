@@ -1,0 +1,47 @@
+{
+  "task": "e2e-05-component-hist",
+  "status": "ok",
+  "detail": "",
+  "passed": false,
+  "keys": {
+    "n_components": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_area": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_bbox": {
+      "ok": true,
+      "error": null,
+      "tol": 0.0,
+      "detail": ""
+    },
+    "largest_mean_gray": {
+      "ok": false,
+      "error": 2.676480422544387e-08,
+      "tol": 1e-09,
+      "detail": "got 154.3905, truth 154.3904958677686 (relative error)"
+    },
+    "largest_std_gray": {
+      "ok": false,
+      "error": 6.5712600413823115e-09,
+      "tol": 1e-09,
+      "detail": "got 37.89037, truth 37.89037024898747 (relative error)"
+    },
+    "largest_median_gray": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 6,
+  "n_pass": 4
+}

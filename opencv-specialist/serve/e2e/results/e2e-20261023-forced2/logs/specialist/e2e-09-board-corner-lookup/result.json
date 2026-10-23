@@ -1,0 +1,120 @@
+{
+  "usage": {
+    "input": 10,
+    "cache_creation": 16308,
+    "cache_read": 47576,
+    "output": 3010,
+    "fresh": 19328,
+    "total": 66904
+  },
+  "usage_source": "result",
+  "usage_messages": {
+    "input": 10,
+    "cache_creation": 16308,
+    "cache_read": 47576,
+    "output": 102,
+    "fresh": 16420,
+    "total": 63996
+  },
+  "cost_usd": 0.10486720000000001,
+  "num_turns": 5,
+  "n_assistant_messages": 5,
+  "is_error": false,
+  "permission_denials": [],
+  "result_subtype": "success",
+  "result_text": "DONE",
+  "tool_calls": {
+    "mcp__opencv-expert__opencv_solve": 3,
+    "Write": 1
+  },
+  "n_tool_calls": 4,
+  "n_tool_errors": 0,
+  "n_solve": 3,
+  "n_solve_verified": 1,
+  "solve": {
+    "calls": 3,
+    "verified": 1,
+    "unverified": 2,
+    "unknown": 0,
+    "errors": 0
+  },
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "cwd": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\specialist\\e2e-09-board-corner-lookup",
+    "session_id": "f0df779d-ca9f-4f90-9bba-f118c9d4ac7c",
+    "tools": [
+      "Write",
+      "mcp__opencv-expert__opencv_solve"
+    ],
+    "mcp_servers": [
+      {
+        "name": "opencv-expert",
+        "status": "connected",
+        "source": "dynamic"
+      }
+    ],
+    "permissionMode": "dontAsk",
+    "claude_code_version": "2.1.289",
+    "apiKeySource": "none",
+    "slash_commands": [],
+    "skills": [],
+    "plugins": [
+      {
+        "name": "cc-plugin-agents-md",
+        "path": "builtin",
+        "source": "cc-plugin-agents-md@builtin"
+      },
+      {
+        "name": "cc-plugin-telemetry",
+        "path": "builtin",
+        "source": "cc-plugin-telemetry@builtin"
+      },
+      {
+        "name": "cc-plugin-plugin-authoring",
+        "path": "builtin",
+        "source": "cc-plugin-plugin-authoring@builtin"
+      }
+    ]
+  },
+  "isolation_ok": true,
+  "isolation_notes": [],
+  "peeked": [],
+  "has_result_event": true,
+  "task": "e2e-09-board-corner-lookup",
+  "arm": "specialist",
+  "model": "sonnet",
+  "exit_code": 0,
+  "wall_s": 365.27079226399655,
+  "stopped_by": "completed",
+  "started": "2026-10-23T12:18:45.194092+00:00",
+  "cwd": "/home/ptmel/opencv-expert/e2e-runs/e2e-20261023-forced2/specialist/e2e-09-board-corner-lookup",
+  "isolation": "flags",
+  "cmd": [
+    "/mnt/c/Users/ptmel/.local/bin/claude.exe",
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--model",
+    "sonnet",
+    "--permission-mode",
+    "dontAsk",
+    "--tools",
+    "Write",
+    "--allowedTools",
+    "Write,mcp__opencv-expert__opencv_solve",
+    "--strict-mcp-config",
+    "--no-session-persistence",
+    "--setting-sources",
+    "",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--mcp-config",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\mcp.json",
+    "--add-dir",
+    "\\\\wsl.localhost\\Ubuntu-24.04\\home\\ptmel\\opencv-expert\\e2e-runs\\e2e-20261023-forced2\\specialist\\e2e-09-board-corner-lookup",
+    "--max-turns",
+    "40"
+  ],
+  "stderr_tail": ""
+}

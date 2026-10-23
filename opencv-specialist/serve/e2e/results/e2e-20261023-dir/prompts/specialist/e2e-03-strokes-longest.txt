@@ -1,0 +1,25 @@
+You are solving one computer-vision task. Everything you need is in your work directory.
+
+Work directory, as a Linux path inside WSL: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-03-strokes-longest
+The same directory as Windows sees it: \\wsl.localhost\Ubuntu-24.04\home\ptmel\opencv-expert\e2e-runs\e2e-20261023-dir\specialist\e2e-03-strokes-longest
+Python 3 with OpenCV 5.0.0 and NumPy runs inside WSL. Run a script from Git Bash with
+    MSYS_NO_PATHCONV=1 wsl.exe -d Ubuntu-24.04 -- /home/ptmel/venvs/cv5/bin/python /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-03-strokes-longest/<script>.py
+(Git Bash rewrites arguments that start with a slash into Windows paths unless MSYS_NO_PATHCONV=1 is set; in PowerShell leave that prefix out.) Use Linux paths inside scripts. Keep your scripts and any intermediate files in the work directory. Do not look outside it.
+
+TASK
+The image shows thin bright straight strokes on a dark background (each at least 40 px long; they never touch or cross). Find every stroke and its two end points. Report how many strokes there are and, for the longest stroke (the largest distance between its two end points), its length in px, its direction as an angle in degrees in [0, 180) measured from the +x axis towards +y, i.e. atan2(dy, dx) modulo 180 with y down, and its midpoint (the mean of its two end points).
+
+INPUT IMAGES
+  - strokes: /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-03-strokes-longest/strokes.png  (480 px wide, 360 px high, 3-channel BGR)
+  (8-bit PNG files; cv2.imread reads them in BGR channel order)
+
+ANSWER
+Write /home/ptmel/opencv-expert/e2e-runs/e2e-20261023-dir/specialist/e2e-03-strokes-longest/answer.json: one UTF-8 JSON object with exactly these keys and nothing else:
+  - "n_strokes": integer
+  - "longest_length_px": number, px
+  - "longest_angle_deg": number in [0, 180), degrees
+  - "longest_midpoint_xy": [x, y]
+Pixel coordinates are (x, y) with x to the right and y down, the centre of the top-left pixel being (0, 0). Numbers are plain JSON numbers at full double precision (write them with json.dump from Python; do not round unless a key says so). Lists are JSON arrays. The answer is graded automatically against an exact manufactured truth.
+TOOLS
+An `opencv_solve` tool is available: a local OpenCV 5.0 specialist model that writes, runs and checks the OpenCV code for one image-processing step on an image file and returns its measurements. Use it for the image-processing steps (finding, measuring, rectifying) and do the arithmetic that combines its results yourself.
+When answer.json is written, reply with the single word DONE.

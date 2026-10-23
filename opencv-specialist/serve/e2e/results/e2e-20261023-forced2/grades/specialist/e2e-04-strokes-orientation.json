@@ -1,0 +1,29 @@
+{
+  "task": "e2e-04-strokes-orientation",
+  "status": "ok",
+  "detail": "",
+  "passed": true,
+  "keys": {
+    "lengths_desc_px": {
+      "ok": true,
+      "error": 4.0,
+      "tol": 7.999999999999999,
+      "detail": "per-element errors 4/8, 0.000227/5.2, 0.00108/5.2, 1.07e-05/5.2"
+    },
+    "total_length_px": {
+      "ok": true,
+      "error": 3.9986981123655028,
+      "tol": 23.599999999999998,
+      "detail": "got 382.9, truth 378.902"
+    },
+    "n_axis_aligned": {
+      "ok": true,
+      "error": 0,
+      "tol": 0.0,
+      "detail": ""
+    }
+  },
+  "extra_keys": [],
+  "n_keys": 3,
+  "n_pass": 3
+}
