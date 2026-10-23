@@ -745,6 +745,7 @@ def cmd_train(a) -> int:
         job.summary["state"] = "complete"
         job.save_summary()
         out.event("done", **job.summary["train"])
+        out.register("log.jsonl", "log")  # hash the log after its last line (it was hashed before "done" was appended)
         out.finish("complete")
         _log("done: " + json.dumps(job.summary["train"]))
         return 0

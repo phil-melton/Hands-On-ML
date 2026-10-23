@@ -43,6 +43,14 @@ families; the held-out families (22 tasks, 8 prompts) do not move. Relevant to f
 half the in-family gain) and to PLAN.md §7 question about generalization; one quarter of the data so far.
 Session B prediction (measured rates: 1,691 tok/s, 0.114 s per generation step, setup kept at 19 min): runs r050 +
 r100, no step-0 generation, **173 min, 15.6 CU**, kill at 346 min / 31.2 CU; Stage 5 spent 3.95 of 60.
+Measured, session B (19:25-20:21): `colab usage` 672.90 -> 668.18 = **4.72 CU**; run r050 completed (178 steps,
+1,804 tok/s, all 4 checkpoints downloaded), but the driver stopped the study before r100 with the same false failure.
+My first fix was wrong: I misread the manifest (the `None` was its size, not its hash). Real cause: the job hashes
+`log.jsonl` at the last checkpoint and appends the "done" line afterwards. Fixed at both ends: the job re-registers the
+log after "done", and the driver exempts kind "log" from the hash; r025 and r050 now check complete. Lost: one run's
+worth of session, about 0.5 CU of setup and the r100 slot; the r050 work is intact.
+Session C prediction (r100 alone, 1,750 tok/s, 0.115 s per generation step): **110 min, 9.9 CU**, kill at 219 min /
+19.7 CU; Stage 5 spent 8.67 of 60.
 
 **Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
 foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0

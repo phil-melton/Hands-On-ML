@@ -877,3 +877,5 @@ def test_an_unhashed_live_log_does_not_make_a_finished_run_look_incomplete(tmp_p
     assert stage5._have(tmp_path / "a.json", {"name": "a.json", "sha256": stage5.sha256_file(tmp_path / "a.json")})
     assert not stage5._have(tmp_path / "a.json", {"name": "a.json", "sha256": "0" * 64})
     assert not stage5._have(tmp_path / "missing.log.jsonl", {"name": "missing.log.jsonl", "sha256": None})
+    # the real case: the manifest hashed the log before the job appended its "done" line
+    assert stage5._have(tmp_path / "x.log.jsonl", {"name": "x.log.jsonl", "kind": "log", "sha256": "0" * 64})

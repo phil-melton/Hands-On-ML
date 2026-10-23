@@ -518,8 +518,11 @@ def run_complete(cfg: StudyConfig, run: str) -> bool:
 
 
 def _have(path: Path, f: dict) -> bool:
-    """A listed file is here: present, and equal to the manifest's hash when it has one (the live log has none)."""
-    return path.is_file() and (f.get("sha256") is None or sha256_file(path) == f["sha256"])
+    """A listed file is here: present, and equal to the manifest's hash. A log is exempt from the hash: the job keeps
+    appending to it after hashing it (Stage 5 sessions A and B were both stopped by that mismatch)."""
+    if f.get("kind") == "log" or f.get("sha256") is None:
+        return path.is_file()
+    return path.is_file() and sha256_file(path) == f["sha256"]
 
 
 def remote_path(name: str) -> str:
@@ -539,7 +542,7 @@ def download_run(cfg: StudyConfig, run: str, do: Callable[[Step], CmdResult], lo
     man = json.loads(man_path.read_text(encoding="utf-8"))
     for f in man["files"]:
         local = d / f["name"]
-        if f.get("sha256") is not None and _have(local, f):
+        if f.get("kind") != "log" and f.get("sha256") is not None and _have(local, f):
             continue  # unhashed files (the live log) are always fetched again: they grow until the run ends
         do(Step(f"download-{f['name']}", pre + ["download", "-s", s, remote_path(f["name"]), str(local)], 900, required=False))
         if not _have(local, f):
