@@ -41,11 +41,11 @@ The train-validation gap is probe loss (a fixed sample of the run's own training
 
 ## Convergence rule (PLAN.md 4.3): stop growing when a doubling moves dev pass@1 by less than the noise
 
-| from -> to | compared | diff (pts) | noise (SE, pts) | p (sign over prompts) | moves more than the noise |
+| from -> to | compared | diff (pts) | noise (SE, pts) | p (sign over prompts) | moves more than the noise (abs diff > 2 SE) |
 |---|---|---|---|---|---|
-| r025 -> r050 | best: r050@e1.5 vs r025@e2 | -2.0 | 1.4 | 0.5 | yes |
-| r025 -> r050 | final: r050@e2 vs r025@e2 | -8.1 | 4.4 | 0.125 | yes |
-| r050 -> r100 | best: r100@e1 vs r050@e1.5 | 2.0 | 1.4 | 0.5 | yes |
-| r050 -> r100 | final: r100@e2 vs r050@e2 | -8.1 | 6.8 | 0.688 | yes |
+| r025 -> r050 | best: r050@e1.5 vs r025@e2 | -2.0 | 1.4 | 0.5 | no |
+| r025 -> r050 | final: r050@e2 vs r025@e2 | -8.1 | 4.4 | 0.125 | no |
+| r050 -> r100 | best: r100@e1 vs r050@e1.5 | 2.0 | 1.4 | 0.5 | no |
+| r050 -> r100 | final: r100@e2 vs r050@e2 | -8.1 | 6.8 | 0.688 | no |
 
 The decision is Phil's (PLAN.md section 7): this table is the evidence, not the answer.

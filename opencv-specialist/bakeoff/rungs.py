@@ -37,6 +37,11 @@ RUNGS: dict[str, Rung] = {r.name: r for r in (
     Rung("r3-9b", "base-qwen3.5-9b", think=False),
     Rung("r4-7b-notes", "base-qwen2.5-coder-7b", notes=True),
     Rung("r5-9b-notes", "base-qwen3.5-9b", think=False, notes=True),  # Gate 3: the Stage 6 comparator for the 9B
+    # Stage 6: the chosen Stage 5 checkpoint (r100 @ e1), merged and quantized (train/merge_lora.py). Same system prompt as
+    # the baselines (train.config.SYSTEM) and no notes block: the fine-tune replaces the notes.
+    Rung("s6-q4", "opencv-expert-q4", think=False),
+    Rung("s6-q5", "opencv-expert-q5", think=False),
+    Rung("s6-q8", "opencv-expert-q8", think=False),
 )}
 
 MODES: dict[str, dict] = {

@@ -908,7 +908,9 @@ def summarize_study(study_dir: Path, *, boot: int = 200) -> dict:
                 noise = noise if noise is not None else _f(pc["se"])
                 conv.append({"from": lo, "to": hi, "which": which, "a": a, "b": b, "diff": pc["diff"], "noise_se": noise,
                              "p_sign_cluster": _f(pc.get("p_sign_cluster")), "p_mcnemar": pc["p"],
-                             "moves_more_than_noise": None if noise is None else abs(pc["diff"]) > noise})
+                             # PLAN.md 4.3 / "Eval noise": a difference clears the noise at 2 SE, not 1 (fixed 2026-10-22: the
+                             # first report called a 2.0-pt move with SE 1.4 and sign-test p 0.5 "more than the noise")
+                             "moves_more_than_noise": None if noise is None else abs(pc["diff"]) > 2 * noise})
     return {"rows": rows, "best": {k: v["rung"] for k, v in best.items()}, "final": final, "paired_vs_step0": paired, "convergence": conv,
             "tasks": {k: len(v) for k, v in sel.items()},
             "runs": {r: {k: s.get(k) for k in ("frac", "n_train", "train", "load_s", "trainable_params", "dtype", "loss_mask", "dev_loss_step0",
@@ -941,7 +943,7 @@ def render_report(s: dict, study_name: str) -> str:
     for p in s["paired_vs_step0"]:
         L.append(f"| {p['a']} | {pct(p['diff'])} | {pct(p.get('se_cluster'))} | {fnum(p['p'], '.3g')} | {fnum(p.get('p_sign_cluster'), '.3g')} | {p['a_only']} | {p['b_only']} |")
     L += ["", "## Convergence rule (PLAN.md 4.3): stop growing when a doubling moves dev pass@1 by less than the noise", "",
-          "| from -> to | compared | diff (pts) | noise (SE, pts) | p (sign over prompts) | moves more than the noise |", "|---|---|---|---|---|---|"]
+          "| from -> to | compared | diff (pts) | noise (SE, pts) | p (sign over prompts) | moves more than the noise (abs diff > 2 SE) |", "|---|---|---|---|---|---|"]
     for c in s["convergence"]:
         L.append(f"| {c['from']} -> {c['to']} | {c['which']}: {c['a']} vs {c['b']} | {pct(c['diff'])} | {pct(c['noise_se'])} | {fnum(c['p_sign_cluster'], '.3g')} | {'yes' if c['moves_more_than_noise'] else 'no'} |")
     L += ["", "The decision is Phil's (PLAN.md section 7): this table is the evidence, not the answer."]

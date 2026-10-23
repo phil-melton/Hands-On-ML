@@ -255,13 +255,18 @@ def _serve_rung(run, rung, system, tasks, todo, st, writers, greedy_cache, log) 
 
 
 def run_generation(run: RunDir, rungs: list[Rung], tasks: list[Task], st: GenSettings, *,
-                   notes_text: str | None = None, invocation: dict | None = None, log=_log) -> dict:
-    """Generate every missing reply for every rung. Returns {rung: replies written}."""
+                   notes_text: str | None = None, invocation: dict | None = None, log=_log,
+                   system: str | None = None) -> dict:
+    """Generate every missing reply for every rung. Returns {rung: replies written}.
+
+    ``system`` replaces the OpenCV system prompt for every rung (the forgetting check sends one neutral prompt
+    to both arms, bakeoff/forgetting.py); the default None keeps ``rungs.system_prompt``.
+    """
     if not tasks:
         raise ValueError("no tasks selected")
     run.path.mkdir(parents=True, exist_ok=True)
     run.done.unlink(missing_ok=True)
-    systems = {r.name: system_prompt(r, notes_text) for r in rungs}
+    systems = {r.name: (system if system is not None else system_prompt(r, notes_text)) for r in rungs}
     prepare_config(run, rungs, systems, st, notes_text, invocation or {})
     existing = read_jsonl(run.generations)
     done = keys(existing)
