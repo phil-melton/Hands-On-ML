@@ -51,6 +51,36 @@ log after "done", and the driver exempts kind "log" from the hash; r025 and r050
 worth of session, about 0.5 CU of setup and the r100 slot; the r050 work is intact.
 Session C prediction (r100 alone, 1,750 tok/s, 0.115 s per generation step): **110 min, 9.9 CU**, kill at 219 min /
 19.7 CU; Stage 5 spent 8.67 of 60.
+r050 graded locally (0 grader errors): e0.5 69.7, e1 66.7, **e1.5 80.8** (6.7), e2 74.7 % dev pass@1; dev loss keeps
+falling (0.157 -> 0.134) while pass@1 does not rise: 25 % -> 50 % moves the best checkpoint 82.8 -> 80.8, inside the
+noise (PLAN.md §4.3's stopping signal; loss is not the selector). Held-out split, every checkpoint of both runs:
+color_segmentation 11/11 (already solved by the untrained model), **chessboard_corners 0/11** before and after training.
+So far no transfer to the held-out 5.0 family: learning (N,1,k) -> (N,k) on HoughLinesP and friends has not carried
+over to findChessboardCorners (PLAN.md §7 question 7; frozen criterion 2 measures exactly this). Audit of the
+chessboard failures (11 tasks): step 0 = 5 "cannot unpack non-iterable numpy.int" (the 4.x (N,1,2) idiom), 3 None
+returned, 3 wrong corner count; after training (r025 e2, r050 e1.5) = **0 unpacking errors**, 6 "corners not found"
+(probably squares passed as the pattern size instead of inner corners), 3-5 None returned, 3 invented
+`cv2.findChessboardCornersBinary` (r025). So the shape lesson did transfer to the held-out family; the answers now fail
+on the pattern-size convention and on structure. Pass rate is still 0, but the failure moved.
+Measured, session C (20:23-21:51): `colab usage` 668.18 -> 660.56 = **7.62 CU** (predicted 9.9); r100 complete, 356
+steps, 1,749 tok/s, no false failure. **Stage 5 total 16.29 CU** of 60 (A 3.95, B 4.72, C 7.62).
+r100 dev pass@1: e0.5 66.7, **e1 82.8** (6.2), e1.5 79.8, e2 66.7; dev loss 0.143 -> 0.130 -> 0.126 -> 0.124 (still
+falling at e2 while pass@1 drops 16 pts: overfitting that loss does not see; probe 0.118 vs dev 0.124 at e2).
+
+| run | rows | best checkpoint | dev pass@1 | trained fam. | held-out | 5.0 | dev loss |
+|---|---|---|---|---|---|---|---|
+| r025 | 712 | e2 | 82.8 (6.2) | 92.2 | 50.0 | 74.2 | 0.150 |
+| r050 | 1,424 | e1.5 | 80.8 (6.7) | 89.6 | 50.0 | 71.2 | 0.136 |
+| r100 | 2,847 | e1 | 82.8 (6.2) | - | - | - | 0.130 |
+
+Convergence (PLAN.md §4.3): no doubling moves dev pass@1 beyond the noise (best vs best: -2.0 then +2.0 pts, sign test
+p = 0.5 both; final vs final p >= 0.125). The report's "moves more than the noise: yes" column is wrong (it compares
+|diff| with one SE and ignores its own p): to fix. Reading: data size is not the bottleneck at this scale; one epoch
+on the full set is as good as two on a quarter, and a second epoch on the full set hurts.
+**Chosen checkpoint: r100 @ e1** (ties r025 @ e2 at 82.8; the pre-stated tie rule takes the lower dev loss, 0.130 vs
+0.150). Best-of-12 on dev inflates the score; the test set (Stage 6) is the unbiased number. Predicted vs measured CU
+per epoch at 100 %: predicted 4.6 (1,078 tok/s), measured ~2.6 (1,749 tok/s, incl. evaluation). Adapters (173 MB each)
+in `~/opencv-expert/stage5/s5-conv1/runs/`, not in git (Rule 8).
 
 **Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
 foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0

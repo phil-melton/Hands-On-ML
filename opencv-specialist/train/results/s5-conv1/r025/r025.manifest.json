@@ -1,0 +1,79 @@
+{
+ "files": [
+  {
+   "bytes": 173199360,
+   "kind": "adapter",
+   "name": "r025.e0.5.adapter.tar",
+   "sha256": "7bc867b7a37b1807666b6aa38c59694937c45b062712a945b9fa53647c758322"
+  },
+  {
+   "bytes": 124961,
+   "kind": "answers",
+   "name": "r025.e0.5.dev_answers.jsonl",
+   "sha256": "5d7412d0bc5bd7819d05380f126dcab3c6bbc9ae3ee9e6f1f1e5497a1aaeb2fc"
+  },
+  {
+   "bytes": 173199360,
+   "kind": "adapter",
+   "name": "r025.e1.5.adapter.tar",
+   "sha256": "0772e3b3816728e00e039441c0984d775185eee758b835fe7638d0901e72e37d"
+  },
+  {
+   "bytes": 96118,
+   "kind": "answers",
+   "name": "r025.e1.5.dev_answers.jsonl",
+   "sha256": "093c6ece668d3b747f5e02a1f42b3eca4a928f85a76426f7664e04078d6cb23e"
+  },
+  {
+   "bytes": 173199360,
+   "kind": "adapter",
+   "name": "r025.e1.adapter.tar",
+   "sha256": "a8149d0281ff8c95abc1bb7fc1d49d33f83eb9c4b163b5c5b0103bdff3edc1ec"
+  },
+  {
+   "bytes": 88065,
+   "kind": "answers",
+   "name": "r025.e1.dev_answers.jsonl",
+   "sha256": "cce0f0e4af12370e9415dd31778b1105076aad99b89e9ecae32bbb2de1b303b8"
+  },
+  {
+   "bytes": 173199360,
+   "kind": "adapter",
+   "name": "r025.e2.adapter.tar",
+   "sha256": "e14e6209293b0cf6164e86b3626879d4c91ddf4ee8b854de26e4a2acc4ab27b3"
+  },
+  {
+   "bytes": 99756,
+   "kind": "answers",
+   "name": "r025.e2.dev_answers.jsonl",
+   "sha256": "60d91cb47cced84df4aebc930664b2eaf19a884195cdef54c965ed1feb7390df"
+  },
+  {
+   "bytes": 22824,
+   "kind": "log",
+   "name": "r025.log.jsonl",
+   "sha256": "4e0ec32650e659bfcc9709a3668ed6fda04cceecc896a0fd61803188049d913d"
+  },
+  {
+   "bytes": 173199360,
+   "kind": "adapter",
+   "name": "r025.step0.adapter.tar",
+   "sha256": "f234cb374acc3b17b5d6dee415763913c27608ca42c67e830b80affb61e9ea56"
+  },
+  {
+   "bytes": 146893,
+   "kind": "answers",
+   "name": "r025.step0.dev_answers.jsonl",
+   "sha256": "1fa71413881a984963271d5b25699a0ac4c7b1e89452426b671d1314c8281eed"
+  },
+  {
+   "bytes": 5238,
+   "kind": "summary",
+   "name": "r025.summary.json",
+   "sha256": "72f4f7b4a26ac5ec388d74711f98911a0c9f1c4985c3d9be92d093cd34a9296e"
+  }
+ ],
+ "run": "r025",
+ "state": "complete",
+ "updated": "2026-10-23T00:18:26+00:00"
+}

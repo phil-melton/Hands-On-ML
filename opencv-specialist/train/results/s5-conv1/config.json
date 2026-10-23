@@ -1,0 +1,29 @@
+{
+ "base_license": "apache-2.0",
+ "batch": 1,
+ "ckpt_every": 0.5,
+ "created": "2026-10-22T23:34:39+00:00",
+ "created_by": "train/stage5.py",
+ "dev_max_new_tokens": 2048,
+ "dev_sha256": "7eeabaa7788adce9e1006365984c7c48e97e4673efeff5a9e7ce796afaf89c5f",
+ "epochs": 2.0,
+ "gpu": "A100",
+ "grad_accum": 16,
+ "job_sha256": "0c851fe2c77c6bb7a4460530c8163fb27e84e7441d7335c67d0a16d2b3d7c4fb",
+ "lr": 0.0002,
+ "max_len": 4608,
+ "n_dev_prompts": 36,
+ "n_dev_tasks": 99,
+ "percents": [
+  100
+ ],
+ "qlora": false,
+ "repo": "unsloth/Qwen3.5-9B",
+ "requirements_sha256": "2ad913cc8c7d96fbf229882ab72a16b5015f703be3d4f165f3f34c5ff24b6c64",
+ "revision": "005429cee5cb648998cf2b70eebdd83175989c9a",
+ "seed": 0,
+ "step0_gen": false,
+ "study": "s5-conv1",
+ "train_sha256": "c38faf932dfc6fcf43870ad95daff1f39a5602ffc4123f41037e5a25849a6ad6",
+ "warmup_ratio": 0.05
+}

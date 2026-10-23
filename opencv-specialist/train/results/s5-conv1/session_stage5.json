@@ -1,0 +1,376 @@
+{
+ "base_license": "apache-2.0",
+ "budget": {
+  "run_min": {
+   "r100": 95.75492546436365
+  },
+  "setup_min": 14.245074535636356,
+  "total_min": 110.0
+ },
+ "commands": [
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-before",
+   "returncode": 0,
+   "seconds": 0.68
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "new",
+    "-s",
+    "stage5-s5-conv1",
+    "--gpu",
+    "A100"
+   ],
+   "name": "new",
+   "returncode": 0,
+   "seconds": 3.28
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "stage5-s5-conv1",
+    "/home/ptmel/Hands-On-ML/opencv-specialist/train/colab_train_job.py",
+    "/content/stage5_job.py"
+   ],
+   "name": "upload-job",
+   "returncode": 0,
+   "seconds": 0.82
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "stage5-s5-conv1",
+    "/home/ptmel/Hands-On-ML/opencv-specialist/data/train.jsonl",
+    "/content/stage5_train.jsonl"
+   ],
+   "name": "upload-train",
+   "returncode": 0,
+   "seconds": 2.82
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "stage5-s5-conv1",
+    "/home/ptmel/Hands-On-ML/opencv-specialist/data/dev.jsonl",
+    "/content/stage5_dev.jsonl"
+   ],
+   "name": "upload-dev",
+   "returncode": 0,
+   "seconds": 1.02
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "upload",
+    "-s",
+    "stage5-s5-conv1",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/dev_prompts.jsonl",
+    "/content/stage5_dev_prompts.jsonl"
+   ],
+   "name": "upload-dev-prompts",
+   "returncode": 0,
+   "seconds": 0.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "exec",
+    "-s",
+    "stage5-s5-conv1",
+    "-f",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/launch_setup.py",
+    "--timeout",
+    "1709"
+   ],
+   "name": "exec-setup",
+   "returncode": 0,
+   "seconds": 253.69
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "exec",
+    "-s",
+    "stage5-s5-conv1",
+    "-f",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/launch_r100.py",
+    "--timeout",
+    "11490"
+   ],
+   "name": "exec-r100",
+   "returncode": 0,
+   "seconds": 4991.89
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.manifest.json",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.manifest.json"
+   ],
+   "name": "download-r100-manifest",
+   "returncode": 0,
+   "seconds": 1.92
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e0.5.adapter.tar",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e0.5.adapter.tar"
+   ],
+   "name": "download-r100.e0.5.adapter.tar",
+   "returncode": 0,
+   "seconds": 10.7
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e0.5.dev_answers.jsonl",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e0.5.dev_answers.jsonl"
+   ],
+   "name": "download-r100.e0.5.dev_answers.jsonl",
+   "returncode": 0,
+   "seconds": 0.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e1.5.adapter.tar",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e1.5.adapter.tar"
+   ],
+   "name": "download-r100.e1.5.adapter.tar",
+   "returncode": 0,
+   "seconds": 10.85
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e1.5.dev_answers.jsonl",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e1.5.dev_answers.jsonl"
+   ],
+   "name": "download-r100.e1.5.dev_answers.jsonl",
+   "returncode": 0,
+   "seconds": 0.52
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e1.adapter.tar",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e1.adapter.tar"
+   ],
+   "name": "download-r100.e1.adapter.tar",
+   "returncode": 0,
+   "seconds": 9.85
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e1.dev_answers.jsonl",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e1.dev_answers.jsonl"
+   ],
+   "name": "download-r100.e1.dev_answers.jsonl",
+   "returncode": 0,
+   "seconds": 0.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e2.adapter.tar",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e2.adapter.tar"
+   ],
+   "name": "download-r100.e2.adapter.tar",
+   "returncode": 0,
+   "seconds": 9.45
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.e2.dev_answers.jsonl",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.e2.dev_answers.jsonl"
+   ],
+   "name": "download-r100.e2.dev_answers.jsonl",
+   "returncode": 0,
+   "seconds": 0.57
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.log.jsonl",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.log.jsonl"
+   ],
+   "name": "download-r100.log.jsonl",
+   "returncode": 0,
+   "seconds": 0.52
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "download",
+    "-s",
+    "stage5-s5-conv1",
+    "/content/stage5_out/r100.summary.json",
+    "/home/ptmel/opencv-expert/stage5/s5-conv1/runs/r100/r100.summary.json"
+   ],
+   "name": "download-r100.summary.json",
+   "returncode": 0,
+   "seconds": 0.52
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "stop",
+    "-s",
+    "stage5-s5-conv1"
+   ],
+   "name": "stop",
+   "returncode": 0,
+   "seconds": 0.82
+  },
+  {
+   "argv": [
+    "/home/ptmel/venvs/colab/bin/colab",
+    "--auth",
+    "oauth2",
+    "usage"
+   ],
+   "name": "usage-after",
+   "returncode": 0,
+   "seconds": 0.62
+  }
+ ],
+ "error": null,
+ "gpu": "A100",
+ "per_run": {
+  "r100": {
+   "checkpoints": [
+    [
+     "e0.5",
+     232.5,
+     45.5
+    ],
+    [
+     "e1",
+     245.3,
+     43.7
+    ],
+    [
+     "e1.5",
+     203.7,
+     45.6
+    ],
+    [
+     "e2",
+     245.5,
+     44.2
+    ]
+   ],
+   "load_s": 22.2,
+   "measured_tok_s": 1749.0,
+   "measured_train_s": 3670.8,
+   "peak_train_gib": 19.18,
+   "predicted_minutes": 127.7,
+   "predicted_tok_s": 1077.7,
+   "predicted_train_s": 5957.0,
+   "ratio": 1.623
+  }
+ },
+ "predicted_cu": 9.9,
+ "predicted_minutes": 110.0,
+ "predicted_train_tok_s": 1077.720207253886,
+ "repo": "unsloth/Qwen3.5-9B",
+ "revision": "005429cee5cb648998cf2b70eebdd83175989c9a",
+ "runs": [
+  "r100"
+ ],
+ "session": "stage5-s5-conv1",
+ "started_at": "2026-10-23T01:23:06+00:00",
+ "state": "ok",
+ "stop_ok": true,
+ "study": "s5-conv1",
+ "todo": [
+  "r100"
+ ],
+ "usage_after": "Current balance: 660.56 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "usage_before": "Current balance: 668.18 compute units\nUsage rate: 0.00/hr\nActive assignments: 0",
+ "wall_s": 5303.3
+}
