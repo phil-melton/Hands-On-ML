@@ -864,3 +864,16 @@ def test_the_adapter_tar_holds_the_two_adapter_files_and_the_work_folder_is_remo
         assert tf.extractfile("adapter_model.safetensors").read() == b"weights"
     assert not (tmp_path / "work").exists()
     assert [job.adapter_tag(f"/x/{n}") for n in ("r025.e1.adapter.tar", "r025.e0.5.adapter.tar", "r100.step0.adapter.tar")] == ["e1", "e0.5", "step0"]
+
+
+def test_an_unhashed_live_log_does_not_make_a_finished_run_look_incomplete(tmp_path):
+    # Found in Stage 5 session A (2026-10-22): the job lists log.jsonl with no hash, and the driver called the
+    # finished run incomplete, which would stop a multi-run session after its first run.
+    import json
+    from train import stage5
+    (tmp_path / "a.json").write_text("{}")
+    (tmp_path / "x.log.jsonl").write_text('{"event": "done"}\n')
+    assert stage5._have(tmp_path / "x.log.jsonl", {"name": "x.log.jsonl", "sha256": None})
+    assert stage5._have(tmp_path / "a.json", {"name": "a.json", "sha256": stage5.sha256_file(tmp_path / "a.json")})
+    assert not stage5._have(tmp_path / "a.json", {"name": "a.json", "sha256": "0" * 64})
+    assert not stage5._have(tmp_path / "missing.log.jsonl", {"name": "missing.log.jsonl", "sha256": None})

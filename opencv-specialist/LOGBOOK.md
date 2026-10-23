@@ -22,6 +22,27 @@ Prediction (Rule 1; tokens/s derived, not measured: 312 TFLOP/s x 20 % / (6 x 9.
 outside ~360-3,200 tok/s is a bug): study 282 min, **25.4 CU** within Phil's 60 CU cap. Two sessions so that the first
 measures throughput before the rest is paid: **session A = run r025: 76 min, 6.9 CU** (kill at 2x); session B = r050 +
 r100, 225 min, 20.3 CU, re-predicted from A's measurement.
+Measured, session A (18:34-19:21): `colab usage` 676.85 -> 672.90 = **3.95 CU** (predicted 6.9); wall 47 min; setup
+exec 100 s (predicted 19 min); run r025 exec 41.5 min (predicted 57); training 1,691 tok/s overall, ~1,870 steady
+(predicted 1,078: 1.6x faster, inside the bug band); peak train memory 19.0 GiB (25.2 reserved) of 40; dev generation
+234 s per pass (~0.114 s per decode step), 7 then 2 of 36 answers cut at 2,048. The driver marked the session failed
+although the run was complete: the live log is listed with no hash and the check required one. Fixed in
+`train/stage5.py` (`_have`), with a regression test (45 Stage 5 tests pass).
+Dev pass@1, 99 tasks (77 trained-family, 22 held-out; SE prompt-clustered):
+
+| checkpoint | all | trained families | held-out | 5.0 subset | dev loss | probe loss |
+|---|---|---|---|---|---|---|
+| step 0 (untrained, same pipeline) | 45.5 (8.5) | 44.2 | 50.0 | 33.3 | 0.319 | 0.382 |
+| r025 e0.5 | 63.6 (8.2) | 67.5 | 50.0 | 45.5 | 0.184 | 0.229 |
+| r025 e1 | 65.7 (8.2) | 74.0 | 36.4 | 53.0 | 0.157 | 0.187 |
+| r025 e1.5 | 82.8 (6.1) | 92.2 | 50.0 | 74.2 | 0.152 | 0.166 |
+| r025 e2 | **82.8** (6.2) | **92.2** | 50.0 | 74.2 | 0.150 | 0.162 |
+
+r025 e2 vs step 0: +37.4 pts, 37 tasks gained, 0 lost, sign test over prompts p = 6e-5. The gain is all in the trained
+families; the held-out families (22 tasks, 8 prompts) do not move. Relevant to frozen criterion 2 (held-out gain >=
+half the in-family gain) and to PLAN.md §7 question about generalization; one quarter of the data so far.
+Session B prediction (measured rates: 1,691 tok/s, 0.114 s per generation step, setup kept at 19 min): runs r050 +
+r100, no step-0 generation, **173 min, 15.6 CU**, kill at 346 min / 31.2 CU; Stage 5 spent 3.95 of 60.
 
 **Gate 4a decisions (Phil, 2026-10-22):** 1 teacher Qwen3.8-27B (Agree); 2 widen tasks with ~40 teacher-written
 foundry phrasings per trainable family (n-gram-screened against dev/test) + ~30 drill tasks on the measured 5.0

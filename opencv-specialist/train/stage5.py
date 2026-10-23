@@ -514,7 +514,12 @@ def run_complete(cfg: StudyConfig, run: str) -> bool:
         return False
     if m.get("state") != "complete" or s.get("state") != "complete":
         return False
-    return all((d / f["name"]).is_file() and sha256_file(d / f["name"]) == f["sha256"] for f in m["files"])
+    return all(_have(d / f["name"], f) for f in m["files"])
+
+
+def _have(path: Path, f: dict) -> bool:
+    """A listed file is here: present, and equal to the manifest's hash when it has one (the live log has none)."""
+    return path.is_file() and (f.get("sha256") is None or sha256_file(path) == f["sha256"])
 
 
 def remote_path(name: str) -> str:
@@ -534,10 +539,10 @@ def download_run(cfg: StudyConfig, run: str, do: Callable[[Step], CmdResult], lo
     man = json.loads(man_path.read_text(encoding="utf-8"))
     for f in man["files"]:
         local = d / f["name"]
-        if local.is_file() and sha256_file(local) == f["sha256"]:
-            continue
+        if f.get("sha256") is not None and _have(local, f):
+            continue  # unhashed files (the live log) are always fetched again: they grow until the run ends
         do(Step(f"download-{f['name']}", pre + ["download", "-s", s, remote_path(f["name"]), str(local)], 900, required=False))
-        if not local.is_file() or sha256_file(local) != f["sha256"]:
+        if not _have(local, f):
             log(f"WARNING: {f['name']} is missing or differs from the manifest after download")
     return man
 
